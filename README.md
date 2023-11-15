@@ -1,43 +1,17 @@
-![输入图片说明](https://img.kancloud.cn/b9/9a/b99a8fc346bfdfa4e598fc68f39d2c15_1920x2880.jpg)
+![输入图片说明](https://www.niucloud.com/img/readme/%E9%A1%B6%E9%83%A8%E5%B9%BF%E5%91%8A1.jpg)
 
+### niucloud-admin是什么？
+niucloud-admin是一款快速开发通用管理后台框架，前端采用最新的技术栈Vite+TypeScript+Vue3+ElementPlus最流行技术架构，后台结合PHP8、Java SDK、Python等主流后端语言搭建，内置集成用户权限、代码生成器、表单设计、云存储、短信发送、素材中心、微信及公众号、Api模块一系列开箱即用功能，是一款快速可以开发企业级应用的软件系统。
 
+### niucloud-admin采用的技术亮点
 
- :point_up:  :small_blue_diamond:  :small_orange_diamond:  :small_blue_diamond:  :small_blue_diamond:  :small_orange_diamond:  :small_blue_diamond: :small_blue_diamond:  :small_orange_diamond:  :small_blue_diamond:  :small_blue_diamond:  :small_orange_diamond:  :small_blue_diamond:
-:small_blue_diamond:  :small_orange_diamond:  :small_blue_diamond:  :small_blue_diamond:  :small_orange_diamond:  :small_blue_diamond:
-<br>
-如果对您有帮助，您可以点右上角 “ **Star** ” 收藏一下 ，获取第一时间更新，谢谢！
-<br>
- :point_up: :small_blue_diamond:  :small_orange_diamond:  :small_blue_diamond:  :small_blue_diamond:  :small_orange_diamond:  :small_blue_diamond: :small_blue_diamond:  :small_orange_diamond:  :small_blue_diamond:  :small_blue_diamond:  :small_orange_diamond:  :small_blue_diamond:
-:small_blue_diamond:  :small_orange_diamond:  :small_blue_diamond:  :small_blue_diamond:  :small_orange_diamond:  :small_blue_diamond:
-<br>
-
-### niucloud-admin介绍
-niucloud-admin单用户版本是一款快速开发多应用多插件通用管理系统后台框架，【您不需要重复造轮子 – 开发应用便拥有自主版权】!  前端采用最新的技术栈Vite+TypeScript+Vue3+ElementPlus最流行技术架构，后台结合PHP8、Java SDK、Python等主流后端语言搭建是一款快速可以开发企业级应用的软件系统。
-
-### 产品特性说明
-
-1.niucloud-admin 软件开发框架内置各种基础功能，可大量节省系统开发周期，快速完成交付。
-
-2.单用户版采用多应用，多插件模式开发部署。
-
-3.插件设计的管理机制，支持第三方开发者参与开发各种功能插件，独特的软件插件架构设计，支持多插件并存，即便二次开发之后，也不会影响与主框架同步无缝升级。
-
-4.内置集成用户权限、一键云部署、一键云发布、云编译、代码生成器、插件生成器、数据字典、表单设计、云存储、短信发送、素材中心、微信及公众号、支付宝小程序、Api模块一系列开箱即用功能，是一款快速可以开发企业级应用的软件系统。
-
-5.框架支持在线更新，可统一管理主框架及各种插件的在线安装，在线更新。
-
-6.niucloud-admin是一款真正的二次开发神器！
-
-
-### 技术说明
-
-- 后台php采用thinkphp6+php8+mysql+swoole,支持composer快速安装扩展，支持redis缓存以及消息队列，支持多语言设计开发，同时开发采用严格的restful的api设计开发。
+- 后台php采用thinkphp6+php8+mysql,支持composer快速安装扩展，支持redis缓存以及消息队列，支持多语言设计开发，同时开发采用严格的restful的api设计开发。
 
 - 后台前后端分离采用element-plus、vue3.0、typescript、vite、pina等前端技术,同时使用i18n支持国际化多语言开发。
 
 - 手机端采用uniapp前后端分离，同时使用uview、vue3.0、typescript、vite、pina等前端技术，同时使用i18n支持国际化多语言开发，可以灵活编译成h5,微信小程序，支付宝小程序，抖音小程序等使用场景。
 
-- niucloud-admin分为两个版本，单用户版本采用多应用多插件模式设计，saas版本采用多租户的saas系统设计，能够提供企业级软件服务运营 ，同时满足用户多站点，多商户，多门店等系统开发需求。
+- niucloud-admin采用多租户的saas系统设计，能够提供企业级软件服务运营 ，同时满足用户多站点，多商户，多门店等系统开发需求。
 
 - niucloud-admin结合当前市面上很多框架结构不规范，导致基础结构不稳定等情况，严格定义了分层设计的开发规范，同时api接口严格采用restful的开发规范，能够满足大型业务系统或者微服务的开发需求。
 
@@ -55,48 +29,25 @@ niucloud-admin单用户版本是一款快速开发多应用多插件通用管理
 
 - 手机端使用uniapp ，同时使用uview页面展示，可以开发出丰富的手机样式，同时不需要专门学习小程序，app等开发语言，只需要通过uniapp编译就可以。
 
-
-### 官网地址
-https://www.niucloud.com
-### 应用市场
-https://www.niucloud.com
-### 使用手册
-https://www.kancloud.cn/niucloud/niucloud-admin-develop/3153336
-### 二开手册
-https://www.kancloud.cn/niucloud/niucloud-admin-develop/3153336
-### API接口手册
-https://www.niucloud.com/apidoc.html
-### 论坛地址
-https://www.niucloud.com/bbs
+### 操作指南
+ [官网地址](https://www.niucloud.com)
+ | [服务市场](https://www.niucloud.com)
+ | [使用手册](https://www.kancloud.cn/niucloud/niucloud-admin-develop/3153336)
+ | [二开手册](https://www.kancloud.cn/niucloud/niucloud-admin-develop/3153336)
+ | [API接口手册](https://www.niucloud.com/apidoc.html)
+ | [论坛地址](https://www.niucloud.com/bbs)
 
 ### 演示地址
-- 电脑端演示网址：[<a href='https://demo.niucloud.com/web/s2/' target="_blank"> 查看 </a>]       
-<a href='https://demo.niucloud.com/web/s2/' target="_blank">https://demo.niucloud.com/web/s2/</a>  账号：自行注册
-- 站点后台演示网址：[<a href='https://demo.niucloud.com/site/login' target="_blank"> 查看 </a>]       
-<a href='https://demo.niucloud.com/site/login' target="_blank">https://demo.niucloud.com/site/login</a>  账号：test  密码：123456
-- 平台后台演示网址：[<a href='https://demo.niucloud.com/admin/login' target="_blank"> 查看 </a>]       
-<a href='https://demo.niucloud.com/admin/login' target="_blank">https://demo.niucloud.com/admin/login</a>  账号：admin  密码：123456
-
-
-- 前端演示二维码
-
-![输入图片说明](https://www.niucloud.com/img/readme/%E6%BC%94%E7%A4%BA%E5%89%8D%E7%AB%AF-new.png)
-
-
-环境要求<br/>
-php 8.0  <br/>    mysql5.6及以上  <br/>      启用redis   <br/>      Nignx/Apache
-
-
-![输入图片说明](https://www.niucloud.com/img/readme/%E6%B7%BB%E5%8A%A0%E5%AE%A2%E6%9C%8D-old.png)
-扫描下方二维码加入niucloud-admin开发者交流群
-![输入图片说明](https://www.niucloud.com/img/readme/%E5%BC%80%E5%8F%91%E8%80%85%E4%BA%A4%E6%B5%81%E7%BE%A4.png)
-
+- 站点后台演示网址：[<a href='https://demo.niucloud.com/site/' target="_blank"> 查看 </a>]       
+<a href='https://demo.niucloud.com/site/' target="_blank">https://demo.niucloud.com/site/    账号：test  密码：123456
+- 平台后台演示网址：[<a href='https://demo.niucloud.com/admin/' target="_blank"> 查看 </a>]       
+<a href='https://demo.niucloud.com/admin/' target="_blank">https://demo.niucloud.com/admin/  账号：admin  密码：123456
 
 ### 开源使用须知
 
 1.允许用于个人学习、毕业设计、教学案例、公益事业、商业使用;
 
-2.本框架应用源代码所有权和著作权归niucloud官方所有，基于niucloud-admin框架开发的应用，所有权和著作权归应用开发商所有。但必须声明是基于niucloud-admin框架开发，请自觉遵守，否则产生的一切任何后果责任由侵权者自负;
+2.本框架应用源代码所有权和著作权归niucloud官方所有，基于niucloud-admin框架开发的应用，所有权和著作权归应用开发商所有。但必须明确声明是基于niucloud-admin框架开发，请自觉遵守，否则产生的一切任何后果责任由侵权者自负;
 
 3.禁止修改框架代码并再次发布框架衍生版等与niucloud-admin框架产生恶意竞争或对抗的行为;
 
@@ -106,8 +57,14 @@ php 8.0  <br/>    mysql5.6及以上  <br/>      启用redis   <br/>      Nignx/A
 
 6.一切事物有个人喜好的标准，本开源代码意在分享，不喜勿喷。
 
+
+
 ### 版权信息
-版权所有Copyright  2015-2035 niucloud-admin 版权所有
+版权所有Copyright © 2015-2030 niucloud-admin 版权所有
+
 All rights reserved。
 
-杭州牛之云科技有限公司 提供技术支持
+杭州数字云动科技有限公司 
+杭州牛之云科技有限公司 
+
+提供技术支持
