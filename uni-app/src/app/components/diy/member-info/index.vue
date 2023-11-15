@@ -64,14 +64,14 @@
 </template>
 
 <script lang="ts" setup>
-	import { computed, ref, watch } from 'vue'
+	import { computed, ref, watch,nextTick } from 'vue'
 	import useMemberStore from '@/stores/member'
 	import { useLogin } from '@/hooks/useLogin'
 	import { img, isWeixinBrowser, redirect, urlDeconstruction, moneyFormat } from '@/utils/common'
 	import { t } from '@/locale'
 	import { wechatSync } from '@/app/api/system'
 	import useDiyStore from '@/app/stores/diy'
-
+	import informationFilling from '@/app/components/information-filling/information-filling.vue'
 	const props = defineProps(['component', 'index', 'pullDownRefreshCount']);
 
 	const diyStore = useDiyStore();
@@ -149,7 +149,11 @@
 	const infoFill = ref(false)
 	const clickAvatar = () => {
 		// #ifdef MP-WEIXIN
-		infoFill.value.show = true
+		nextTick(()=>{
+			console.log(infoFill.value)
+		if(infoFill.value) infoFill.value.show = true
+		})
+		
 		// #endif
 
 		// #ifdef H5

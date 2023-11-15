@@ -154,11 +154,13 @@
      */
     const birthdayPicker = ref(false)
     const updateBirthday = (e) => {
+        //1970年1月1日毫秒数为0，为0时时间处理函数会当无值false处理默认为当天，毫秒数需加1处理
+        console.log(e.value||e.value+1)
         modifyMember({
             field: 'birthday',
-            value: uni.$u.date(e.value, 'yyyy-mm-dd')
+            value: uni.$u.date(e.value||e.value+1, 'yyyy-mm-dd')
         }).then(() => {
-            memberStore.info.birthday = uni.$u.date(e.value, 'yyyy-mm-dd')
+            memberStore.info.birthday = uni.$u.date(e.value||e.value+1, 'yyyy-mm-dd')
             birthdayPicker.value = false
         })
     }
