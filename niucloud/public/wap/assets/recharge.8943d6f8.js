@@ -1,0 +1,1 @@
+import{b1 as r}from"./index-faf5e276.js";function e(e){return r.post("recharge/recharge",e,{showErrorMessage:!0})}function s(e){return r.get("recharge/recharge",e,{showErrorMessage:!0})}function a(e){return r.get(`recharge/recharge/${e}`,{},{showErrorMessage:!0})}export{a,e as c,s as g};
