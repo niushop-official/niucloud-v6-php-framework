@@ -14,9 +14,8 @@
             </div>
             <div class="flex flex-wrap mt-[40px]">
                 <template v-for="(item, index) in detail.appList" :key="index">
-                    <div class="app-item w-[280px] box-border py-[42px] px-[32px] bg-[#fff] rounded-[8px] cursor-pointer mr-[20px] mb-[20px] "
-                        @click="itemPath(item)">
-                        <div class="flex items-center">
+                    <div class="app-item w-[280px] box-border !bg-[#fff] rounded-[6px] cursor-pointer mr-[20px] mb-[20px] overflow-hidden" @click="itemPath(item)">
+                        <div class="bg-[#F7FAFB] py-[18px] px-[24px] flex items-center app-item-head">
                             <el-image class="w-[44px] h-[44px]  rounded-[8px]" :src="img(item.icon)" fit="contain">
                                 <template #error>
                                     <div class="image-slot">
@@ -25,15 +24,14 @@
                                     </div>
                                 </template>
                             </el-image>
-                            <div class="ml-[12px] flex-1">
-                                <div class="font-[600] text-[14px] text-[#222] leading-[20px]">{{ item.title }}</div>
-                                <el-tooltip class="box-item" effect="light" :content="item.desc" placement="bottom-start">
-                                    <div
-                                        class="font-[500] text-[13px] text-[#6D7278] leading-[18px] mt-[6px] w-[160px] truncate">
-                                        {{
-                                            item.desc }}</div>
-                                </el-tooltip>
-                            </div>
+                        </div>
+                        <div class="py-[18px] px-[24px]">
+                            <div class="font-[600] leading-[1] text-[14px] text-[#222]">{{ item.title }}</div>
+                            <el-tooltip class="box-item" effect="light" :content="item.desc" placement="bottom-start">
+                                <div class="text-[13px] text-[#6D7278] leading-[18px] mt-[6px] truncate">
+                                    {{ item.desc }}
+                                </div>
+                            </el-tooltip>
                         </div>
                     </div>
                 </template>
@@ -157,6 +155,10 @@ getVersionsInfo()
 .app-item {
     box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.18);
 }
+.app-item:hover .app-item-head{
+    background-color: #FDF4EF;
+}
+
 </style>
 <style>
 .overview-empty .el-empty__image {

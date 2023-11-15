@@ -1,8 +1,8 @@
 <template>
-    <div class="pt-[64px] px-[90px] app-store" v-loading="loading">
-        <div v-if="info[activeName] && !loading">
+    <div class="pt-[64px] px-[90px] app-store" v-loading="authLoading">
+        <div v-if="info[activeName] && !loading && !authLoading">
             <div class="flex justify-between items-center h-[32px] mb-4">
-                <span class="text-[26px] text-[#222] font-600">{{ t('localAppText') }}</span>
+                <span class="text-[22px] text-[#222] font-600">{{ t('localAppText') }}</span>
                 <el-input class="w-[247px]" :placeholder="t('search')" v-model="search_name" @keyup.enter="query">
                     <template #suffix>
                         <el-icon class="el-input__icon  cursor-pointer" size="14px" @click="query">
@@ -13,18 +13,18 @@
             </div>
             <div class="flex mt-[24px]">
                 <div :class="{ '!bg-[#000] !border-0 !text-[#fff]': activeName === 'installed' }"
-                    class="w-[78px] h-[30rpx] text-[14px] text-[#242424] text-center rounded-[15px] leading-[30px] bg-[#F0F0F0] border-solid border-1 border-[#E0E0E0] cursor-pointer mr-[24px]"
-                    @click="activeName = 'installed'">
+                    class="w-[78px] h-[32rpx] text-[14px] text-[#242424] text-center rounded-[15px] leading-[32px] bg-[#F0F0F0] border-solid border-1 border-[#E0E0E0] cursor-pointer mr-[24px]"
+                    @click="activeNameTabFn('installed')">
                     {{ t('installLabel') }}
                 </div>
                 <div :class="{ '!bg-[#000] !border-0 !text-[#fff]': activeName === 'uninstalled' }"
-                    class="w-[78px] h-[30rpx] text-[14px] text-[#242424] text-center rounded-[15px] leading-[30px] bg-[#F0F0F0] border-solid border-1 border-[#E0E0E0] cursor-pointer mr-[24px]"
-                    @click="activeName = 'uninstalled'">
+                    class="w-[78px] h-[32rpx] text-[14px] text-[#242424] text-center rounded-[15px] leading-[32px] bg-[#F0F0F0] border-solid border-1 border-[#E0E0E0] cursor-pointer mr-[24px]"
+                    @click="activeNameTabFn('uninstalled')">
                     {{ t('uninstalledLabel') }}
                 </div>
                 <div :class="{ '!bg-[#000] !border-0 !text-[#fff]': activeName === 'all' }"
-                    class="w-[78px] h-[30rpx] text-[14px] text-[#242424] text-center rounded-[15px] leading-[30px] bg-[#F0F0F0] border-solid border-1 border-[#E0E0E0] cursor-pointer mr-[24px]"
-                    @click="activeName = 'all'">
+                    class="w-[78px] h-[32rpx] text-[14px] text-[#242424] text-center rounded-[15px] leading-[32px] bg-[#F0F0F0] border-solid border-1 border-[#E0E0E0] cursor-pointer mr-[24px]"
+                    @click="activeNameTabFn('all')">
                     {{ t('buyLabel') }}
                 </div>
             </div>
@@ -81,17 +81,20 @@
                     </el-table-column>
                     <el-table-column :label="t('operation')" fixed="right" align="right" width="150">
                         <template #default="{ row }">
-                            <el-button class="!text-[13px]" type="primary" link @click="getAddonDetialFn(row)">{{
-                                t('detail') }}</el-button>
-                            <el-button class="!text-[13px]" v-if="row.install_info && Object.keys(row.install_info)?.length"
+                            <el-button v-if="row.install_info && Object.keys(row.install_info)?.length && activeName != 'all'" class="!text-[13px]" type="primary" link title="启动应用" @click="itemPath(row)">
+                                <span  class="iconfont iconicon_huojian"></span>
+                            </el-button>
+                            <el-button class="!text-[13px]" type="primary" link @click="getAddonDetialFn(row)">{{ t('detail') }}</el-button>
+                            <el-button class="!text-[13px]" v-if="row.install_info && Object.keys(row.install_info)?.length && activeName != 'all'"
                                 type="primary" link @click="uninstallAddonFn(row.key)">{{ t('unload') }}</el-button>
-
-                            <el-button class="!text-[13px]" v-else-if="row.is_download && row.install_info <= 0"
-                                type="primary" link @click="installAddonFn(row.key)">{{ t('install')
-                                }}</el-button>
-                            <el-button class="!text-[13px]" v-else :loading="downloading == row.key"
-                                :disabled="downloading != ''" type="primary" link @click.stop="downEvent(row)">{{
-                                    t('down') }}</el-button>
+                            <el-button class="!text-[13px]" v-else-if="row.is_download && row.install_info <= 0 && activeName != 'all'"
+                                type="primary" link @click="installAddonFn(row.key)">{{ t('install') }}</el-button>
+                            <el-button class="!text-[13px]" v-else :loading="downloading == row.key" 
+                                :disabled="downloading != ''" type="primary" link @click.stop="downEvent(row)">
+                                <span v-if="row.install_info && Object.keys(row.install_info)?.length">{{t('unloadDown')}}</span>
+                                <span v-else-if="row.is_download && row.install_info <= 0">{{t('installDown')}}</span>
+                                <span v-else>{{ t('down') }}</span>
+                            </el-button>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -344,6 +347,17 @@
                     </div>
                 </el-scrollbar>
             </el-dialog>
+
+            <!-- 下载提示 -->
+            <el-dialog v-model="unloadHintDialog" title="下载提示" width="30%" :before-close="handleClose">
+                <span>本地已经存在该插件/应用，再次下载会覆盖该插件/应用。</span>
+                <template #footer>
+                    <span class="dialog-footer">
+                        <el-button @click="unloadHintDialog = false">取消</el-button>
+                        <el-button type="primary" @click="downEventHintFn">确定</el-button>
+                    </span>
+                </template>
+            </el-dialog>
         </div>
     </div>
 </template>
@@ -362,17 +376,35 @@ import { useRouter } from 'vue-router'
 import useUserStore from '@/stores/modules/user'
 
 const router = useRouter()
-const activeName = ref('installed')
+const activeName = ref(storage.get('storeActiveName') || 'installed')
 const loading = ref<Boolean>(true)
 const downloading = ref('')
 const installAfterTips = ref<string[]>([])
 const userStore = useUserStore()
+let unloadHintDialog = ref(false)
 
-const downEvent = (param: Record<string, any>) => {
+let currDownData = ref()
+const downEventHintFn = ()=>{
+    downEvent(currDownData.value, true);
+}
+
+const activeNameTabFn = (data)=>{
+    activeName.value = data
+    storage.set({key: 'storeActiveName', data: data});
+}
+
+const downEvent = (param: Record<string, any>, isDown = false) => {
+    if(param.is_download && activeName.value == 'all' && !isDown){
+        unloadHintDialog.value = true;
+        currDownData.value = param;
+        return false;
+    }
+
     if (downloading.value) return
     downloading.value = param.key
 
     downloadVersion({ addon: param.key, version: param.version }).then(() => {
+        unloadHintDialog.value = false;
         installAddonFn(param.key)
         localListFn()
         downloading.value = ''
@@ -453,7 +485,6 @@ const localListFn = () => {
 localListFn()
 
 // 点击应用可以进系统
-
 const appLink: any = ref({})
 const itemPath = (data: any) => {
     if (data.type == 'app' && Object.keys(data.install_info).length) {
@@ -598,7 +629,8 @@ const authElMessageBox = () => {
             cancelButtonText: t('toNiucloud')
         }
     ).then(() => {
-        router.push({ path: '/app/authorize' })
+        authCodeApproveFn();
+        // router.push({ path: '/app/authorize' })
     }).catch((action: string) => {
         if (action === 'cancel') {
             window.open('https://www.niucloud.com/app')
@@ -682,6 +714,9 @@ const installShowDialogClose = (done: () => {}) => {
             cancelInstall(currAddon.value)
             done()
         }).catch(() => { })
+    } else if(installStep.value == 3){
+        activeNameTabFn('installed');
+        location.reload()
     } else done()
 }
 
@@ -698,14 +733,18 @@ const authCodeApproveDialog = ref(false)
 const authinfo = ref('')
 const getAuthCodeDialog = ref(null)
 const saveLoading = ref(false)
+let authLoading = ref(true);
 const checkAppMange = () => {
+    authLoading.value = true;
     getAuthinfo()
         .then((res) => {
             if (res.data.data && res.data.data.length != 0) {
                 authinfo.value = res.data.data
             }
+            authLoading.value = false;
         })
         .catch(() => {
+            authLoading.value = false;
             authCodeApproveDialog.value = false
         })
 }

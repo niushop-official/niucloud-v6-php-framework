@@ -120,7 +120,7 @@ watch(screenWidth, () => {
 })
 
 const changeApp = ()=>{
-    router.push({ path: '/app_manage' })
+    router.push({ path: '/app_manage/app_store' })
 }
 // 菜单栏展开折叠
 const toggleMenuCollapse = () => {

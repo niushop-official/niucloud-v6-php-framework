@@ -11,7 +11,7 @@
                         </div>
                         <span>{{ item.meta.app ? item.meta.parentTitle : item.meta.title }}</span>
                     </div>
-<!--                    <app-menu :isShowHover="twofloatMenu" :data="appList" @child-click="toLink" hoverType='twofloatMenu'></app-menu>-->
+                   <app-menu :isShowHover="twofloatMenu" :data="appList" @child-click="toLink" hoverType='twofloatMenu'></app-menu>
                 </div>
 
                 <el-scrollbar class="overflow-y-auto menus-wrap">
@@ -243,7 +243,7 @@
                         </div>
                         <template v-for="(twoMenu, twoIndex) in menus">
                             <el-sub-menu :index="String(twoMenu.meta.title)"
-                                v-if="twoMenu.meta.attr == 'common' && !twoMenu.meta.app && twoMenu.children">
+                                v-if="twoMenu.meta.attr != 'tools' && twoMenu.meta.show && !twoMenu.meta.app && twoMenu.children">
                                 <template #title>
                                     <div class="w-[16px] h-[16px] relative flex items-center">
                                         <icon v-if="twoMenu.meta.icon" :name="twoMenu.meta.icon"
@@ -304,7 +304,7 @@
                                     </div>
                                 </template>
                             </el-sub-menu>
-                            <el-menu-item v-else-if="twoMenu.meta.attr == 'common'" class="!pl-[35px] text-[#333]"
+                            <el-menu-item v-else-if="twoMenu.meta.attr != 'tools' && twoMenu.meta.show" class="!pl-[35px] text-[#333]"
                                 :index="String(twoMenu.name)" @click="toLink(twoMenu)">
                                 <template #title>
                                     <div v-if="twoMenu.meta.icon" class="w-[16px] h-[16px] relative flex items-center">
@@ -378,7 +378,7 @@ const menus = computed(() => {
             menus.push(item)
         }
     })
-    
+
     if(appList.value && appList.value.length){
         appList.value.forEach((item,index) =>{
             menus.forEach((menuItem,menuIndex)=>{
@@ -395,7 +395,7 @@ const menus = computed(() => {
         storage.set({ key: 'menuAppStorage', data: '' })
         globalAppKey.value = ""
     }
-    
+
     if(appList.value.length && !globalAppKey.value){
         storage.set({ key: 'menuAppStorage', data: appTypeList.value[0] })
         globalAppKey.value = appTypeList.value[0]
@@ -437,7 +437,7 @@ const twofloatMenuHover = ()=>{
 }
 const toLink = (data, type) => {
     if(type == 'twofloatMenu') twofloatMenu.value = false;
-    
+
     if (!data.meta && data.type == 'app' || data.meta.key != 'official_market') {
         let name = data.name;
         if(data.type == 'app'){

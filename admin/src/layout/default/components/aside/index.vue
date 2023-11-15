@@ -3,10 +3,9 @@
         <div class="w-[64px] overflow-hidden">
             <!-- , { 'bright': !dark } -->
             <el-aside :class="['h-screen layout-aside w-[64px] pb-[30px] bg-[#282c34] ease-in duration-200']">
-                <div class="h-full flex flex-col relative">      
+                <div class="h-full flex flex-col relative">
                     <div class="group flex items-center justify-center h-[64px] cursor-pointer" v-if="!globalAppKey" @mouseenter="threefloatMenuHover">
                         <span class="iconfont iconyun1 !text-[32px] !w-auto text-[#fff]"></span>
-<!--                        <app-menu :isShowHover="threefloatMenu" :data="appList" @child-click="toLink" hoverType='threefloatMenu'></app-menu>-->
                     </div>
 
                     <template v-for="(item, index) in menus" :key="index">
@@ -16,7 +15,7 @@
                                 <div class="flex items-center justify-center w-[30px] h-[30px]" v-else>
                                     <icon v-if="item.meta.icon" :name="item.meta.icon" class="!w-auto" size="24px" />
                                 </div>
-<!--                                <app-menu :isShowHover="threefloatMenu" :data="appList" @child-click="toLink" hoverType='threefloatMenu'></app-menu>-->
+                               <app-menu :isShowHover="threefloatMenu" :data="appList" @child-click="toLink" hoverType='threefloatMenu'></app-menu>
                             </div>
                             <div v-for="(appItem, appIndex) in item.children" :key="appIndex" @click="toLink(appItem)"
                                 :class="['rounded-[5px] flex justify-center flex-col items-center h-[54px] w-[54px] m-[5px] cursor-pointer text-[#fff] hover:bg-[var(--el-color-primary)] hover:!text-[#fff] menu-item hover:text-color whitespace-nowrap', { 'bg-[var(--el-color-primary)] !text-[#fff] menu-item-active ': localMenuKey == appItem.meta.key}]">
@@ -25,9 +24,9 @@
                             </div>
                         </template>
                     </template>
-                    
+
                     <template v-for="(item, index) in menus" :key="index">
-                        <div v-if="!item.meta.app && (item.meta.attr == 'common' || item.meta.attr == 'system')" @click="toLink(item)"
+                        <div v-if="!item.meta.app && item.meta.attr != 'tools' && item.meta.show" @click="toLink(item)"
                             :class="['rounded-[5px] flex justify-center flex-col  items-center m-[5px] h-[54px] w-[54px] cursor-pointer text-[#fff] hover:bg-[var(--el-color-primary)] hover:!text-[#fff] menu-item hover:text-color whitespace-nowrap', { 'bg-[var(--el-color-primary)] !text-[#fff] menu-item-active ': (item.path == currentRoute.path || (currentRoute.path == '/admin' && item.path == '/index') || (currentRoute.meta.app && item.path == '/index')) }]">
                             <icon v-if="item.meta.icon" :name="item.meta.icon" class="!w-auto" size="16px" :title="item.meta.title" />
                             <span class="text-[14px] leading-1">{{item.meta.shortTitle}}</span>
@@ -36,7 +35,7 @@
                 </div>
             </el-aside>
         </div>
-        
+
         <template v-for="(item, index) in menus" :key="index">
             <div v-if="isTwoMenuFn(item)" class="w-[201px] box-border border-r-[1px] border-solid second-menu">
                 <div class="group flex flex-col items-center justify-center h-[60px] border-b-[1px] border-solid second-head cursor-pointer relative"  @mouseenter="twofloatMenuHover">
@@ -232,7 +231,7 @@ const menus = computed(() => {
             menus.push(item)
         }
     })
-    
+
     if(appList.value && appList.value.length){
         appList.value.forEach((item,index) =>{
             menus.forEach((menuItem,menuIndex)=>{
@@ -289,7 +288,7 @@ watch(route, () => {
 
     const data = route.matched[1]
     currentRoute.value = route.matched[1]
-    
+
     if(route.meta.app && route.meta.app == globalAppKey.value){
         menus.value.forEach((item,index)=>{
             if(item.children && item.name != route.name){
@@ -345,7 +344,7 @@ const toLink = (data, type) => {
 const getLinkName = (res)=>{
     if(res.children && res.children.length){
         return getLinkName(res.children[0])
-    } 
+    }
     return res.name
 }
 

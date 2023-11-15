@@ -2,69 +2,113 @@
 	<div class="box-border px-[64px] pt-[64px]">
 		<div class="font-600 text-[22px] text-[#222] mb-[32px] pl-[14px]">工具管理</div>
 		<div class="flex flex-wrap mt-[28px]">
-			<div class="w-[256px] h-[260px] tools-item-shadow mb-[24px] mx-[14px] rounded-[8px] flex flex-col cursor-pointer" @click="toLink('/tools/addon')">
-				<div class="flex-1 py-[19px] px-[24px] flex flex-col">
+			<div class="w-[256px] tools-item-shadow mb-[24px] mx-[14px] rounded-[8px] flex flex-col cursor-pointer leading-[1]" @click="toLink('/tools/addon')">
+				<div class="flex-1 pt-[18px] pb-[14px] px-[24px] flex flex-col">
 					<span class="text-[16px] text-[#222] font-bold">插件开发</span>
-					<p class="text-[13px] text-[#666] mt-[8px] multi-hidden">点击新建插件，生成插件后系统会生成对应插</p>
+					<div class="text-[13px] text-[#6D7278] leading-[18px] mt-[8px] truncate">
+						点击新建插件，生成插件后系统会生成对应插
+					</div>
 				</div>
-				<img src="@/app/assets/images/tools/addon_develop.png" class="w-[256px] h-[148px]" />
+				<img src="@/app/assets/images/tools/addon_develop.png" class="w-[256px] h-[128px]" />
 			</div>
-			<div class="w-[256px] h-[260px] tools-item-shadow mb-[24px] mx-[14px] rounded-[8px] flex flex-col cursor-pointer" @click="toLink('/tools/code')">
-				<div class="flex-1 py-[19px] px-[24px] flex flex-col">
+			<div class="w-[256px] tools-item-shadow mb-[24px] mx-[14px] rounded-[8px] flex flex-col cursor-pointer leading-[1]" @click="toLink('/tools/code')">
+				<div class="flex-1 pt-[18px] pb-[14px] px-[24px] flex flex-col">
 					<span class="text-[16px] text-[#222] font-bold">代码生成</span>
-					<p class="text-[13px] text-[#666] mt-[8px] multi-hidden">代码生成</p>
+					<div class="text-[13px] text-[#6D7278] leading-[18px] mt-[8px] truncate">
+						代码生成
+					</div>
 				</div>
-				<img src="@/app/assets/images/tools/code.png" class="w-[256px] h-[148px]" />
+				<img src="@/app/assets/images/tools/code.png" class="w-[256px] h-[128px]" />
 			</div>
-			<div class="w-[256px] h-[260px] tools-item-shadow mb-[24px] mx-[14px] rounded-[8px] flex flex-col cursor-pointer" @click="toLink('/tools/list')">
-				<div class="flex-1 py-[19px] px-[24px] flex flex-col">
+			<div class="w-[256px] tools-item-shadow mb-[24px] mx-[14px] rounded-[8px] flex flex-col cursor-pointer leading-[1]" @click="toLink('/tools/list')">
+				<div class="flex-1 pt-[18px] pb-[14px] px-[24px] flex flex-col">
 					<span class="text-[16px] text-[#222] font-bold">数据字典</span>
-					<p class="text-[13px] text-[#666] mt-[8px] multi-hidden">数据字典</p>
+					<div class="text-[13px] text-[#6D7278] leading-[18px] mt-[8px] truncate">
+						数据字典
+					</div>
 				</div>
-				<img src="@/app/assets/images/tools/sys_dict_list.png" class="w-[256px] h-[148px]" />
+				<img src="@/app/assets/images/tools/sys_dict_list.png" class="w-[256px] h-[128px]" />
 			</div>
-			<div class="w-[256px] h-[260px] tools-item-shadow mb-[24px] mx-[14px] rounded-[8px] flex flex-col cursor-pointer" @click="toLink('/tools/update')">
-				<div class="flex-1 py-[19px] px-[24px] flex flex-col">
+			<div class="w-[256px] tools-item-shadow mb-[24px] mx-[14px] rounded-[8px] flex flex-col cursor-pointer leading-[1]" @click="toLink('/tools/update')">
+				<div class="flex-1 pt-[18px] pb-[14px] px-[24px] flex flex-col">
 					<span class="text-[16px] text-[#222] font-bold">更新缓存</span>
-					<p class="text-[13px] text-[#666] mt-[8px] multi-hidden">更新缓存</p>
+					<div class="text-[13px] text-[#6D7278] leading-[18px] mt-[8px] truncate">
+						更新缓存
+					</div>
 				</div>
-				<img src="@/app/assets/images/tools/tools_Update_cache.png" class="w-[256px] h-[148px]" />
+				<img src="@/app/assets/images/tools/tools_Update_cache.png" class="w-[256px] h-[128px]" />
 			</div>
-			<div class="w-[256px] h-[260px] tools-item-shadow mb-[24px] mx-[14px] rounded-[8px] flex flex-col cursor-pointer" @click="toLink('/tools/detection')">
-				<div class="flex-1 py-[19px] px-[24px] flex flex-col">
+			<div class="w-[256px] tools-item-shadow mb-[24px] mx-[14px] rounded-[8px] flex flex-col cursor-pointer leading-[1]" @click="toLink('/tools/detection')">
+				<div class="flex-1 pt-[18px] pb-[14px] px-[24px] flex flex-col">
 					<span class="text-[16px] text-[#222] font-bold">环境监测</span>
-					<p class="text-[13px] text-[#666] mt-[8px] multi-hidden">环境监测</p>
+					<div class="text-[13px] text-[#6D7278] leading-[18px] mt-[8px] truncate">
+						环境监测
+					</div>
 				</div>
-				<img src="@/app/assets/images/tools/tools_check_environment.png" class="w-[256px] h-[148px] cursor-pointer" />
+				<img src="@/app/assets/images/tools/tools_check_environment.png" class="w-[256px] h-[128px] cursor-pointer" />
 			</div>
-			<div class="w-[256px] h-[260px] tools-item-shadow mb-[24px] mx-[14px] rounded-[8px] flex flex-col cursor-pointer" @click="toLink('/tools/schedule')">
-				<div class="flex-1 py-[19px] px-[24px] flex flex-col">
+			<div class="w-[256px] tools-item-shadow mb-[24px] mx-[14px] rounded-[8px] flex flex-col cursor-pointer leading-[1]" @click="toLink('/tools/schedule')">
+				<div class="flex-1 pt-[18px] pb-[14px] px-[24px] flex flex-col">
 					<span class="text-[16px] text-[#222] font-bold">计划任务</span>
-					<p class="text-[13px] text-[#666] mt-[8px] multi-hidden">计划任务</p>
+					<div class="text-[13px] text-[#6D7278] leading-[18px] mt-[8px] truncate">
+						计划任务
+					</div>
 				</div>
-				<img src="@/app/assets/images/tools/tools_schedule.png" class="w-[256px] h-[148px]" />
+				<img src="@/app/assets/images/tools/tools_schedule.png" class="w-[256px] h-[128px]" />
 			</div>
-			<div class="w-[256px] h-[260px] tools-item-shadow mb-[24px] mx-[14px] rounded-[8px] flex flex-col cursor-pointer" @click="toLink('/tools/menu')">
-				<div class="flex-1 py-[19px] px-[24px] flex flex-col">
+			<div class="w-[256px] tools-item-shadow mb-[24px] mx-[14px] rounded-[8px] flex flex-col cursor-pointer leading-[1]" @click="toLink('/tools/menu')">
+				<div class="flex-1 pt-[18px] pb-[14px] px-[24px] flex flex-col">
 					<span class="text-[16px] text-[#222] font-bold">菜单管理</span>
-					<p class="text-[13px] text-[#666] mt-[8px] multi-hidden">菜单管理</p>
+					<div class="text-[13px] text-[#6D7278] leading-[18px] mt-[8px] truncate">
+						菜单管理
+					</div>
 				</div>
-				<img src="@/app/assets/images/tools/auth_menu.png" class="w-[256px] h-[148px]" />
+				<img src="@/app/assets/images/tools/auth_menu.png" class="w-[256px] h-[128px]" />
 			</div>
-			<div class="w-[256px] h-[260px] tools-item-shadow mb-[24px] mx-[14px] rounded-[8px] flex flex-col cursor-pointer" @click="toLink('/tools/authorize')">
-				<div class="flex-1 py-[19px] px-[24px] flex flex-col">
+			<div class="w-[256px] tools-item-shadow mb-[24px] mx-[14px] rounded-[8px] flex flex-col cursor-pointer leading-[1]" @click="toLink('/tools/authorize')">
+				<div class="flex-1 pt-[18px] pb-[14px] px-[24px] flex flex-col">
 					<span class="text-[16px] text-[#222] font-bold">授权信息</span>
-					<p class="text-[13px] text-[#666] mt-[8px] multi-hidden">查看授权信息及重新认证授权</p>
+					<div class="text-[13px] text-[#6D7278] leading-[18px] mt-[8px] truncate">
+						查看授权信息及重新认证授权
+					</div>
 				</div>
-				<img src="@/app/assets/images/tools/app_auth.png" class="w-[256px] h-[148px]" />
+				<img src="@/app/assets/images/tools/app_auth.png" class="w-[256px] h-[128px]" />
 			</div>
-			<div class="w-[256px] h-[260px] tools-item-shadow mb-[24px] mx-[14px] rounded-[8px] flex flex-col cursor-pointer" @click="goRouter">
-				<div class="flex-1 py-[19px] px-[24px] flex flex-col">
+			<div class="w-[256px] tools-item-shadow mb-[24px] mx-[14px] rounded-[8px] flex flex-col cursor-pointer leading-[1]" @click="developerDialogVisible = true">
+				<div class="flex-1 pt-[18px] pb-[14px] px-[24px] flex flex-col">
+					<span class="text-[16px] text-[#222] font-bold">开发模式</span>
+					<div class="text-[13px] text-[#6D7278] leading-[18px] mt-[8px] truncate">
+						开发环境和生产环境说明
+					</div>
+				</div>
+				<img src="@/app/assets/images/tools/developer.png" class="w-[256px] h-[128px]" />
+			</div>
+			<div class="w-[256px] tools-item-shadow mb-[24px] mx-[14px] rounded-[8px] flex flex-col cursor-pointer leading-[1]" @click="goRouter">
+				<div class="flex-1 pt-[18px] pb-[14px] px-[24px] flex flex-col">
 					<span class="text-[16px] text-[#222] font-bold">官方市场</span>
-					<p class="text-[13px] text-[#666] mt-[8px] multi-hidden">官方市场</p>
+					<div class="text-[13px] text-[#6D7278] leading-[18px] mt-[8px] truncate">
+						官方市场
+					</div>
 				</div>
-				<img src="@/app/assets/images/tools/official_market.png" class="w-[256px] h-[148px]" />
+				<img src="@/app/assets/images/tools/official_market.png" class="w-[256px] h-[128px]" />
 			</div>
+			<el-dialog v-model="developerDialogVisible" class="developer-dialog-wrap" title="开发人员模式说明" width="30%" :before-close="handleClose">
+				<div>
+					<p class="text-[16px] mb-[4px] text-[#333]">开发模式</p>
+					<div class="text-[14px] indent-[2em]">
+						开发人员模式即软件开发环境，指框架开启了开发模式(DEBUG=TRUE) ，开发模式时会出现开发选项卡，仅用于开发人员使用，包括应用及插件的安装卸载，系统升级等等。本菜单及子项功能均不受系统管理和权限控制
+					</div>
+					<p class="text-[16px] mt-[15px] mb-[4px] text-[#333]">生产模式</p>
+					<div class="text-[14px] indent-[2em]">
+						生产模式即软件生产环境，指框架关闭了调试开发模式(DEBUG=FALSE) 软件正式部署运营开发选项卡隐藏，一般来说，开发人员开发或者部署好环境后，要关闭开发模式。
+					</div>
+				</div>
+				<template #footer>
+					<span class="dialog-footer">
+						<el-button @click="developerDialogVisible = false">确定</el-button>
+					</span>
+				</template>
+			</el-dialog>
 		</div>
 	</div>
 </template>
@@ -80,6 +124,7 @@
     import {UserFilled} from '@element-plus/icons-vue'
 
     const router = useRouter()
+	let developerDialogVisible = ref(false)
 
 	const toLink = (link)=>{
 		router.push(link)
@@ -89,7 +134,8 @@
     }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+</style>
 <style>
 	.tools-item-shadow{
 		box-shadow: 0px 2px 4px 0px rgba(0,0,0,0.2);
@@ -102,5 +148,8 @@
 		display: -webkit-box;
 		-webkit-line-clamp: 2;
 		-webkit-box-orient: vertical;
+	}
+	.developer-dialog-wrap .el-dialog__body{
+		padding: 15px 20px;
 	}
 </style>

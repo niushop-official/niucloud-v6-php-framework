@@ -69,7 +69,7 @@ const router = useRouter()
 let app_debug = ref(false)
 
 const goAppManage = () => {
-    router.push('/app_manage')
+    router.push({ path: '/app_manage/app_store' })
 }
 const getEnvFn = () => {
     getEnv().then(res => {

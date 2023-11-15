@@ -132,7 +132,7 @@ const toggleMenuCollapse = () => {
 }
 
 const changeApp = ()=>{
-    router.push({ path: '/app_manage' })
+    router.push({ path: '/app_manage/app_store' })
 }
 // 刷新路由
 const refreshRouter = () => {

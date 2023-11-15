@@ -163,7 +163,7 @@ const checkIndexList = () => {
 }
 
 const changeApp = ()=>{
-    router.push({ path: '/app_manage' })
+    router.push({ path: '/app_manage/app_store' })
 }
 
 const index_path = ref('')
