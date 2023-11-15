@@ -255,7 +255,6 @@ class CoreAddonInstallService extends CoreAddonBaseService
         }
 
         Cache::set('install_task', null);
-        Cache::set($this->cache_key . '_install_check', null);
     }
 
     /**
@@ -406,7 +405,7 @@ class CoreAddonInstallService extends CoreAddonBaseService
         Cache::set("local_install_addons", []);
         //执行命令
         //执行插件安装方法
-        $class = "addon\\" . $this->addon . "\\" . 'Manage';
+        $class = "addon\\" . $this->addon . "\\" . 'Addon';
         if (class_exists($class)) {
             (new $class())->install();
         }
@@ -529,7 +528,7 @@ class CoreAddonInstallService extends CoreAddonBaseService
     public function uninstall()
     {
         //执行插件卸载方法
-        $class = "addon\\" . $this->addon . "\\" . 'Manage';
+        $class = "addon\\" . $this->addon . "\\" . 'Addon';
         if (class_exists($class)) {
             (new $class())->uninstall();
         }

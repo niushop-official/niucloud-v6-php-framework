@@ -224,7 +224,7 @@ class Alipay extends BasePay
             ];
         } else {
             //todo 这儿可以抛出错误
-            return false;
+            throw new PayException($result['msg']);
         }
     }
 

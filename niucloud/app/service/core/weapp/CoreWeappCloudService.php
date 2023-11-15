@@ -73,7 +73,7 @@ class CoreWeappCloudService extends CoreCloudBaseService
             'do' => 1,
             'timestamp' => time()
         ];
-        (new CloudService())->httpPost('cloud/weapp?' . http_build_query($query), [
+        $response = (new CloudService())->httpPost('cloud/weapp?' . http_build_query($query), [
             'multipart' => [
                 [
                     'name'     => 'file',
@@ -85,6 +85,8 @@ class CoreWeappCloudService extends CoreCloudBaseService
 
         // 删除临时文件
         del_target_dir(runtime_path() . 'backup' . DIRECTORY_SEPARATOR . 'weapp', true);
+
+        if (isset($response['code']) && $response['code'] == 0) throw new CommonException($response['msg']);
 
         return ['key' => $query['timestamp'] ];
     }

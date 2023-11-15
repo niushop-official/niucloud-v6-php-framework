@@ -49,10 +49,10 @@ class Dict extends BaseAdminController
      */
     public function add(){
         $data = $this->request->params([
-             ["name",""],
-             ["key",""],
-             ["memo",""],
-
+            ["name",""],
+            ["key",""],
+            ["memo",""],
+            ["dictionary", ""]
         ]);
 //        $this->validate($data, 'app\validate\dict\Dict.add');
         $id = (new DictService())->add($data);
@@ -66,10 +66,9 @@ class Dict extends BaseAdminController
      */
     public function edit($id){
         $data = $this->request->params([
-             ["name",""],
-             ["key",""],
-             ["memo",""],
-
+            ["name",""],
+            ["key",""],
+            ["memo",""],
         ]);
 //        $this->validate($data, 'app\validate\dict\Dict.edit');
         (new DictService())->edit($id, $data);

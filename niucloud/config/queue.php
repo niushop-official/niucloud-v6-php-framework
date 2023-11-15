@@ -31,7 +31,7 @@ return [
             // 端口
             'port'          => env('redis.port', '6379'),
             // 密码
-            'password'      => env('redis.redis_password', ''),
+            'password'      => env('redis.redis_password', '123456'),
             // 缓存有效期 0表示永久缓存
             'expire'        => 0 ,
             // 缓存前缀

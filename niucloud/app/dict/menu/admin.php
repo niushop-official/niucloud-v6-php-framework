@@ -14,17 +14,6 @@ return [
         'is_show' => 0,
         'children' => [
             [
-                'menu_name' => '应用管理',
-                'menu_key' => 'app_manage_index',
-                'menu_type' => 1,
-                'icon' => '',
-                'api_url' => '',
-                'router_path' => '',
-                'view_path' => 'index/app_manage',
-                'methods' => 'get',
-                'status' => 1,
-            ],
-            [
                 'menu_name' => '插件管理',
                 'menu_key' => 'app_manage_store',
                 'menu_type' => 1,
@@ -33,7 +22,7 @@ return [
                 'router_path' => 'app_store',
                 'view_path' => 'index/store',
                 'methods' => 'get',
-                'sort' => 20,
+                'sort' => 40,
                 'status' => 1,
                 'is_show' => 1
             ],
@@ -49,6 +38,19 @@ return [
                 'sort' => 30,
                 'status' => 1,
                 'is_show' => 1
+            ],
+            [
+                'menu_name' => '应用管理',
+                'menu_key' => 'app_manage_index',
+                'menu_type' => 1,
+                'icon' => '',
+                'api_url' => '',
+                'router_path' => '',
+                'view_path' => 'index/app_manage',
+                'methods' => 'get',
+                'sort' => 10,
+                'status' => 1,
+                'is_show' => 0
             ]
         ]
     ],

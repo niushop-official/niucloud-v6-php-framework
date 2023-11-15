@@ -212,13 +212,18 @@ class CoreAddonCloudService extends CoreCloudBaseService
      * @return void
      */
     public function downloadAddon(string $addon, string $version) {
+        $action_token = (new CoreModuleService())->getActionToken('download', ['data' => ['app_key' => $addon, 'version' => $version]]);
+        if (isset($action_token['code']) && $action_token['code'] != 1) {
+            if ($action_token['code'] == 401) $action_token = (new CoreModuleService())->getActionToken('download', ['data' => ['app_key' => $addon, 'version' => $version]]);
+            if ($action_token['code'] != 1) throw new CommonException($action_token['msg']);
+        }
+
         $query = [
             'authorize_code' => $this->auth_code,
             'addon_name' => $addon,
             'addon_version' => $version,
-//            'token' => (new CoreModuleService())->getActionToken('download', ['app_key' => $addon, 'version' => $version])
+            'token' => $action_token['data']['token'] ?? ''
         ];
-
         // 获取文件大小
         $response = (new CloudService())->request('HEAD','cloud/download?' . http_build_query($query), [
             'headers' => ['Range' => 'bytes=0-']
