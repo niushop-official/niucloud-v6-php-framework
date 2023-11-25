@@ -1,1 +1,0 @@
-import{A as e}from"./index-faf5e276.js";const t={props:{color:{type:String,default:e.line.color},length:{type:[String,Number],default:e.line.length},direction:{type:String,default:e.line.direction},hairline:{type:Boolean,default:e.line.hairline},margin:{type:[String,Number],default:e.line.margin},dashed:{type:Boolean,default:e.line.dashed}}};export{t as p};

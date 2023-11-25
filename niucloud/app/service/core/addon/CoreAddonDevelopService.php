@@ -260,8 +260,8 @@ class CoreAddonDevelopService extends CoreAddonBaseService
             'is_cover' => true
         ],
         [
-            'name' => 'Manage.php',
-            'vm' => 'system' . DIRECTORY_SEPARATOR . 'manage.vm'
+            'name' => 'Addon.php',
+            'vm' => 'system' . DIRECTORY_SEPARATOR . 'addon.vm'
         ]
 
     );

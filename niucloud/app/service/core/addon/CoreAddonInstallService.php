@@ -74,7 +74,6 @@ class CoreAddonInstallService extends CoreAddonBaseService
     ];
     private $addon;
     private $install_addon_path;
-    private $state;
 
     private $cache_key = '';
 
@@ -312,7 +311,6 @@ class CoreAddonInstallService extends CoreAddonBaseService
             dir_copy($from_resource_dir, $to_resource_dir, $this->files['resource']);
         }
 
-        $this->state = self::DIR_INSTALLED;
         return true;
     }
 
@@ -345,7 +343,6 @@ class CoreAddonInstallService extends CoreAddonBaseService
     {
         $sql = $this->install_addon_path . 'sql' . DIRECTORY_SEPARATOR . 'install.sql';
         $this->executeSql($sql);
-        $this->state = self::SQL_INSTALLED;
         return true;
     }
 
@@ -651,8 +648,6 @@ class CoreAddonInstallService extends CoreAddonBaseService
     {
         (new CoreMenuService)->refreshAddonMenu($this->addon);
         Cache::tag(MenuService::$cache_tag_name)->clear();
-        $this->state = self::MENU_INSTALLED;
-
         return true;
     }
 
@@ -755,7 +750,6 @@ class CoreAddonInstallService extends CoreAddonBaseService
     public function installSchedule()
     {
         (new CoreScheduleInstallService())->installAddonSchedule($this->addon);
-        $this->state = self::SCHEDULE_INSTALLED;
         return true;
     }
 }

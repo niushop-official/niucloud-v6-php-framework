@@ -95,8 +95,10 @@ class  CoreDiyConfigService extends BaseCoreService
     public function getStartUpPageConfig($type)
     {
         $info = ( new CoreConfigService() )->getConfig('START_UP_PAGE_' . strtoupper($type))[ 'value' ] ?? [];
+        if (!empty($info)) {
+            $info[ 'name' ] = isset($info[ 'name' ]) ? $info[ 'name' ] : '';
+        }
         return $info;
     }
-
 
 }

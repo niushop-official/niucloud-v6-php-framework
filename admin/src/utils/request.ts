@@ -130,8 +130,8 @@ class Request {
                     errMessage = t('axios.403')
                     break
                 case 404:
-                    const baseURL = isUrl(err.response.config.baseURL) ? err.response.config.baseURL : location.origin
-                    errMessage = baseURL + t('axios.404')
+                    const baseURL = isUrl(err.response.config.baseURL) ? err.response.config.baseURL : `${location.origin}${err.response.config.baseURL}`
+                    errMessage = baseURL + t('axios.baseUrlError')
                     break
                 case 405:
                     errMessage = t('axios.405')
@@ -163,7 +163,10 @@ class Request {
             }
         }
         err.message.includes('timeout') && (errMessage = t('axios.timeout'))
-        err.code == 'ERR_NETWORK' && (errMessage = err.config.baseURL + t('axios.errNetwork'))
+        if (err.code == 'ERR_NETWORK') {
+            const baseURL = isUrl(err.config.baseURL) ? err.config.baseURL : `${location.origin}${err.config.baseURL}`
+            errMessage = baseURL + t('axios.baseUrlError')
+        }
         errMessage && ElMessage({ message: errMessage, type: 'error' })
     }
 

@@ -41,7 +41,7 @@ class DiyService extends BaseApiService
         $diy_config_service = new DiyConfigService();
         $start_up_page = $diy_config_service->getStartUpPageConfig($params[ 'name' ]);
 
-        if (!empty($start_up_page) && $start_up_page[ 'mode' ] == 'other' && $params[ 'name' ] != $start_up_page[ 'type' ]) {
+        if (!empty($start_up_page) && $start_up_page[ 'mode' ] == 'other' && $params[ 'name' ] != $start_up_page[ 'name' ]) {
             $info = $start_up_page;
             return $info;
         } else {

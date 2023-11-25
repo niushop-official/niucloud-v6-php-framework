@@ -12,18 +12,18 @@
                 </el-input>
             </div>
             <div class="flex mt-[24px]">
-                <div :class="{ '!bg-[#000] !border-0 !text-[#fff]': activeName === 'installed' }"
-                    class="w-[78px] h-[32rpx] text-[14px] text-[#242424] text-center rounded-[15px] leading-[32px] bg-[#F0F0F0] border-solid border-1 border-[#E0E0E0] cursor-pointer mr-[24px]"
+                <div 
+                    :class="['flex items-center text-[14px] h-[32px] border-[1px] border-solid my-[3px] border-[#E0E0E0] rounded-full px-[15px] mr-[24px] cursor-pointer bg-[#f8f8f8] hover:bg-[#fff]',{'text-[#fff] !bg-[#000] border-[#000]': activeName === 'installed'}]"
                     @click="activeNameTabFn('installed')">
                     {{ t('installLabel') }}
                 </div>
-                <div :class="{ '!bg-[#000] !border-0 !text-[#fff]': activeName === 'uninstalled' }"
-                    class="w-[78px] h-[32rpx] text-[14px] text-[#242424] text-center rounded-[15px] leading-[32px] bg-[#F0F0F0] border-solid border-1 border-[#E0E0E0] cursor-pointer mr-[24px]"
+                <div 
+                    :class="['flex items-center text-[14px] h-[32px] border-[1px] border-solid my-[3px] border-[#E0E0E0] rounded-full px-[15px] mr-[24px] cursor-pointer bg-[#f8f8f8] hover:bg-[#fff]',{'text-[#fff] !bg-[#000] border-[#000]': activeName === 'uninstalled'}]"
                     @click="activeNameTabFn('uninstalled')">
                     {{ t('uninstalledLabel') }}
                 </div>
-                <div :class="{ '!bg-[#000] !border-0 !text-[#fff]': activeName === 'all' }"
-                    class="w-[78px] h-[32rpx] text-[14px] text-[#242424] text-center rounded-[15px] leading-[32px] bg-[#F0F0F0] border-solid border-1 border-[#E0E0E0] cursor-pointer mr-[24px]"
+                <div 
+                    :class="['flex items-center text-[14px] h-[32px] border-[1px] border-solid my-[3px] border-[#E0E0E0] rounded-full px-[15px] mr-[24px] cursor-pointer bg-[#f8f8f8] hover:bg-[#fff]',{'text-[#fff] !bg-[#000] border-[#000]': activeName === 'all'}]"
                     @click="activeNameTabFn('all')">
                     {{ t('buyLabel') }}
                 </div>
@@ -98,8 +98,7 @@
                         </template>
                     </el-table-column>
                 </el-table>
-                <el-empty class="mx-auto overview-empty"
-                    v-if="!localList.installed.length && !loading && activeName == 'installed'">
+                <el-empty class="mx-auto overview-empty" v-if="!localList.installed.length && !loading && activeName == 'installed'">
                     <template #image>
                         <div class="w-[230px] mx-auto">
                             <img src="@/app/assets/images/index/apply_empty.png" class="max-w-full" alt="">
@@ -109,8 +108,7 @@
                         <p class="flex items-center">{{ t('installed-empty') }}</p>
                     </template>
                 </el-empty>
-                <el-empty class="mx-auto overview-empty"
-                    v-if="!localList.uninstalled.length && !loading && activeName == 'uninstalled'">
+                <el-empty class="mx-auto overview-empty" v-if="!localList.uninstalled.length && !loading && activeName == 'uninstalled'">
                     <template #image>
                         <div class="w-[230px] mx-auto">
                             <img src="@/app/assets/images/index/apply_empty.png" class="max-w-full" alt="">
@@ -676,6 +674,24 @@ const uninstallCheckResult = ref({})
  * @param key
  */
 const uninstallAddonFn = (key: string) => {
+    if (import.meta.env.MODE == 'development') {
+        ElMessageBox.confirm(
+            t('uninstallTips'),
+            t('warning'),
+            {
+                confirmButtonText: t('confirm'),
+                cancelButtonText: t('cancel'),
+                type: 'warning'
+            }
+        ).then(() => {
+            handleUninstallAddon(key)
+        }).catch(() => { })
+    } else {
+        handleUninstallAddon(key)
+    }
+}
+
+const handleUninstallAddon = (key: string) => {
     preUninstallCheck(key).then(({ data }) => {
         if (data.is_pass) {
             uninstallAddon({ addon: key }).then(res => {
@@ -867,5 +883,10 @@ html.dark .table-head-bg {
 .app-store {
     height: calc(100vh - 120px);
     box-sizing: border-box;
+}
+</style>
+<style>
+.el-empty .el-empty__image{
+    width: auto !important;
 }
 </style>

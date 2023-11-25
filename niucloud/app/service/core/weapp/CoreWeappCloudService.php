@@ -32,6 +32,8 @@ class CoreWeappCloudService extends CoreCloudBaseService
      * @return void
      */
     public function uploadWeapp(array $data) {
+        if (!request()->isSsl()) throw new CommonException('CURR_SITE_IS_NOT_OPEN_SSL');
+
         $config = (new CoreWeappConfigService())->getWeappConfig();
         if (empty($config['app_id'])) throw new CommonException('WEAPP_APPID_EMPTY');
         if (empty($config['upload_private_key'])) throw new CommonException('UPLOAD_KEY_EMPTY');

@@ -170,6 +170,7 @@ return [
     'WEAPP_NOT_EXIST' => '微信小程序未配置完善',
     'WEAPP_EMPOWER_NOT_EXIST' => '微信小程序授信信息不存在',
     'WEAPP_EMPOWER_TEL_NOT_EXIST' => '微信小程序授信手机号不存在',
+    'CURR_SITE_IS_NOT_OPEN_SSL' => '微信小程序请求域名只支持https请先配置ssl',
 
     //站点相关
     'SITE_GROUP_IS_EXIST' => '当前套餐存在站点，请调整站点对应套餐后重试',
@@ -243,6 +244,7 @@ return [
     'ADMIN_DIR_NOT_EXIST' => '未找到admin源码所在目录',
     'WEB_DIR_NOT_EXIST' => '未找到web源码所在目录',
     'UNIAPP_DIR_NOT_EXIST' => '未找到uni-app源码所在目录',
+    'ADDON_INSTALL_FAIL' => '插件安装失败',
 
 
     // 云服务

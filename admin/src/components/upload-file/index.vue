@@ -1,7 +1,7 @@
 <template>
     <el-upload v-bind="upload" class="w-full upload-file">
         <slot>
-            <el-input v-model="value" class="w-full" :readonly="true">
+            <el-input v-model="value" class="w-full" :readonly="true" :title="value">
                 <template #append>{{ t('upload.root') }}</template>
             </el-input>
         </slot>
@@ -47,11 +47,12 @@ const upload: Record<string, any> = {
     headers: {},
     accept: prop.accept,
     onSuccess: (response: any, uploadFile: UploadFile) => {
+        if (response.code != undefined && response.code != 1) {
+            ElMessage({ message: response.msg, type: 'error' })
+            return
+        }
         value.value = response.data.url
-        ElMessage({
-            message: t('upload.success'),
-            type: 'success'
-        })
+        ElMessage({ message: t('upload.success'), type: 'success' })
     }
 }
 upload.headers[import.meta.env.VITE_REQUEST_HEADER_TOKEN_KEY] = getToken()

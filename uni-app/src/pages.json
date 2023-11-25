@@ -169,8 +169,8 @@
 			"style": {
 				"navigationBarTitleText": "%pages.index.develop%"
 			}
-		} // {{PAGE}}
-	],
+		}// {{PAGE}}
+    ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "",
@@ -186,7 +186,7 @@
 			{
 				"pagePath": "app/pages/member/index"
 			}
-		]
+		]		
 	},
 	"uniIdRouter": {},
 	"easycom": {

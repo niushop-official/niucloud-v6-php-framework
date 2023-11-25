@@ -112,12 +112,12 @@ class CoreAddonCloudService extends CoreCloudBaseService
 
             if (isset($build_log['data']) && isset($build_log['data'][0]) && is_array($build_log['data'][0])) {
                 $last = end($build_log['data'][0]);
-                if ($last['code'] == 0) {
+                if ($last['percent'] == 100 && $last['code'] == 0) {
                     (new CoreAddonInstallService($addon))->installExceptionHandle();
-                    throw new CommonException($last['msg']);
+                    throw new CommonException('ADDON_INSTALL_FAIL');
                 }
                 if ($last['percent'] == 100) {
-                    $build_log['data'][0] = $this->buildSuccess($addon, $build_log['data'][0]);
+                    $build_log['data'][0] = $this->buildSuccess($addon, $build_log['data'][0], $install_task['timestamp']);
                 }
             }
             return $build_log;
@@ -134,9 +134,10 @@ class CoreAddonCloudService extends CoreCloudBaseService
      * @param string $addon
      * @return void
      */
-    public function buildSuccess(string $addon, array $log) {
+    public function buildSuccess(string $addon, array $log, $timestamp) {
         $query = [
             'authorize_code' => $this->auth_code,
+            'timestamp' => $timestamp
         ];
         $chunk_size = 1 * 1024 * 1024;
 

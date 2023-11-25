@@ -166,7 +166,6 @@ const save = async (formEl: FormInstance | undefined) => {
 				})
 				.catch(() => {
 					saveLoading.value = false
-					authCodeApproveDialog.value = false
 				})
 		}
 	})

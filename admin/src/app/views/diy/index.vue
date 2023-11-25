@@ -112,6 +112,7 @@
     // 添加自定义页面
     const formData = reactive({
         type: '',
+        name: '',
         mode: '',
         template: '',
         id: '',
@@ -123,6 +124,7 @@
     // 初始化数据
     const refreshData = () => {
         formData.type = '';
+        formData.name = '';
         formData.mode = '';
         formData.template = '';
         formData.id = '';
@@ -246,6 +248,7 @@
 
         hope.value = data.use_template.hope;
         formData.type = key;
+        formData.name = data.use_template.name;
         formData.mode = data.use_template.mode;
         formData.action = data.use_template.action;
 
@@ -326,15 +329,20 @@
         (newValue, oldValue) => {
             // 选择某个，清空其余
             if (newValue == 'template') {
+                // 选择模板
                 formData.id = '';
                 formData.page = '';
                 formData.action = 'decorate';
+                formData.name = formData.type;
             } else if (newValue == 'diy') {
+                // 选择微页面
                 formData.mode = 'diy';
                 formData.template = '';
                 formData.page = '';
                 formData.action = 'decorate';
+                formData.name = formData.type;
             } else if (newValue == 'other') {
+                //  选择其他页面
                 formData.mode = 'other';
                 formData.template = '';
                 formData.id = '';
@@ -342,6 +350,7 @@
         }
     )
 
+    // 监听模板变化
     watch(
         () => formData.template,
         (newValue, oldValue) => {
@@ -351,12 +360,14 @@
         }
     )
 
+    // 监听其他页面
     watch(
         () => formData.page,
         (newValue, oldValue) => {
             if (newValue) {
                 for (let i = 0; i < page[formData.type].other_page.length; i++) {
                     if (page[formData.type].other_page[i].page == newValue) {
+                        formData.name = page[formData.type].other_page[i].name;
                         formData.title = page[formData.type].other_page[i].title;
                         formData.action = page[formData.type].other_page[i].action;
                         break;
@@ -381,6 +392,14 @@
                 ElMessage({
                     type: 'warning',
                     message: `${t('placeholderMyPage')}`,
+                });
+                return;
+            }
+        } else if (hope.value == 'other') {
+            if (formData.page == '') {
+                ElMessage({
+                    type: 'warning',
+                    message: `${t('placeholderOtherPage')}`,
                 });
                 return;
             }

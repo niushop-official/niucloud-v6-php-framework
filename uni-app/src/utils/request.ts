@@ -1,6 +1,6 @@
 import useMemberStore from '@/stores/member'
-import {t} from '@/locale'
-import {getToken, getAppChannel} from './common'
+import { t } from '@/locale'
+import { getToken, getAppChannel, isUrl } from './common'
 import qs from 'qs';
 
 
@@ -161,7 +161,13 @@ class Request {
     private handleRequestFail(res) {
         if (res.errMsg && res.errMsg == "request:ok") {
             if (typeof res.data == 'string') {
-                uni.showToast({icon: 'none', title: this.baseUrl + t('requestFail')})
+                // #ifdef H5
+                const err = (isUrl(this.baseUrl) ? this.baseUrl : location.origin + this.baseUrl) + t('baseUrlError')
+                // #endif
+                // #ifndef H5
+                const err = this.baseUrl + t('baseUrlError')
+                // #endif
+                uni.showToast({icon: 'none', title: err })
                 return
             }
         }

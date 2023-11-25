@@ -37,7 +37,7 @@ class CoreCaptchaService extends BaseCoreService
     public function create(?array $data = []){
         $captcha_data = Captcha::create(null, true);
 
-        $captcha_key   = md5(uniqid(null, true));
+        $captcha_key   = md5(uniqid('', true));
         // 验证码10分钟有效
         Cache::set($captcha_key, $captcha_data['code'], 600);
         return [

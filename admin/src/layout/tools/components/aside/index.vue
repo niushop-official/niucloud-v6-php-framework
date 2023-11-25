@@ -13,7 +13,8 @@
             </template>
         </el-menu> -->
         <div class="flex flex-wrap items-center">
-            <div v-for="(item, index) in menus" :key="index" :class="['border-[1px] border-solid my-[5px] border-[#E0E0E0] rounded-full py-[5px] px-[10px] mr-[24px] cursor-pointer',{'text-[#fff] bg-[#000] border-[#000]': item.name == route.name}]"  @click="toLink(item)">
+            <div v-for="(item, index) in menus" :key="index" 
+                :class="['flex items-center h-[32px] border-[1px] border-solid my-[3px] border-[#E0E0E0] rounded-full px-[10px] mr-[24px] cursor-pointer bg-[#f8f8f8] hover:bg-[#fff]',{'text-[#fff] !bg-[#000] border-[#000]': item.name == route.name}]"  @click="toLink(item)">
                 <icon v-if="item.meta.icon" :name="item.meta.icon" class="!w-auto mr-[4px]" size="14px" :title="item.meta.title" />
                 <span class="text-[14px]">{{ item.meta.title }}</span>
             </div>

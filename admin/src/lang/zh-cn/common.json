@@ -100,7 +100,8 @@
     "505": "http版本不支持该请求",
     "timeout": "网络请求超时！",
     "requestError": "请求错误",
-    "errNetwork": "网络请求错误"
+    "errNetwork": "网络请求错误",
+    "baseUrlError": " 接口请求错误,请检查VITE_APP_BASE_URL参数配置或者伪静态配置"
   },
   "linkPlaceholder": "请选择跳转链接",
   "selectLinkTips": "链接选择",

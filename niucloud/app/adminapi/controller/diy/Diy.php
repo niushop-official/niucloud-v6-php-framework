@@ -196,6 +196,7 @@ class Diy extends BaseAdminController
         $data = $this->request->params([
             [ "id", "" ],
             [ 'type', '' ], // 页面类型
+            [ 'name', '' ], // 页面名称标识
             [ 'mode', '' ], //  页面展示模式，diy：自定义，fixed：固定，other：其他页面
             [ 'template', '' ], // 模板名称
             [ 'page', '' ], // 页面路由
