@@ -17,12 +17,13 @@
             </el-col>
             <el-col :span="12">
                 <div class="right-panel h-full flex items-center justify-end">
-                    <!-- 预览 只有站点时展示-->
-                    <i class="iconfont iconlingdang-xianxing cursor-pointer px-[8px]" :title="t('newInfo')"></i>
-                    <!-- 切换应用 -->
-                    <div class="navbar-item flex items-center h-full cursor-pointer" @click="changeApp">
-                        <icon name="iconfont-iconqiehuan" :title="t('changeApp')" class="!text-xs" />
+                    <div class="group switch-app mr-[5px] flex items-center bg-[var(--el-color-primary-light-9)] cursor-pointer !rounded-[50px] px-[12px] py-[5px]" v-if="isLoad && (app_debug || appList.length > 1)" @mouseenter="threefloatMenuHover">
+                        <span class="iconfont iconbanbenqiehuan font-bold mr-[4px] !text-[12px] text-[var(--el-color-primary-light-3)]"></span>
+                        <span class="text-[12px] text-[var(--el-color-primary)]">切换应用</span>
+                        <app-menu class="!top-[45px] right-[180px] left-[auto] w-[auto] max-w-[1076px] min-w-[550px]" :isShowHover="threefloatMenu" :data="appList" @child-click="toLink" hoverType='threefloatMenu'></app-menu>
                     </div>
+                    <!-- 预览 只有站点时展示-->
+                    <i class="iconfont iconlingdang-xianxing cursor-pointer px-[8px]" :title="t('newInfo')" ></i>
                     <!-- 切换语言 -->
                     <div class="navbar-item !px-[0] flex items-center h-full cursor-pointer">
                         <switch-lang />
@@ -86,8 +87,13 @@ import useSystemStore from '@/stores/modules/system'
 import useAppStore from '@/stores/modules/app'
 import { useRoute, useRouter } from 'vue-router'
 import { t } from '@/lang'
+import appMenu from './components/app-menu.vue'
 import storage from '@/utils/storage'
-import { getIndexList, setIndexList } from '@/app/api/sys'
+import useUserStore from '@/stores/modules/user'
+import { getIndexList, setIndexList, getEnv } from '@/app/api/sys'
+import { findFirstValidRoute } from '@/router/routers'
+import { getApply } from '@/app/api/apply'
+import { CollectionTag } from '@element-plus/icons-vue'
 
 const router = useRouter()
 const appType = storage.get('app_type')
@@ -162,10 +168,6 @@ const checkIndexList = () => {
     })
 }
 
-const changeApp = ()=>{
-    router.push({ path: '/app_manage/app_store' })
-}
-
 const index_path = ref('')
 const submitIndex = () => {
     setIndexList({
@@ -175,6 +177,77 @@ const submitIndex = () => {
         router.go(0)
     })
 }
+
+// 应用列表 - strat
+let app_debug = ref(false)
+const getEnvFn = () => {
+    getEnv().then(res => {
+        app_debug.value = res.data.app_debug;
+    }).catch(() => {})
+}
+getEnvFn();
+
+const userStore = useUserStore()
+let threefloatMenu = ref(true);
+const threefloatMenuHover = ()=>{
+    threefloatMenu.value = true;
+}
+
+const getLinkName = (res)=>{
+    if(res.children && res.children.length){
+        return getLinkName(res.children[0])
+    }
+    return res.name
+}
+const appLink = ref({})
+userStore.routers.forEach((item, index) => {
+    if (item.children && item.children.length) {
+        item.name = findFirstValidRoute(item.children)
+        appLink.value[item.meta.app] = findFirstValidRoute(item.children)
+    } else {
+        appLink.value[item.meta.app] = item.name
+    }
+})
+// 用于插件的卸载或安装
+watch(() =>userStore.globalAppKey, (val,old) => {
+    getAppList();
+},{deep: true})
+
+// 应用数据
+const appList = ref([])
+const isLoad = ref(false);
+const getAppList = async () => {
+    const res = await getApply()
+    appList.value = appList.value.concat(res.data)
+    isLoad.value = true;
+}
+getAppList()
+
+const toLink = (data, type) => {
+    if(type == 'threefloatMenu') threefloatMenu.value = false;
+    if (!data.meta && data.type == 'app' || data.meta.key != 'official_market') {
+        let name = data.name;
+        if(data.type == 'app'){
+            storage.set({ key: 'menuAppStorage', data: data.key })
+            storage.set({ key: 'plugMenuTypeStorage', data: '' })
+
+            const appMenuList = userStore.appMenuList
+            appMenuList.push(data.key)
+            userStore.setAppMenuList(appMenuList)
+
+            name = appLink.value[data.key];
+        }else if(data.meta.app){
+            name = getLinkName(data);
+        }
+        router.push({ name: name })
+        setTimeout(() => {
+            location.reload();
+        }, 500);
+    } else {
+        window.open('https://www.niucloud.com/app', '_blank')
+    }
+}
+// 应用列表 - end
 </script>
 
 <style lang="scss" scoped>
@@ -200,4 +273,5 @@ const submitIndex = () => {
         color: #fff;
         background-color: var(--el-color-primary);
     }
-}</style>
+}
+</style>

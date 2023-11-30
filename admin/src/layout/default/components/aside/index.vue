@@ -10,26 +10,25 @@
 
                     <template v-for="(item, index) in menus" :key="index">
                         <template v-if="globalAppKey == item.meta.app && item.meta.parentTitle">
-                            <div class="group flex items-center justify-center h-[64px] cursor-pointer" @mouseenter="threefloatMenuHover">
+                            <div class="group flex items-center justify-center h-[64px]">
                                 <img v-if="item.meta.parentIcon" :src="img(item.meta.parentIcon)" class="w-[40px] h-[40px] rounded-full" alt="">
                                 <div class="flex items-center justify-center w-[30px] h-[30px]" v-else>
                                     <icon v-if="item.meta.icon" :name="item.meta.icon" class="!w-auto" size="24px" />
                                 </div>
-                               <app-menu :isShowHover="threefloatMenu" :data="appList" @child-click="toLink" hoverType='threefloatMenu'></app-menu>
                             </div>
                             <div v-for="(appItem, appIndex) in item.children" :key="appIndex" @click="toLink(appItem)"
-                                :class="['rounded-[5px] flex justify-center flex-col items-center h-[54px] w-[54px] m-[5px] cursor-pointer text-[#fff] hover:bg-[var(--el-color-primary)] hover:!text-[#fff] menu-item hover:text-color whitespace-nowrap', { 'bg-[var(--el-color-primary)] !text-[#fff] menu-item-active ': localMenuKey == appItem.meta.key}]">
+                                :class="['rounded-[5px] leading-[1] flex justify-center flex-col items-center h-[54px] w-[54px] m-[5px] mb-[0] cursor-pointer text-[#b9b9bf] hover:bg-[var(--el-color-primary)] hover:!text-[#fff] menu-item hover:text-color whitespace-nowrap', { 'bg-[var(--el-color-primary)] !text-[#fff] menu-item-active ': localMenuKey == appItem.meta.key}]">
                                 <icon v-if="appItem.meta.icon" :name="appItem.meta.icon" class="!w-auto" size="16px" :title="appItem.meta.title" />
-                                <span class="text-[14px] leading-1">{{appItem.meta.shortTitle}}</span>
+                                <span class="text-[14px] leading-[1] mt-[5px]">{{appItem.meta.shortTitle}}</span>
                             </div>
                         </template>
                     </template>
 
                     <template v-for="(item, index) in menus" :key="index">
                         <div v-if="!item.meta.app && item.meta.attr != 'tools' && item.meta.show" @click="toLink(item)"
-                            :class="['rounded-[5px] flex justify-center flex-col  items-center m-[5px] h-[54px] w-[54px] cursor-pointer text-[#fff] hover:bg-[var(--el-color-primary)] hover:!text-[#fff] menu-item hover:text-color whitespace-nowrap', { 'bg-[var(--el-color-primary)] !text-[#fff] menu-item-active ': (item.path == currentRoute.path || (currentRoute.path == '/admin' && item.path == '/index') || (currentRoute.meta.app && item.path == '/index')) }]">
+                            :class="['rounded-[5px] flex leading-[1] justify-center flex-col  items-center m-[5px] mb-[0] h-[54px] w-[54px] cursor-pointer text-[#b9b9bf] hover:bg-[var(--el-color-primary)] hover:!text-[#fff] menu-item hover:text-color whitespace-nowrap', { 'bg-[var(--el-color-primary)] !text-[#fff] menu-item-active ': (item.path == currentRoute.path || (currentRoute.path == '/admin' && item.path == '/index') || (currentRoute.meta.app && item.path == '/index')) }]">
                             <icon v-if="item.meta.icon" :name="item.meta.icon" class="!w-auto" size="16px" :title="item.meta.title" />
-                            <span class="text-[14px] leading-1">{{item.meta.shortTitle}}</span>
+                            <span class="text-[14px] leading-[1] mt-[5px]">{{item.meta.shortTitle}}</span>
                         </div>
                     </template>
                 </div>
@@ -37,7 +36,7 @@
         </div>
 
         <template v-for="(item, index) in menus" :key="index">
-            <div v-if="isTwoMenuFn(item)" class="w-[201px] box-border border-r-[1px] border-solid second-menu">
+            <div v-if="isTwoMenuFn(item)" class="w-[191px] box-border border-r-[1px] border-solid second-menu">
                 <div class="group flex flex-col items-center justify-center h-[60px] border-b-[1px] border-solid second-head cursor-pointer relative"  @mouseenter="twofloatMenuHover">
                     {{ item.meta.title }}
                 </div>
@@ -95,7 +94,7 @@
                             </el-sub-menu>
 
                             <el-menu-item v-else-if="twoMenu.meta.show && twoMenu.meta.key != 'official_market'"
-                                class="!pl-[20px] text-[#333]" :index="String(twoMenu.name)" @click="toLink(twoMenu)">
+                                class="!pl-[10px] text-[#333]" :index="String(twoMenu.name)" @click="toLink(twoMenu)">
                                 <template #title>
                                     <div class="w-[16px] h-[16px] mr-[3px] relative flex items-center">
                                         <icon v-if="twoMenu.meta.icon" :name="twoMenu.meta.icon" class="!w-auto" size="16px" />
@@ -113,7 +112,7 @@
                                 <span class="text-[14px]">{{ twoMenu.meta.title }}</span>
                             </div>
                         </template>
-                        <el-menu-item v-if="!item.children" class="!pl-[20px] text-[#333]" :index="String(item.name)" @click="toLink(item)">
+                        <el-menu-item v-if="!item.children" class="!pl-[10px] text-[#333]" :index="String(item.name)" @click="toLink(item)">
                             <template #title>
                                 <span class="text-[14px]">{{ item.meta.title }}</span>
                             </template>
@@ -157,7 +156,7 @@
                                     </template>
                                 </el-sub-menu>
                                 <el-menu-item v-else-if="twoMenu.meta.app && twoMenu.meta.app == plugMenuType"
-                                    class="!pl-[20px] text-[#333]" :index="String(twoMenu.name)"
+                                    class="!pl-[10px] text-[#333]" :index="String(twoMenu.name)"
                                     @click="toLink(twoMenu)">
                                     <template #title>
                                         <div class="w-[16px] h-[16px] mr-[3px] relative flex items-center">
@@ -395,12 +394,12 @@ const isTwoMenuFn = (item) => {
 }
 
 .second-menu .el-sub-menu .el-sub-menu__title {
-    padding-left: 20px !important;
+    padding-left: 10px !important;
     padding-right: 25px !important;
-    height: 50px !important;
-    border-radius: 5px;
+    height: 40px !important;
+    border-radius: 2px;
     overflow: hidden;
-    margin-bottom: 5px;
+    margin-bottom: 2px;
     &:hover{
         color: var(--el-color-primary);
     }
@@ -414,10 +413,10 @@ const isTwoMenuFn = (item) => {
 
 
 .second-menu .el-menu-item{
-    height: 50px !important;
-    border-radius: 5px;
+    height: 40px !important;
+    border-radius: 2px;
     overflow: hidden;
-    margin-bottom: 5px;
+    margin-bottom: 2px;
     &.is-active{
         background-color: var(--el-menu-hover-bg-color);
     }

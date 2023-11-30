@@ -10,16 +10,15 @@
 
                     <template v-for="(item, index) in menus" :key="index">
                         <template v-if="globalAppKey == item.meta.app && item.meta.parentTitle">
-                            <div class="group flex items-center justify-center h-[64px] cursor-pointer" @mouseenter="threefloatMenuHover">
+                            <div class="group flex items-center justify-center h-[64px] cursor-pointer">
                                 <img v-if="item.meta.parentIcon" :src="img(item.meta.parentIcon)" class="w-[40px] h-[40px] rounded-full" alt="">
                                 <div class="flex items-center justify-center w-[30px] h-[30px]" v-else>
                                     <icon v-if="item.meta.icon" :name="item.meta.icon" class="!w-auto" size="24px" />
                                 </div>
-                               <app-menu :isShowHover="threefloatMenu" :data="appList" @child-click="toLink" hoverType='threefloatMenu'></app-menu>
                             </div>
                             <div v-for="(appItem, appIndex) in item.children" :key="appIndex" @click="toLink(appItem)"
-                                :class="['rounded-sm flex items-center px-[8px] mb-[4px] h-[40px] cursor-pointer text-[#b9b9bf] hover:bg-[var(--el-color-primary)] hover:!text-[#fff] menu-item hover:text-color whitespace-nowrap', { 'bg-[var(--el-color-primary)] !text-[#fff] menu-item-active ': localMenuKey == appItem.meta.key}]">
-                                <icon v-if="appItem.meta.icon" :name="appItem.meta.icon" class="!w-auto" size="20px" :title="appItem.meta.title" />
+                                :class="['rounded-sm flex items-center px-[12px] mb-[4px] h-[40px] cursor-pointer text-[#b9b9bf] hover:bg-[var(--el-color-primary)] hover:!text-[#fff] menu-item hover:text-color whitespace-nowrap', { 'bg-[var(--el-color-primary)] !text-[#fff] menu-item-active ': localMenuKey == appItem.meta.key}]">
+                                <icon v-if="appItem.meta.icon" :name="appItem.meta.icon" class="!w-auto" size="16px" :title="appItem.meta.title" />
                                 <span class="text-[14px] ml-[8px]">{{appItem.meta.shortTitle}}</span>
                             </div>
                         </template>
@@ -27,8 +26,8 @@
 
                     <template v-for="(item, index) in menus" :key="index">
                         <div v-if="!item.meta.app && item.meta.attr != 'tools' && item.meta.show" @click="toLink(item)"
-                            :class="['rounded-sm flex items-center px-[8px] mb-[4px] h-[40px] cursor-pointer text-[#b9b9bf] hover:bg-[var(--el-color-primary)] hover:!text-[#fff] menu-item hover:text-color whitespace-nowrap', { 'bg-[var(--el-color-primary)] !text-[#fff] menu-item-active ': (item.path == currentRoute.path || (currentRoute.path == '/admin' && item.path == '/index') || (currentRoute.meta.app && item.path == '/index')) }]">
-                            <icon v-if="item.meta.icon" :name="item.meta.icon" class="!w-auto" size="20px" :title="item.meta.title" />
+                            :class="['rounded-sm flex items-center px-[12px] mb-[4px] h-[40px] cursor-pointer text-[#b9b9bf] hover:bg-[var(--el-color-primary)] hover:!text-[#fff] menu-item hover:text-color whitespace-nowrap', { 'bg-[var(--el-color-primary)] !text-[#fff] menu-item-active ': (item.path == currentRoute.path || (currentRoute.path == '/admin' && item.path == '/index') || (currentRoute.meta.app && item.path == '/index')) }]">
+                            <icon v-if="item.meta.icon" :name="item.meta.icon" class="!w-auto" size="16px" :title="item.meta.title" />
                             <span class="text-[14px] ml-[8px]">{{item.meta.shortTitle}}</span>
                         </div>
                     </template>
@@ -37,7 +36,7 @@
         </div>
 
         <template v-for="(item, index) in menus" :key="index">
-            <div v-if="isTwoMenuFn(item)" class="w-[155px] box-border border-r-[1px] border-solid second-menu">
+            <div v-if="isTwoMenuFn(item)" class="w-[140px] box-border border-r-[1px] border-solid second-menu">
                 <div class="group flex flex-col items-center justify-center h-[64px] border-b-[1px] border-solid second-head cursor-pointer relative"  @mouseenter="twofloatMenuHover">
                     {{ item.meta.title }}
                 </div>
@@ -382,14 +381,26 @@ const isTwoMenuFn = (item) => {
 }
 
 .second-menu .el-sub-menu .el-sub-menu__title {
-    padding-left: 25px !important;
-    padding-right: 25px !important;
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+    margin: 0 8px 4px;
+    height: 36px;
+    border-radius: 2px;
 
     .el-icon.el-sub-menu__icon-arrow {
-        right: 25px;
+        right: 5px;
         font-weight: bolder;
         font-size: 14px;
     }
+}
+.second-menu .el-menu-item{
+    padding: 0 8px !important;
+    margin: 0 8px 4px;
+    height: 36px !important;
+    border-radius: 2px;
+}
+.second-menu .el-sub-menu .el-menu-item{
+    padding-left: 20px !important;
 }
 
 .three-menu.el-sub-menu .el-sub-menu__title {
@@ -537,6 +548,7 @@ const isTwoMenuFn = (item) => {
 }
 
 .menus-wrap {
+    padding-top: 16px;
     height: calc(100vh - 64px);
 }
 </style>

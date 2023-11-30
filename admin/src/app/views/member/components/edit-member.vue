@@ -17,7 +17,7 @@
                 </el-select>
             </el-form-item>
             <el-form-item :label="t('memberLabel')" v-if="type == 'member_label'">
-                <el-select v-model="saveData.member_label" multiple collapse-tags :placeholder="t('memberLabelPlaceholder')" class="input-width">
+                <el-select v-model="saveData.member_label" multiple :placeholder="t('memberLabelPlaceholder')" class="input-width">
                     <el-option :label="item['label_name']" :value="item['label_id']" v-for="item in labelSelectData" />
                 </el-select>
             </el-form-item>

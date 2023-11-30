@@ -12,17 +12,17 @@
                 </el-input>
             </div>
             <div class="flex mt-[24px]">
-                <div 
+                <div
                     :class="['flex items-center text-[14px] h-[32px] border-[1px] border-solid my-[3px] border-[#E0E0E0] rounded-full px-[15px] mr-[24px] cursor-pointer bg-[#f8f8f8] hover:bg-[#fff]',{'text-[#fff] !bg-[#000] border-[#000]': activeName === 'installed'}]"
                     @click="activeNameTabFn('installed')">
                     {{ t('installLabel') }}
                 </div>
-                <div 
+                <div
                     :class="['flex items-center text-[14px] h-[32px] border-[1px] border-solid my-[3px] border-[#E0E0E0] rounded-full px-[15px] mr-[24px] cursor-pointer bg-[#f8f8f8] hover:bg-[#fff]',{'text-[#fff] !bg-[#000] border-[#000]': activeName === 'uninstalled'}]"
                     @click="activeNameTabFn('uninstalled')">
                     {{ t('uninstalledLabel') }}
                 </div>
-                <div 
+                <div
                     :class="['flex items-center text-[14px] h-[32px] border-[1px] border-solid my-[3px] border-[#E0E0E0] rounded-full px-[15px] mr-[24px] cursor-pointer bg-[#f8f8f8] hover:bg-[#fff]',{'text-[#fff] !bg-[#000] border-[#000]': activeName === 'all'}]"
                     @click="activeNameTabFn('all')">
                     {{ t('buyLabel') }}
@@ -89,7 +89,7 @@
                                 type="primary" link @click="uninstallAddonFn(row.key)">{{ t('unload') }}</el-button>
                             <el-button class="!text-[13px]" v-else-if="row.is_download && row.install_info <= 0 && activeName != 'all'"
                                 type="primary" link @click="installAddonFn(row.key)">{{ t('install') }}</el-button>
-                            <el-button class="!text-[13px]" v-else :loading="downloading == row.key" 
+                            <el-button class="!text-[13px]" v-else :loading="downloading == row.key"
                                 :disabled="downloading != ''" type="primary" link @click.stop="downEvent(row)">
                                 <span v-if="row.install_info && Object.keys(row.install_info)?.length">{{t('unloadDown')}}</span>
                                 <span v-else-if="row.is_download && row.install_info <= 0">{{t('installDown')}}</span>
@@ -277,7 +277,7 @@
                     </div>
                 </div>
                 <div v-show="installStep == 2" class="h-[50vh] mt-[20px]">
-                    <terminal name="my-terminal" :context="currAddon" :init-log="null" :show-header="false"
+                    <terminal ref="terminalRef" :context="currAddon" :init-log="null" :show-header="false"
                         :show-log-time="true" />
                 </div>
                 <div v-show="installStep == 3" class="h-[50vh] mt-[20px] flex flex-col">
@@ -380,6 +380,8 @@ const downloading = ref('')
 const installAfterTips = ref<string[]>([])
 const userStore = useUserStore()
 let unloadHintDialog = ref(false)
+const terminalRef = ref(null)
+
 
 let currDownData = ref()
 const downEventHintFn = ()=>{
@@ -608,8 +610,8 @@ const handleCloudInstall = () => {
 
     cloudInstallAddon({ addon: currAddon.value }).then(res => {
         installStep.value = 2
-        terminalApi.execute('my-terminal', 'clear')
-        terminalApi.pushMessage('my-terminal', { content: '开始安装插件', class: 'info' })
+        terminalRef.value.execute('clear')
+        terminalRef.value.pushMessage({ content: '开始安装插件', class: 'info' })
         getInstallTask()
         cloudInstalling.value = false
     }).catch((res) => {
@@ -644,11 +646,11 @@ const getCloudInstallLog = () => {
             if (data[0] && data[0].length && installShowDialog.value == true) {
                 data[0].forEach(item => {
                     if (!installLog.includes(item.action)) {
-                        terminalApi.pushMessage('my-terminal', { content: `正在执行：${item.action}` })
+                        terminalRef.value.pushMessage({ content: `正在执行：${item.action}` })
                         installLog.push(item.action)
 
                         if (item.code == 0) {
-                            terminalApi.pushMessage('my-terminal', { content: item.msg, class: 'error' })
+                            terminalRef.value.pushMessage({ content: item.msg, class: 'error' })
                         }
                     }
                 })
@@ -886,7 +888,7 @@ html.dark .table-head-bg {
 }
 </style>
 <style>
-.el-empty .el-empty__image{
+.el-empty__image{
     width: auto !important;
 }
 </style>

@@ -3,7 +3,7 @@
 
         <template v-for="(item, index) in menus" :key="index">
             <div v-if="isTwoMenuFn(item)" class="w-[210px] box-border border-r-[1px] border-solid second-menu">
-                <div class="group flex flex-col items-center justify-center h-[64px] border-b-[1px] border-solid second-head cursor-pointer relative"  @mouseenter="twofloatMenuHover">
+                <div class="group flex flex-col items-center justify-center h-[64px] border-b-[1px] border-solid second-head cursor-pointer relative">
                     <div class="flex items-center">
                         <img v-if="item.meta.parentIcon" :src="img(item.meta.parentIcon)" class="w-[40px] h-[40px] mr-[8px] rounded-full" alt="">
                         <div class="flex items-center justify-center w-[30px] h-[30px]" v-else>
@@ -11,7 +11,6 @@
                         </div>
                         <span>{{ item.meta.app ? item.meta.parentTitle : item.meta.title }}</span>
                     </div>
-                   <app-menu :isShowHover="twofloatMenu" :data="appList" @child-click="toLink" hoverType='twofloatMenu'></app-menu>
                 </div>
 
                 <el-scrollbar class="overflow-y-auto menus-wrap">
@@ -506,9 +505,15 @@ const isTwoMenuFn = (item) => {
     }
 }
 
+.second-menu .el-menu-item{
+    height: 40px !important;
+    margin-bottom: 4px;
+}
 .second-menu .el-sub-menu .el-sub-menu__title {
     padding-left: 25px !important;
     padding-right: 25px !important;
+    height: 40px;
+    margin-bottom: 4px;
 
     .el-icon.el-sub-menu__icon-arrow {
         right: 25px;
