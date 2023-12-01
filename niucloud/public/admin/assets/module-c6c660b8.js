@@ -1,0 +1,1 @@
+import{x as s}from"./index-6a41cdeb.js";function n(){return s.get("niucloud/authinfo",{showErrorMessage:!1})}function t(o){return s.post("niucloud/authinfo",o,{showSuccessMessage:!0})}function u(o){return s.post(`addon/download/${o.addon}`,o,{showSuccessMessage:!0})}export{u as d,n as g,t as s};
