@@ -223,7 +223,6 @@ class WebEditPageGenerator extends BaseGenerator
                     }
                     $old[] = '{RULE}';
                     $new[] = $rule;
-                    dd($rule);
                 }else{
                     $old[] = '{RULE}';
                     $new[] = '';
@@ -249,6 +248,7 @@ class WebEditPageGenerator extends BaseGenerator
     {
         $content = '';
         $isExist = [];
+
         foreach ($this->tableColumn as $column) {
             if ((!$column['is_insert'] || !$column['is_update']) && !$column['is_pk']) {
                 continue;
@@ -284,13 +284,12 @@ class WebEditPageGenerator extends BaseGenerator
         $content = '';
         $isExist = [];
         $specDictType = ['input', 'textarea', 'editor'];
-        unset($this->tableColumn[1]);
-        unset($this->tableColumn[2]);
-        unset($this->tableColumn[3]);
+
         foreach ($this->tableColumn as $column) {
-            if (!$column['is_insert'] || !$column['is_update'] ) {
+            if (!$column['is_insert'] || !$column['is_update'] || $column['is_pk']) {
                 continue;
             }
+
             if (in_array($column['column_name'], $isExist)) {
                 continue;
             }
@@ -374,7 +373,12 @@ class WebEditPageGenerator extends BaseGenerator
         if($this->table['edit_type'] != 2) {
             return '';
         }
-        $dir = dirname(app()->getRootPath()) . '/admin/src/views/' . $this->moduleName . '/';
+        if(!empty($this->addonName))
+        {
+            $dir = dirname(app()->getRootPath()) . '/admin/src/'. $this->moduleName .'/views/' . $this->moduleName . '/';
+        } else {
+            $dir = dirname(app()->getRootPath()) . '/admin/src/app/views/' . $this->moduleName . '/';
+        }
         $this->checkDir($dir);
         return $dir;
     }
@@ -391,7 +395,7 @@ class WebEditPageGenerator extends BaseGenerator
         }
         if(!empty($this->addonName))
         {
-            $dir = $this->outDir . '/addon/'.$this->addonName.'/admin/src/views/' . $this->moduleName . '/';
+            $dir = $this->outDir . '/addon/'.$this->addonName.'/admin/views/' . $this->moduleName . '/';
         }else{
             $dir = $this->outDir . 'admin/src/app/views/' . $this->moduleName . '/';
         }
@@ -422,6 +426,16 @@ class WebEditPageGenerator extends BaseGenerator
         return $dir;
     }
 
+    /**
+     * 获取文件生成到插件中
+     * @return void
+     */
+    public function getAddonObjectOutDir() {
+        $dir = $this->rootDir . '/niucloud/addon/'.$this->addonName.'/admin/views/'. $this->moduleName . '/';
+        $this->checkDir($dir);
+        return $dir;
+    }
+
     public function getFilePath()
     {
         if($this->table['edit_type'] != 2) {
@@ -447,9 +461,9 @@ class WebEditPageGenerator extends BaseGenerator
         if($this->table['edit_type'] != 2) {
             return '';
         }
-//        if($this->className){
-//            return Str::lower($this->className).'_edit.vue';
-//        }
+        if($this->className){
+            return Str::lower($this->className).'_edit.vue';
+        }
         return 'edit.vue';
     }
 

@@ -289,10 +289,7 @@ class WebEditGenerator extends BaseGenerator
         $specDictType = ['input', 'textarea', 'editor'];
 
         foreach ($this->tableColumn as $column) {
-//            if (!$column['is_pk']) {
-//                continue;
-//            }
-            if (!$column['is_insert'] || !$column['is_update'] ) {
+            if (!$column['is_insert'] || !$column['is_update'] || $column['is_pk']) {
                 continue;
             }
             if (in_array($column['column_name'], $isExist)) {
@@ -391,7 +388,7 @@ class WebEditGenerator extends BaseGenerator
         }
         if(!empty($this->addonName))
         {
-            $dir = $this->outDir . '/addon/'.$this->addonName.'/admin/src/views/' . $this->moduleName . '/';
+            $dir = $this->outDir . '/addon/'.$this->addonName.'/admin/views/' . $this->moduleName . '/';
         }else{
             $dir = $this->outDir . 'admin/src/app/views/' . $this->moduleName . '/';
         }
@@ -420,6 +417,16 @@ class WebEditGenerator extends BaseGenerator
         return $dir;
     }
 
+    /**
+     * 获取文件生成到插件中
+     * @return void
+     */
+    public function getAddonObjectOutDir() {
+        $dir = $this->rootDir . '/niucloud/addon/'.$this->addonName.'/admin/views/'. $this->moduleName . '/components/';
+        $this->checkDir($dir);
+        return $dir;
+    }
+
     public function getFilePath()
     {
         if($this->table['edit_type'] != 1) {
@@ -444,6 +451,9 @@ class WebEditGenerator extends BaseGenerator
     {
         if($this->table['edit_type'] != 1) {
             return '';
+        }
+        if($this->className){
+            return str_replace('_', '-', Str::lower($this->className)).'-edit.vue';
         }
         return 'edit.vue';
 

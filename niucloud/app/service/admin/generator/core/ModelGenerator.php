@@ -150,9 +150,7 @@ class ModelGenerator extends BaseGenerator
             $function_str .= '/**'.PHP_EOL.' * 搜索器:'.$table_content.$column['column_comment'].PHP_EOL.' * @param $value'.PHP_EOL.' * @param $data'.PHP_EOL.' */'.PHP_EOL;
             $function_str .= 'public function search'.Str::studly($column['column_name']).'Attr($query, $value, $data)'.PHP_EOL;
             $function_str .= '{'.PHP_EOL;
-            $function_str .= '    if ($value) {'.PHP_EOL;
-            $function_str .= '        $query->where('.$this->getSearchContent($column).');'.PHP_EOL;
-            $function_str .= '    }'.PHP_EOL;
+            $function_str .= $this->getSearchContent($column);
             $function_str .= '}'.PHP_EOL.PHP_EOL;
         }
         $function_str = $this->setBlankSpace($function_str, "    ");
@@ -162,19 +160,40 @@ class ModelGenerator extends BaseGenerator
     }
 
     public function getSearchContent(array $column_info){
-
         $type = $column_info['query_type'];
-        return match ($type) {
-            '<>' => '"' . $column_info['column_name'] . '", "<>", $value',
-            '!=' => '"' . $column_info['column_name'] . '", "<>", $value',
-            '>' => '"' . $column_info['column_name'] . '", ">", $value',
-            '>=' => '"' . $column_info['column_name'] . '", ">=", $value',
-            '<' => '"' . $column_info['column_name'] . '", "<", $value',
-            '<=' => '"' . $column_info['column_name'] . '", "<=", $value',
-            'LIKE' => '"' . $column_info['column_name'] . '", "like", "%".$value."%"',
-            'BETWEEN' => '"' . $column_info['column_name'] . '", $value[0], $value[1] ',
-            default => '"' . $column_info['column_name'] . '", $value',
-        };
+        if ($type == 'BETWEEN') {
+            if ($column_info['view_type'] == 'datetime') {
+                $function_str = '    $start = empty($value[0]) ? 0 : strtotime($value[0]);'.PHP_EOL;
+                $function_str .= '    $end = empty($value[1]) ? 0 : strtotime($value[1]);'.PHP_EOL;
+            } else {
+                $function_str = '    $start = empty($value[0]) ? 0 : $value[0];'.PHP_EOL;
+                $function_str .= '    $end = empty($value[1]) ? 0 : $value[1];'.PHP_EOL;
+            }
+            $function_str .= '    if ($start > 0 && $end > 0) {'.PHP_EOL;
+            $function_str .= '         $query->where([["' . $column_info['column_name'] . '", "between", [$start, $end]]]);'.PHP_EOL;
+            $function_str .= '    } else if ($start > 0 && $end == 0) {'.PHP_EOL;
+            $function_str .= '        $query->where([["' . $column_info['column_name'] . '", ">=", $start]]);'.PHP_EOL;
+            $function_str .= '    } else if ($start == 0 && $end > 0) {'.PHP_EOL;
+            $function_str .= '        $query->where([["' . $column_info['column_name'] . '", "<=", $end]]);'.PHP_EOL;
+            $function_str .= '    }'.PHP_EOL;
+            return $function_str;
+        } else {
+            $function_str = '   if ($value) {'.PHP_EOL;
+            $function_str .= '        $query->where(';
+            $function_str .= match ($type) {
+                '<>' => '"' . $column_info['column_name'] . '", "<>", $value',
+                '!=' => '"' . $column_info['column_name'] . '", "<>", $value',
+                '>' => '"' . $column_info['column_name'] . '", ">", $value',
+                '>=' => '"' . $column_info['column_name'] . '", ">=", $value',
+                '<' => '"' . $column_info['column_name'] . '", "<", $value',
+                '<=' => '"' . $column_info['column_name'] . '", "<=", $value',
+                'LIKE' => '"' . $column_info['column_name'] . '", "like", "%".$value."%"',
+                default => '"' . $column_info['column_name'] . '", $value',
+            };
+            $function_str .= ');'.PHP_EOL;
+            $function_str .= '    }'.PHP_EOL;
+            return $function_str;
+        }
     }
 
     /**

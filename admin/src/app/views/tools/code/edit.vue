@@ -34,6 +34,8 @@
                                     class="input-width" />
                                 <p class="text-[12px] text-[#a9a9a9] leading-normal mt-[5px]">
                                     生成代码所属功能模块，对应路由名称，例如会员模块，充值模块，订单模块等</p>
+                                <p class="text-[12px] text-[#a9a9a9] leading-normal mt-[5px]">
+                                    命名规范，小写，多个单词使用下划线连接,例如: member，article_category</p>
                             </div>
 
                         </el-form-item>
@@ -43,8 +45,9 @@
                                     class="input-width" />
                                 <p class="text-[12px] text-[#a9a9a9] leading-normal mt-[5px]">
                                     生成代码所属文件名称，controller，model，service，等类型文件名</p>
+                                <p class="text-[12px] text-[#a9a9a9] leading-normal mt-[5px]">
+                                    命名规范，小写，多个单词使用下划线连接,例如: article_category</p>
                             </div>
-
                         </el-form-item>
                     </el-form>
                 </el-tab-pane>
@@ -252,7 +255,7 @@
                 </el-tab-pane>
                 <el-tab-pane :label="t('associatedConfiguration')" name="associatedConfiguration">
                     <div class="mb-[20px]">
-                        <el-button type="primary" class="w-[100px]" @click="addEvent(null, 0)">{{ t('insertAssociated')
+                        <el-button type="primary" class="w-[100px]" @click="addEvent(null, -1)">{{ t('insertAssociated')
                         }}</el-button>
                     </div>
                     <el-table :data="formData.relations" size="large">
@@ -296,7 +299,7 @@ import editAssociated from '@/app/views/tools/code/components/edit-associated.vu
 import editViewType from '@/app/views/tools/code/components/edit-view-type.vue'
 import editVerify from '@/app/views/tools/code/components/edit-verify.vue'
 import { getGenerateTableInfo, editGenerateTable, getAddonDevelop, generatorCheckFile, generateCreate } from '@/app/api/tools'
-import { getSystemMenu, getAddonMenu } from '@/app/api/sys'
+import { getMenuByTypeDir } from '@/app/api/sys'
 import { useRoute, useRouter } from 'vue-router'
 import Sortable from 'sortablejs'
 import { useTemplateRefsList } from '@vueuse/core'
@@ -477,14 +480,14 @@ const sysMenuList = ref<Array<any>>([])
 const addonMenuList = ref<Array<any>>([])
 //获取系统菜单列表
 const getSystemMenuFn = async () => {
-    let { data } = await getSystemMenu()
+    let { data } = await getMenuByTypeDir()
     sysMenuList.value = [{ menu_name: "顶级", menu_key: "" }]
     sysMenuList.value.push(...data)
 }
 getSystemMenuFn()
 //获取系统应用菜单列表
 const getAddonMenuFn = async (key: any) => {
-    let { data } = await getAddonMenu(key)
+    let { data } = await getMenuByTypeDir(key)
     addonMenuList.value = data
 }
 //选择插件
@@ -492,7 +495,7 @@ const addonChange = async (val: any) => {
     formData.parent_menu = ''
     if (val != '') {
         await getAddonMenuFn(val)
-        formData.parent_menu = addonMenuList.value[0].menu_key
+        if (addonMenuList.value[0]) formData.parent_menu = addonMenuList.value[0].menu_key
     }
 }
 const associatedIndex = ref(0)
@@ -505,7 +508,7 @@ const addEvent = (val: any, index: number) => {
 
 }
 const complete = (row: any) => {
-    if (associatedIndex.value) {
+    if (associatedIndex.value != -1) {
         formData.relations.splice(associatedIndex.value, 1, row)
     } else {
         formData.relations.unshift(row)

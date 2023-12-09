@@ -57,6 +57,9 @@ Route::group('sys', function () {
     Route::get('menu/mothod', 'sys.Menu/getMethodType');
     Route::get('menu/system_menu', 'sys.Menu/getSystem');
     Route::get('menu/addon_menu/:app_key', 'sys.Menu/getAddonMenu');
+
+    Route::get('menu/dir/:addon', 'sys.Menu/getMenuByTypeDir');
+
     /***************************************************** 设置 ****************************************************/
     //网站设置
     Route::get('config/website', 'sys.Config/getWebsite');
