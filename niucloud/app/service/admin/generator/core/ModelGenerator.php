@@ -350,7 +350,7 @@ class ModelGenerator extends BaseGenerator
 
                 $waitReplace = [
                     $config['name'],
-                    $config['model'],
+                    '\\'. $config['model'],
                     $config['foreign_key'],
                     $config['local_key'],
                 ];

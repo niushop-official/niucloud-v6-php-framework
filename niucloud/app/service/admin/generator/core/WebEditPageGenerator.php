@@ -110,6 +110,9 @@ class WebEditPageGenerator extends BaseGenerator
                 continue;
             }
             $content.= 'let '.$column['column_name'].'List = ref([])'.PHP_EOL.'const '.$column['column_name'].'DictList = async () => {'.PHP_EOL.$column['column_name'].'List.value = await (await useDictionary(' ."'".$column['dict_type']."'".')).data.dictionary'.PHP_EOL.'}'.PHP_EOL. $column['column_name'].'DictList();'.PHP_EOL;
+            if ($column['view_type'] == 'radio' || $column['view_type'] == 'select') {
+                $content .= 'watch(() => '.$column['column_name'].'List.value, () => { formData.'.$column['column_name'].' = '.$column['column_name'].'List.value[0].value })'.PHP_EOL;
+            }
         }
 
         if(!empty($content))
@@ -199,7 +202,7 @@ class WebEditPageGenerator extends BaseGenerator
                 $vmItemValue = 'item.value';
                 $intFieldValue = ['tinyint', 'smallint', 'mediumint', 'int', 'integer', 'bigint'];
                 if (in_array($column['column_type'], $intFieldValue)) {
-                    $vmItemValue = 'parseInt(item.value)';
+                    $vmItemValue = 'item.value';
                 }
                 $old[] = '{ITEM_VALUE}';
                 $new[] = $vmItemValue;
