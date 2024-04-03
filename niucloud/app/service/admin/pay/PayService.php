@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的多应用管理平台
+// | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud.com
+// | 官方网址：https://www.niucloud-admin.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -59,14 +59,13 @@ class PayService extends BaseAdminService
      * @return null
      */
     public function pass(string $out_trade_no) {
-        return (new CoreOfflineService())->pass( $out_trade_no);
+        return (new CoreOfflineService())->pass($out_trade_no);
     }
 
     /**
      * 支付审核未通过
      * @param string $out_trade_no
      * @param string $reason
-     * @return void
      */
     public function refuse(string $out_trade_no, string $reason) {
         return (new CoreOfflineService())->refuse($out_trade_no, $reason);

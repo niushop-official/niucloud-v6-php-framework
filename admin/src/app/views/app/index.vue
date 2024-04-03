@@ -1,73 +1,77 @@
 <template>
-    <div class="main-container h-[500px] w-full p-5 bg-white">
+    <div class="main-container w-full bg-white">
         <el-card class="box-card !border-none" shadow="never">
-            <template #header>
-                <div class="card-header">
-                    <span class="text-[15px]">基本应用</span>
-                </div>
-            </template>
-
-            <div class="flex flex-wrap plug-list pb-10 plug-large">
-                <div v-for="(item, index) in appList.list" :key="index + 'b'" class="app-item cursor-pointer mr-4 mt-[20px] pb-2 bg-[#f7f7f7]" @click="toLink(item.key)">
-                    <div class="flex justify-center items-center">
-                        <el-image class="w-[240px] h-[120px]" :src="img(item.icon)" fit="contain">
-                            <template #error>
-                                <div class="image-slot">
-                                    <img class="w-[240px] h-[120px]" src="@/app/assets/images/app_store/app_store_default.png" />
-                                </div>
-                            </template>
-                        </el-image>
-                    </div>
-                    <div class="flex w-[240px] h-[46px]">
-                        <div class="text-left mt-2 w-[190px]">
-                            <p class="app-text text-[14px] text-[#222] pl-2">{{ item.title }}</p>
-                            <p class="app-text text-[12px] text-[#999] pl-2">{{ item.desc }}</p>
+            <div class="flex justify-between items-center">
+                <span class="text-page-title">应用管理</span>
+            </div>
+            <div class="flex flex-wrap plug-list pb-10 plug-large" v-if="appList.length">
+                <div v-for="(item, index) in appList" :key="index + 'b'">
+                    <div
+                        class="relative app-item cursor-pointer px-4 mr-4 mt-[20px] bg-[#f7f7f7] border-[1px] hover:border-primary">
+                        <div @click="toLink(item.key)" class="flex py-5 items-center">
+                            <div class="flex justify-center items-center">
+                                <el-image class="w-[40px] h-[40px]" :src="img(item.icon)" fit="contain">
+                                    <template #error>
+                                        <div class="image-slot">
+                                            <img class="w-[50px] h-[50px]"
+                                                src="@/app/assets/images/index/app_default.png" />
+                                        </div>
+                                    </template>
+                                </el-image>
+                            </div>
+                            <div class="flex flex-col justify-between text-left w-[190px]">
+                                <p class="app-text w-[190px] text-[17px] text-[#222] pl-3">{{ item.title }}</p>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-
+            <div class="empty flex items-center  justify-center" v-if="!appList.length">
+                <el-empty :description="t('emptyAppData')" />
+            </div>
         </el-card>
     </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive } from 'vue'
-import { getApply } from '@/app/api/apply'
+import { computed } from 'vue'
 import { img } from '@/utils/common'
-import { findFirstValidRoute } from '@/router/routers'
 import useUserStore from '@/stores/modules/user'
+import useSystemStore from '@/stores/modules/system'
 import { useRouter } from 'vue-router'
+import { t } from '@/lang'
 
-const userStore = useUserStore()
+const addonIndexRoute = useUserStore().addonIndexRoute
 const router = useRouter()
-const appList = reactive({
-    list: []
+const appList = computed(() => {
+    return useSystemStore().addons
 })
 
-const getAppList = async () => {
-    const res = await getApply({})
-    appList.list = res.data
-}
-getAppList()
-
-const appLink = ref({})
-const getAppLink = () => {
-    userStore.routers.forEach((item, index) => {
-        if (item.meta.app != '') {
-            if (item.children && item.children.length) {
-                appLink.value[item.meta.app] = findFirstValidRoute(item.children)
-            } else {
-                appLink.value[item.meta.app] = item.name
-            }
-        }
-    })
-}
-getAppLink()
-
 const toLink = (addon: string) => {
-    router.push({ name: appLink.value[addon] })
+    addonIndexRoute[addon] && router.push({ name: addonIndexRoute[addon] })
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.main-container,
+.empty {
+    min-height: calc(100vh - 84px);
+}
+
+.app-text {
+    overflow: hidden;
+    /* 超出部分隐藏 */
+    white-space: nowrap;
+    /* 禁止文本换行 */
+    text-overflow: ellipsis;
+    /* 显示省略号 */
+}
+
+.app-item:hover .with-ite {
+    display: block;
+}
+
+.el-form-item {
+    margin-bottom: 0px !important;
+}
+</style>

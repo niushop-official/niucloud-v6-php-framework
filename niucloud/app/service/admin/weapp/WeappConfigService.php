@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的多应用管理平台
+// | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud.com
+// | 官方网址：https://www.niucloud-admin.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -40,7 +40,7 @@ class WeappConfigService extends BaseAdminService
      * @return SysConfig|bool|Model
      */
     public function setWeappConfig(array $data){
-        return (new CoreWeappConfigService())->setWeappConfig( $data);
+        return (new CoreWeappConfigService())->setWeappConfig($data);
     }
 
     /**
@@ -50,7 +50,7 @@ class WeappConfigService extends BaseAdminService
     public function getWeappStaticInfo(){
         $domain = request()->domain();
         return [
-            'serve_url' => (string)url('/api/weapp/serve/', [],'',true),
+            'serve_url' => (string)url('/api/weapp/serve', [],'',true),
             'request_url' => $domain,
             'socket_url'   => "wss://".request()->host(),
             'upload_url'  => $domain,

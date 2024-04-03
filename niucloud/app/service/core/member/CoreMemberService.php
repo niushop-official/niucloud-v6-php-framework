@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的多应用管理平台
+// | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud.com
+// | 官方网址：https://www.niucloud-admin.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -12,6 +12,8 @@
 namespace app\service\core\member;
 
 use app\model\member\Member;
+use app\model\site\Site;
+use app\service\core\sys\CoreConfigService;
 use core\base\BaseCoreService;
 use think\db\exception\DataNotFoundException;
 use think\db\exception\DbException;
@@ -97,34 +99,27 @@ class CoreMemberService extends BaseCoreService
     }
 
     /**
-     * 生成会员编码(站点修改)
+     * 生成会员编码
+
      * @return string
      * @throws DataNotFoundException
      * @throws DbException
      * @throws ModelNotFoundException
      */
-    public static function createMemberNo()
-    {
+    public static function createMemberNo() {
+        $no = (new self())->getMemberNoConfig();
+        $no += 1;
         $config = (new CoreMemberConfigService())->getMemberConfig();
 
-        if (!empty($config['member_no']))
-        {
-            $no = $config['member_no'] + 1;
-        }else{
-            $no = 1;
-        }
-
         $member_no = $config['prefix'] . ( strlen($config['prefix']) > $config['length'] ? $no : str_pad($no, ($config['length'] - strlen($config['prefix'])), "0", STR_PAD_LEFT) );
-        $member = (new Member())->where([['member_no', '=', $member_no] ])->findOrEmpty();
+
+        $member = (new Member())->where([ ['member_no', '=', $member_no] ])->findOrEmpty();
 
         if ($member->isEmpty()) {
             return $member_no;
         } else {
-            // 变更最大会员码值
-            $data['prefix'] = $config['prefix'];
-            $data['length'] = $config['length'];
-            $data['member_no'] = $no;
-            (new CoreMemberConfigService())->setMemberConfig($data);
+            // 变更站点最大会员码值
+            (new self())->setMemberNoConfig($no);
             return self::createMemberNo();
         }
     }
@@ -138,23 +133,29 @@ class CoreMemberService extends BaseCoreService
      * @throws ModelNotFoundException
      */
     public static function setMemberNo(int $member_id) {
+        $no = (new self())->getMemberNoConfig();
+        $no += 1;
         $config = (new CoreMemberConfigService())->getMemberConfig();
 
-        $no = $config['member_no'] + 1;
         $member_no = $config['prefix'] . ( strlen($config['prefix']) > $config['length'] ? $no : str_pad($no, ($config['length'] - strlen($config['prefix'])), "0", STR_PAD_LEFT) );
 
-        $member = (new Member())->where([['member_no', '=', $member_no] ])->findOrEmpty();
+        $member = (new Member())->where([ ['member_no', '=', $member_no] ])->findOrEmpty();
 
-        // 变更最大会员码值
-        $data['prefix'] = $config['prefix'];
-        $data['length'] = $config['length'];
-        $data['member_no'] = $no;
-        (new CoreMemberConfigService())->setMemberConfig($data);
+        // 变更站点最大会员码值
+        (new self())->setMemberNoConfig($no);
 
         if ($member->isEmpty()) {
             (new Member())->update([ 'member_no' => $member_no ], [ ['member_id', '=', $member_id] ]);
         } else {
             self::setMemberNo($member_id);
         }
+    }
+
+    public function setMemberNoConfig(int $no) {
+        return (new CoreConfigService())->setConfig('MEMBER_NO', ['no' => $no]);
+    }
+
+    public function getMemberNoConfig() {
+        return round((new CoreConfigService())->getConfigValue('MEMBER_NO')['no'] ?? 0);
     }
 }

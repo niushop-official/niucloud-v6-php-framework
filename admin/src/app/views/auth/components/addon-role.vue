@@ -4,7 +4,7 @@
 </template>
 <script lang="ts" setup>
 import { debounce } from '@/utils/common'
-import { ref, computed, onMounted, nextTick, } from 'vue'
+import { ref, computed, onMounted, nextTick } from 'vue'
 
 const prop = defineProps({
     data: {
@@ -14,9 +14,9 @@ const prop = defineProps({
     modelValue: {
         type: Array,
         default: () => []
-    },
+    }
 })
-let data = ref([])
+const data = ref([])
 data.value.push(prop.data)
 
 const emit = defineEmits(['update:modelValue', 'change'])
@@ -31,9 +31,9 @@ const value = computed({
 const treeRef = ref(null)
 
 //选择控制
-onMounted(()=>{
-    nextTick(()=>{
-        var newArr: any = []
+onMounted(() => {
+    nextTick(() => {
+        const newArr: any = []
         prop.modelValue.forEach(el => checked(el, data.value, newArr))
         treeRef.value.setCheckedKeys(newArr)
     })

@@ -81,15 +81,8 @@ export function allRole() {
  * 获取全部权限
  * @returns
  */
-export function getSystem() {
-    return request.get(`sys/menu/system_menu`)
-}
-
-/**
- * 应用权限列表
- */
-export function getAddonList() {
-    return request.get(`app/getAddonList`)
+export function getSystem(params: Record<string, any> = {}) {
+    return request.get(`sys/menu/system_menu`, { params })
 }
 
 /**
@@ -167,21 +160,11 @@ export function getMenuByTypeDir(key: any = 'system') {
     return request.get(`sys/menu/dir/${key}`)
 }
 
-/***************************************************** 站点菜单 ****************************************************/
-
-/**
- * 获取站点菜单
- * @returns
- */
-export function getSiteMenus() {
-    return request.get(`site/site/menu`)
-}
-
 
 /***************************************************** 设置 ****************************************************/
 
 /**
- * 获取网站设置 [需要登录]
+ * 获取网站设置
  * @returns
  */
 export function getWebsite() {
@@ -189,11 +172,19 @@ export function getWebsite() {
 }
 
 /**
- * 获取网站设置 [不需要登录]
+ * 获取网站设置
  * @returns
  */
 export function getWebConfig() {
     return request.get('sys/web/website')
+}
+
+/**
+ * 获取网站设置
+ * @returns
+ */
+export function getWebCopyright() {
+    return request.get('sys/web/copyright')
 }
 
 /**
@@ -202,7 +193,7 @@ export function getWebConfig() {
  * @returns
  */
 export function setWebsite(params: Record<string, any>) {
-    return request.post(`sys/config/website`, params, {showSuccessMessage: true})
+    return request.put(`sys/config/website`, params, { showSuccessMessage: true })
 }
 
 /**
@@ -227,7 +218,7 @@ export function getService() {
  * @returns
  */
 export function setCopyright(params: Record<string, any>) {
-    return request.put(`sys/config/copyright`, params, {showSuccessMessage: true})
+    return request.put(`sys/config/copyright`, params, { showSuccessMessage: true })
 }
 
 /**
@@ -236,7 +227,7 @@ export function setCopyright(params: Record<string, any>) {
  * @returns
  */
 export function getAttachmentCategoryList(params: Record<string, any>) {
-    return request.get(`sys/attachment/category`, {params})
+    return request.get(`sys/attachment/category`, { params })
 }
 
 /**
@@ -244,7 +235,7 @@ export function getAttachmentCategoryList(params: Record<string, any>) {
  * @param params
  */
 export function addAttachmentCategory(params: Record<string, any>) {
-    return request.post(`sys/attachment/category`, params, {showSuccessMessage: true})
+    return request.post(`sys/attachment/category`, params, { showSuccessMessage: true })
 }
 
 /**
@@ -253,7 +244,7 @@ export function addAttachmentCategory(params: Record<string, any>) {
  * @returns
  */
 export function editAttachmentCategory(params: Record<string, any>) {
-    return request.put(`sys/attachment/category/${params.id}`, params, {showSuccessMessage: true})
+    return request.put(`sys/attachment/category/${params.id}`, params, { showSuccessMessage: true })
 }
 
 /**
@@ -262,7 +253,7 @@ export function editAttachmentCategory(params: Record<string, any>) {
  * @returns
  */
 export function deleteAttachmentCategory(id: number) {
-    return request.delete(`sys/attachment/category/${id}`, {showSuccessMessage: true})
+    return request.delete(`sys/attachment/category/${id}`, { showSuccessMessage: true })
 }
 
 /**
@@ -271,7 +262,7 @@ export function deleteAttachmentCategory(id: number) {
  * @returns
  */
 export function getAttachmentList(params: Record<string, any>) {
-    return request.get(`sys/attachment`, {params})
+    return request.get(`sys/attachment`, { params })
 }
 
 /**
@@ -280,7 +271,7 @@ export function getAttachmentList(params: Record<string, any>) {
  * @returns
  */
 export function deleteAttachment(params: Record<string, any>) {
-    return request.delete(`sys/attachment/del`, {data: params, showSuccessMessage: true})
+    return request.delete(`sys/attachment/del`, { data: params, showSuccessMessage: true })
 }
 
 /**
@@ -290,13 +281,6 @@ export function deleteAttachment(params: Record<string, any>) {
  */
 export function moveAttachment(params: Record<string, any>) {
     return request.put(`sys/attachment/batchmove`, params)
-}
-
-/**
- * 获取menu菜单
- */
-export function getAuthMenu() {
-    return request.get(`auth/site/showmenu`)
 }
 
 /**
@@ -310,7 +294,7 @@ export function getShortcutMenu() {
  * 添加快捷菜单
  */
 export function setShortcutMenu(params: Record<string, any>) {
-    return request.put(`sys/config/shortcut_menu`, params, {showSuccessMessage: true})
+    return request.put(`sys/config/shortcut_menu`, params, { showSuccessMessage: true })
 }
 
 /**
@@ -319,7 +303,7 @@ export function setShortcutMenu(params: Record<string, any>) {
  * @returns
  */
 export function getIconCategoryList(params: Record<string, any>) {
-    return request.get(`sys/attachment/icon_category`, {params})
+    return request.get(`sys/attachment/icon_category`, { params })
 }
 
 /**
@@ -328,9 +312,8 @@ export function getIconCategoryList(params: Record<string, any>) {
  * @returns
  */
 export function getIconList(params: Record<string, any>) {
-    return request.get(`sys/attachment/icon`, {params})
+    return request.get(`sys/attachment/icon`, { params })
 }
-
 
 /**
  * 获取evn
@@ -340,7 +323,6 @@ export function getIconList(params: Record<string, any>) {
 export function getEnv() {
     return request.get(`sys/env`)
 }
-
 /***************************************************** 地址管理 ****************************************************/
 
 /**
@@ -364,14 +346,14 @@ export function getAreatree(level: number = 1) {
  * 获取地址信息
  */
 export function getAddressInfo(params: any) {
-    return request.get(`sys/area/get_info`, {params})
+    return request.get(`sys/area/get_info`, { params })
 }
 
 /**
  * 获取地址信息
  */
 export function getContraryAddress(params: any) {
-    return request.get(`sys/area/contrary`, {params})
+    return request.get(`sys/area/contrary`, { params })
 }
 
 /**
@@ -381,7 +363,6 @@ export function getContraryAddress(params: any) {
 export function getAreaByCode(code: number | string) {
     return request.get(`sys/area/code/${code}`)
 }
-
 /***************************************************** 存储设置 ****************************************************/
 
 /**
@@ -405,7 +386,7 @@ export function getStorageInfo(type: string) {
  * @returns
  */
 export function editStorage(params: Record<string, any>) {
-    return request.put(`sys/storage/${params.storage_type}`, params, {showSuccessMessage: true})
+    return request.put(`sys/storage/${params.storage_type}`, params, { showSuccessMessage: true })
 }
 
 /***************************************************** 支付设置 ****************************************************/
@@ -423,7 +404,7 @@ export function getPayConfig(type: string) {
  * @returns
  */
 export function setPayConfig(params: Record<string, any>) {
-    return request.put(`pay/config/${params.type}`, params, {showSuccessMessage: true});
+    return request.put(`pay/config/${params.type}`, params, { showSuccessMessage: true });
 }
 
 /**
@@ -439,7 +420,7 @@ export function getPayList() {
  * 获取打款设置配置
  * @param channel
  */
-export function getTransferInfo(channel: string) {
+export function getTransferInfo(channel) {
     return request.get(`pay/channel/lists/${channel}`)
 }
 
@@ -459,7 +440,7 @@ export function setTransferInfo(params: Record<string, any>) {
  * @returns
  */
 export function getCronList(params: any) {
-    return request.get(`sys/schedule/list`, {params})
+    return request.get(`sys/schedule/list`, { params })
 }
 
 /**
@@ -499,7 +480,7 @@ export function getWeek() {
  * @returns
  */
 export function addCron(params: Record<string, any>) {
-    return request.post(`sys/schedule`, params, {showSuccessMessage: true})
+    return request.post(`sys/schedule`, params, { showSuccessMessage: true })
 }
 
 /**
@@ -507,7 +488,7 @@ export function addCron(params: Record<string, any>) {
  * @returns
  */
 export function editCron(params: Record<string, any>) {
-    return request.put(`sys/schedule/${params.id}`, params, {showSuccessMessage: true})
+    return request.put(`sys/schedule/${params.id}`, params, { showSuccessMessage: true })
 }
 
 /**
@@ -515,7 +496,7 @@ export function editCron(params: Record<string, any>) {
  * @returns
  */
 export function deleteCron(id: string) {
-    return request.delete(`sys/schedule/${id}`, {showSuccessMessage: true})
+    return request.delete(`sys/schedule/${id}`, { showSuccessMessage: true })
 }
 
 /***************************************************** 协议管理 ****************************************************/
@@ -541,7 +522,7 @@ export function getAgreementInfo(key: string) {
  * @returns
  */
 export function editAgreement(params: Record<string, any>) {
-    return request.put(`sys/agreement/${params.key}`, params, {showSuccessMessage: true})
+    return request.put(`sys/agreement/${params.key}`, params, { showSuccessMessage: true })
 }
 
 /**
@@ -576,7 +557,7 @@ export function getConfigLogin() {
  * @returns
  */
 export function setConfigLogin(params: Record<string, any>) {
-    return request.put(`sys/config/login`, params, {showSuccessMessage: true})
+    return request.put(`sys/config/login`, params, { showSuccessMessage: true })
 }
 
 /**
@@ -590,7 +571,7 @@ export function getPayConfigList() {
  * 设置支付配置
  */
 export function setPatConfig(params: Record<string, any>) {
-    return request.post(`pay/channel/set/all`, params, {showSuccessMessage: true})
+    return request.post(`pay/channel/set/all`, params, { showSuccessMessage: true })
 }
 
 
@@ -599,14 +580,23 @@ export function setPatConfig(params: Record<string, any>) {
  * 刷新菜单
  */
 export function menuRefresh(params: Record<string, any>) {
-    return request.post(`sys/menu/refresh`, {}, {showSuccessMessage: true})
+    return request.post(`sys/menu/refresh`, {}, { showSuccessMessage: true })
 }
 
 /**
  * 清理数据字段缓存
  */
 export function clearSchemaCache(params: Record<string, any>) {
-    return request.post(`sys/schema/clear`, {}, {showSuccessMessage: true})
+    return request.post(`sys/schema/clear`, {}, { showSuccessMessage: true })
+}
+
+
+/***************************************************** 获取应用 ****************************************************/
+/**
+ * 获取应用
+ */
+export function getAppMange() {
+    return request.get(`sys/applist`)
 }
 
 /***************************************************** 地图设置 ****************************************************/
@@ -615,7 +605,7 @@ export function clearSchemaCache(params: Record<string, any>) {
  * 设置地图key
  */
 export function setMap(params: Record<string, any>) {
-    return request.put(`sys/config/map`, params, {showSuccessMessage: true})
+    return request.put(`sys/config/map`, params, { showSuccessMessage: true })
 }
 
 /**
@@ -637,14 +627,30 @@ export function getIndexList() {
  * 设置首页模版
  */
 export function setIndexList(params: Record<string, any>) {
-    return request.put(`sys/config/site_index`, params, {showSuccessMessage: true})
+    return request.put(`sys/config/site_index`, params, { showSuccessMessage: true })
+}
+
+/**
+ * 获取布局
+ * @returns
+ */
+export function getLayouts() {
+    return request.get('sys/layout')
+}
+
+/**
+ * 设置布局
+ * @returns
+ */
+export function setLayout(key: string) {
+    return request.put('sys/layout', { key }, { showSuccessMessage: true })
 }
 
 /**
  * 获取支付待审核记录
  */
 export function getPayAuditList(params: Record<string, any>) {
-    return request.get('pay/audit', {params})
+    return request.get('pay/audit', { params })
 }
 
 /**
@@ -652,7 +658,7 @@ export function getPayAuditList(params: Record<string, any>) {
  * @returns
  */
 export function payAuditPass(outTradeNo: string) {
-    return request.put(`pay/pass/${outTradeNo}`, {}, {showSuccessMessage: true})
+    return request.put(`pay/pass/${outTradeNo}`, {}, { showSuccessMessage: true })
 }
 
 /**
@@ -660,7 +666,7 @@ export function payAuditPass(outTradeNo: string) {
  * @returns
  */
 export function payAuditRefuse(params: Record<string, any>) {
-    return request.put(`pay/refuse/${params.out_trade_no}`, params, {showSuccessMessage: true})
+    return request.put(`pay/refuse/${params.out_trade_no}`, params, { showSuccessMessage: true })
 }
 
 /**
@@ -671,8 +677,39 @@ export function getPayDetail(id: number) {
 }
 
 /**
+ * 获取应用列表
+ */
+export function getAddonList() {
+    return request.get(`app/getAddonList`)
+}
+
+/**
  * 获取手机端首页列表
  */
 export function getWapIndexList(params: Record<string, any>) {
-    return request.get('sys/config/wap_index', {params})
+    return request.get('sys/config/wap_index', { params })
+}
+
+/**
+ * 获取开发者key
+ * @returns
+ */
+export function getDeveloperToken() {
+    return request.get('sys/config/developer_token')
+}
+
+/**
+ * 设置开发者key
+ * @param params
+ * @returns
+ */
+export function setDeveloperToken(params: Record<string, any>) {
+    return request.put(`sys/config/developer_token`, params, { showSuccessMessage: true })
+}
+
+/**
+ * 获取install.php配置
+ */
+export function getInstallConfig() {
+    return request.get('sys/install/config')
 }

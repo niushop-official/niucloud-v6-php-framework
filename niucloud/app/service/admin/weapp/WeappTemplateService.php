@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的多应用管理平台
+// | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud.com
+// | 官方网址：https://www.niucloud-admin.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -17,6 +17,7 @@ use app\service\core\notice\CoreNoticeService;
 use core\base\BaseAdminService;
 use core\exception\NoticeException;
 use core\template\TemplateLoader;
+use EasyWeChat\Kernel\Exceptions\InvalidArgumentException;
 use think\db\exception\DataNotFoundException;
 use think\db\exception\DbException;
 use think\db\exception\ModelNotFoundException;
@@ -76,10 +77,12 @@ class WeappTemplateService extends BaseAdminService
         //删除原来的消息模板
         $template_loader = (new TemplateLoader(NoticeTypeDict::WEAPP));
         $template_loader->delete(['template_id' => $weapp_template_id ]);
+//        (new CoreWeappTemplateService())->deleteTemplate($weapp_template_id);
         //新的消息模板
 
         $kid_list = $weapp['kid_list'] ?? [];
         $scene_desc = $weapp['scene_desc'] ?? '';
+//        $res = (new CoreWeappTemplateService())->addTemplate( $tid, $kid_list, $scene_desc);
         $res = $template_loader->addTemplate(['tid' => $tid, 'kid_list' => $kid_list, 'scene_desc' => $scene_desc ]);
         $notice_service = new NoticeService();
         if (isset($res[ 'errcode' ]) && $res[ 'errcode' ] == 0) {

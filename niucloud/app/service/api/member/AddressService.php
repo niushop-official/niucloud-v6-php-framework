@@ -11,7 +11,7 @@
 
 namespace app\service\api\member;
 
-use app\model\member\Address;
+use app\model\member\MemberAddress;
 use core\base\BaseApiService;
 
 
@@ -25,7 +25,7 @@ class AddressService extends BaseApiService
     public function __construct()
     {
         parent::__construct();
-        $this->model = new Address();
+        $this->model = new MemberAddress();
     }
 
     /**

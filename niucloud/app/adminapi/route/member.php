@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的多应用管理平台
+// | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud.com
+// | 官方网址：https://www.niucloud-admin.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -62,25 +62,25 @@ Route::group('member', function () {
     Route::get('account/type', 'member.Account/accountType');
     //会员积分流水
     Route::get('account/point', 'member.Account/point');
-    //会员积分调整
-    Route::post('account/point', 'member.Account/adjustPoint');
     //会员余额流水
     Route::get('account/balance', 'member.Account/balance');
-    //会员余额调整
-    Route::post('account/balance', 'member.Account/adjustBalance');
     //会员可提现余额流水
     Route::get('account/money', 'member.Account/money');
-    //会员零钱调整
-    Route::post('account/money', 'member.Account/adjustMoney');
     //会员佣金流水
     Route::get('account/commission', 'member.Account/commission');
     //会员佣金统计
     Route::get('account/sum_commission', 'member.Account/sumCommission');
     //会员积分统计
     Route::get('account/sum_point', 'member.Account/sumPoint');
+    //会员积分调整
+    Route::post('account/point', 'member.Account/adjustPoint');
+    //会员余额调整
+    Route::post('account/balance', 'member.Account/adjustBalance');
+    //会员零钱调整
+    Route::post('account/money', 'member.Account/adjustMoney');
     //会员账户类型变动方式
     Route::get('account/change_type/:account_type', 'member.Account/changeType');
-    //会员余额统计
+    //会员账户类型变动方式
     Route::get('account/sum_balance', 'member.Account/sumBalance');
     /***************************************************** 会员相关设置**************************************************/
     //获取注册与登录设置
@@ -110,16 +110,6 @@ Route::group('member', function () {
     Route::get('config/member', 'member.Config/getMemberConfig');
     //更新注册与登录设置
     Route::post('config/member', 'member.Config/setMemberConfig');
-
-    /***************************************************** 会员收藏 **************************************************/
-    //收藏 添加
-    Route::post('collect', 'member.Collect/setMemberCollect');
-    //收藏 查询(单条)
-    Route::get('collect', 'member.Collect/getCollect');
-    //收藏 查询(全部)
-    Route::get('collect/all', 'member.Collect/getList');
-    //收藏 取消
-    Route::delete('collect/:id', 'member.Collect/del');
 })->middleware([
     AdminCheckToken::class,
     AdminCheckRole::class,

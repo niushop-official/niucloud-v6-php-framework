@@ -37,8 +37,6 @@ $system_event = [
         'RefundSuccess' => ['app\listener\pay\RefundSuccessListener'],
         //转账成功
         'TransferSuccess' => ['app\listener\pay\TransferSuccessListener'],
-        //针对订单业务支持的支付方式再处理
-        'AllowPayTypeByTrade' => [],
         // 任务失败统一回调,有四种定义方式
         'queue_failed' => [
             ['app\listener\job\QueueFailedLoggerListener', 'report'],
@@ -47,19 +45,28 @@ $system_event = [
         'AppManage' => [
             'app\listener\system\AppManageListener'
         ],
-
+        //协议类型加载
+        'AgreementType' => [],
+        //站点首页加载
+        'SiteIndex' => [
+            'app\listener\system\SiteIndexListener'
+        ],
+        // 站点端布局
+        'SiteLayout' => [
+            'app\listener\system\SiteLayout'
+        ],
         //平台首页加载
         'AdminIndex' => [
             'app\listener\system\AdminIndexListener'
         ],
-        // 手机端首页加载
-        'WapIndex' => [
-//            'app\listener\system\WapIndexListener'
+        'BottomNavigation' => [
+            'app\listener\system\BottomNavigationListener'
         ],
         //消息模板数据内容
         'NoticeData' => [
             'app\listener\notice_template\VerifyCode',//手机验证码
-            'app\listener\notice_template\MemberVerifySuccess',//
+            'app\listener\notice_template\MemberVerifySuccess',
+            'app\listener\notice_template\RechargeSuccess',
         ],
         //全场景消息发送
         'Notice' => [

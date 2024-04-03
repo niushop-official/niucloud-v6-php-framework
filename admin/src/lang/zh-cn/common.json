@@ -36,7 +36,6 @@
   "copy": "复制",
   "complete": "完成",
   "copySuccess": "复制成功",
-  "changeApp": "切换应用",
   "notSupportCopy": "浏览器不支持一键复制，请手动进行复制",
   "selectPlaceholder": "全部",
   "provincePlaceholder": "请选择省",
@@ -45,6 +44,7 @@
   "emptyData": "暂无数据",
   "emptyQrCode": "暂无二维码",
   "fileErr": "无法显示",
+  "visitWap": "访问店铺",
   "upload": {
     "root": "上传",
     "selectimage": "选择图片",
@@ -76,7 +76,6 @@
     "layoutSetting": "主题设置",
     "darkMode": "黑暗模式",
     "sidebarMode": "主题风格",
-    "sidebarStyle": "主题样式",
     "themeColor": "主题颜色",
     "detectionLoginOperation": "确定",
     "detectionLoginContent": "已检测到有其他账号登录，需要刷新后才能继续操作。",
@@ -101,7 +100,7 @@
     "timeout": "网络请求超时！",
     "requestError": "请求错误",
     "errNetwork": "网络请求错误",
-    "baseUrlError": " 接口请求错误,请检查VITE_APP_BASE_URL参数配置或者伪静态配置"
+    "baseUrlError": " 接口请求错误,请检查VITE_APP_BASE_URL参数配置或者伪静态配置, <a style='text-decoration: underline;' href='https://www.kancloud.cn/niucloud/niucloud-admin-develop/3213750' target='blank'>点击查看相关手册</a>"
   },
   "linkPlaceholder": "请选择跳转链接",
   "selectLinkTips": "链接选择",
@@ -120,22 +119,6 @@
   "indexTemplate": "首页模版",
   "indexSwitch": "切换首页",
   "indexWarning": "你确定要切换首页吗？",
-  "appName": "应用名称",
-  "appNamePlaceholder": "请输入应用名称",
-  "generateMobile":"请输入正确的手机号格式",
-  "generateNumber":"请输入整数",
-  "generateIdCard":"请输入正确的身份证号",
-  "generateEmail":"请输入正确的邮箱号",
-  "generateMax":"超过最多输入字符数",
-  "generateMin":"少于最少输入字符数",
-  "generateBetween":"请输入正确的字符信息",
-  "emptyAppData":"暂无应用",
-
-  "appMarketPlace": "应用",
-  "developerCenter": "开发",
-  "niucloud": "Niucloud官网",
-  "exit": "退出",
-
   "originalPassword": "原始密码",
   "newPassword": "新密码",
   "passwordCopy": "确认密码",
@@ -144,5 +127,33 @@
   "passwordPlaceholder": "请输入新密码",
   "originalPasswordHint": "原始密码不能为空",
   "newPasswordHint": "请输入确认密码",
-  "doubleCipherHint": "两次新密码不同"
+  "doubleCipherHint": "两次新密码不同",
+  "upgrade": {
+    "upgradeButton": "立即升级",
+    "title": "升级",
+    "upgradingTips": "有正在执行的升级任务，",
+    "clickView": "点击查看",
+    "dirPermission": "目录读写权限",
+    "path": "路径",
+    "demand": "要求",
+    "readable": "可读",
+    "write": "可写",
+    "upgradeSuccess": "升级成功",
+    "localBuild": "手动编译",
+    "cloudBuild": "云编译",
+    "showDialogCloseTips": "升级任务尚未完成，关闭将取消升级，是否要继续关闭？",
+    "upgradeCompleteTips": "升级完成后还需要编译admin wap web端可选择云编译或者是手动编译"
+  },
+  "cloudbuild": {
+    "title": "云编译",
+    "executingTips": "有正在执行的编译任务，",
+    "clickView": "点击查看",
+    "dirPermission": "目录读写权限",
+    "path": "路径",
+    "demand": "要求",
+    "readable": "可读",
+    "write": "可写",
+    "cloudbuildSuccess": "编译完成",
+    "showDialogCloseTips": "编译任务尚未完成，关闭将取消编译，是否要继续关闭？"
+  }
 }

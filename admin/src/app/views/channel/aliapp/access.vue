@@ -24,7 +24,7 @@
                         <img class="max-w-[100%] max-h-[100%]" src="@/app/assets/images/config_info.png" alt="">
                     </div>
                     <p class="text-[14px]">{{ t('aliappwebsite') }}</p>
-                    <el-button link type="primary" @click="router.push('/website/channel/aliapp/config')">{{ t('aliappSet')
+                    <el-button link type="primary" @click="router.push('/channel/aliapp/config')">{{ t('aliappSet')
                     }}</el-button>
                 </li>
 
@@ -50,7 +50,7 @@
                         <img class="max-w-[100%] max-h-[100%]" src="@/app/assets/images/public_number.png" alt="">
                     </div>
                     <p class="text-[14px]">{{ t('uploadVersion') }}</p>
-                    <el-button link type="primary" @click="router.push('/website/channel/aliapp/course')">{{
+                    <el-button link type="primary" @click="router.push('/channel/aliapp/course')">{{
                         t('releaseCourse') }}</el-button>
                 </li>
                 <li class="progress-point-arrow list-none">
@@ -70,24 +70,23 @@
             <span class="text-[16px]">{{ t('aliappInlet') }}</span>
         </div>
         <div class="flex flex-wrap p-5">
-            <div class="w-[280px] h-[70px] flex bg-[#f7f8fa] items-center my-[20px] mr-[20px] cursor-pointer" @click="router.push('/website/channel/aliapp/config')">
+            <div class="w-[280px] h-[70px] flex bg-[#f7f8fa] items-center my-[20px] mr-[20px] cursor-pointer" @click="router.push('/channel/aliapp/config')">
                 <img class="w-[40px] h-[40px] mr-[10px] ml-[20px]" src="@/app/assets/images/wechat_icon.png" alt="">
                 <div class="flex flex-col h-[40px] justify-around">
                     <p class="text-[#666] text-[14px]">{{ t('aliappSet') }}</p>
                     <p class="text-[#999] text-[12px]">{{ t('aliappSet') }}</p>
                 </div>
             </div>
-            
         </div>
     </div> -->
     <div class="w-full p-5 bg-white">
         <div class="flex justify-between items-center mb-[20px]">
-            <span class="text-[20px]">{{ t('title') }}</span>
+            <span class="text-page-title">{{ t('title') }}</span>
         </div>
         <el-tabs v-model="activeName" class="demo-tabs" @tab-change="handleClick">
-            <el-tab-pane :label="t('weappAccessFlow')" name="/website/channel/aliapp" />
-            <!-- <el-tab-pane :label="t('subscribeMessage')" name="/website/channel/aliapp/message" />
-            <el-tab-pane :label="t('weappRelease')" name="/website/channel/aliapp/code" /> -->
+            <el-tab-pane :label="t('weappAccessFlow')" name="/channel/aliapp" />
+            <!-- <el-tab-pane :label="t('subscribeMessage')" name="/channel/aliapp/message" />
+            <el-tab-pane :label="t('weappRelease')" name="/channel/aliapp/code" /> -->
         </el-tabs>
         <div class="p-[20px]">
             <p class="text-[16px] mb-[20px]">{{ t("weappInlet") }}</p>
@@ -101,12 +100,15 @@
                                 </el-icon>
                             </template>
                             <template #icon v-else-if="active == 1">
-                                <div class="w-[24px] h-[24px] box-border rounded-full bg-color1 flex items-center justify-center">
+                                <div
+                                    class="w-[24px] h-[24px] box-border rounded-full bg-color1 flex items-center justify-center">
                                     <div class="h-[12px] w-[12px] bg-color rounded-full"></div>
                                 </div>
                             </template>
                             <template #icon v-else>
-                                <div class="w-[24px] h-[24px] text-[#fff] bg-[#778aa3] text-center leading-[24px] rounded-full">1</div>
+                                <div
+                                    class="w-[24px] h-[24px] text-[#fff] bg-[#778aa3] text-center leading-[24px] rounded-full">
+                                    1</div>
                             </template>
                             <template #title>
                                 <p class="text-[14px] text-[#303133] font-[700]">
@@ -116,7 +118,9 @@
                             <template #description>
                                 <span class="text-[#999]">{{ t("weappAttest") }}</span>
                                 <div class="mt-[20px] mb-[40px] h-[32px]">
-                                    <el-button type="primary" @click="linkEvent('https://open.alipay.com/develop/manage')">{{t("clickAccess") }}</el-button>
+                                    <el-button type="primary"
+                                        @click="linkEvent('https://open.alipay.com/develop/manage')">{{ t("clickAccess")
+                                        }}</el-button>
                                 </div>
                             </template>
                         </el-step>
@@ -127,12 +131,15 @@
                                 </el-icon>
                             </template>
                             <template #icon v-else-if="active == 2">
-                                <div class="w-[24px] h-[24px] box-border rounded-full bg-color1 flex items-center justify-center">
+                                <div
+                                    class="w-[24px] h-[24px] box-border rounded-full bg-color1 flex items-center justify-center">
                                     <div class="h-[12px] w-[12px] bg-color rounded-full"></div>
                                 </div>
                             </template>
                             <template #icon v-else>
-                                <div class="w-[24px] h-[24px] text-[#fff] bg-[#778aa3] text-center leading-[24px] rounded-full">2</div>
+                                <div
+                                    class="w-[24px] h-[24px] text-[#fff] bg-[#778aa3] text-center leading-[24px] rounded-full">
+                                    2</div>
                             </template>
                             <template #title>
                                 <p class="text-[14px] text-[#303133] font-[700]">
@@ -142,7 +149,8 @@
                             <template #description>
                                 <span class="text-[#999]">{{ t("emplace") }}</span>
                                 <div class="mt-[20px] mb-[40px] h-[32px]">
-                                    <el-button type="primary" plain @click="router.push('/website/channel/aliapp/config')">{{t("weappSettingBtn") }}</el-button>
+                                    <el-button type="primary" plain
+                                        @click="router.push('/channel/aliapp/config')">{{ t("weappSettingBtn") }}</el-button>
                                 </div>
                             </template>
                         </el-step>
@@ -153,12 +161,15 @@
                                 </el-icon>
                             </template>
                             <template #icon v-else-if="active == 3">
-                                <div class="w-[24px] h-[24px] box-border rounded-full bg-color1 flex items-center justify-center">
+                                <div
+                                    class="w-[24px] h-[24px] box-border rounded-full bg-color1 flex items-center justify-center">
                                     <div class="h-[12px] w-[12px] bg-color rounded-full"></div>
                                 </div>
                             </template>
                             <template #icon v-else>
-                                <div class="w-[24px] h-[24px] text-[#fff] bg-[#778aa3] text-center leading-[24px] rounded-full">3</div>
+                                <div
+                                    class="w-[24px] h-[24px] text-[#fff] bg-[#778aa3] text-center leading-[24px] rounded-full">
+                                    3</div>
                             </template>
                             <template #title>
                                 <p class="text-[14px] text-[#303133] font-[700]">
@@ -168,7 +179,7 @@
                             <template #description>
                                 <span class="text-[#999]">{{ t("releaseCourse") }}</span>
                                 <div class="mt-[20px] mb-[40px] h-[32px]">
-                                    <!-- <el-button type="primary" plain @click="router.push('/website/channel/aliapp/code')">{{
+                                    <!-- <el-button type="primary" plain @click="router.push('/channel/aliapp/code')">{{
                                         t("weappRelease") }}</el-button> -->
                                 </div>
                             </template>
@@ -180,12 +191,15 @@
                                 </el-icon>
                             </template>
                             <template #icon v-else-if="active == 4">
-                                <div class="w-[24px] h-[24px] box-border rounded-full bg-color1 flex items-center justify-center">
+                                <div
+                                    class="w-[24px] h-[24px] box-border rounded-full bg-color1 flex items-center justify-center">
                                     <div class="h-[12px] w-[12px] bg-color rounded-full"></div>
                                 </div>
                             </template>
                             <template #icon v-else>
-                                <div class="w-[24px] h-[24px] text-[#fff] bg-[#778aa3] text-center leading-[24px] rounded-full">4</div>
+                                <div
+                                    class="w-[24px] h-[24px] text-[#fff] bg-[#778aa3] text-center leading-[24px] rounded-full">
+                                    4</div>
                             </template>
                             <template #title>
                                 <p class="text-[14px] text-[#303133] font-[700]">
@@ -204,10 +218,10 @@
                 </el-col>
                 <el-col :span="4">
                     <div class="flex justify-center">
-                        <el-image class="w-[180px] h-[180px]"  :src="qr_code?img(qr_code):''">
+                        <el-image class="w-[180px] h-[180px]" :src="qrCode ? img(qrCode) : ''">
                             <template #error>
                                 <div class="w-[100%] h-[100%] flex items-center  justify-center bg-[#f5f7fa]">
-                                    <span>{{ qr_code?t('fileErr'):t('emptyQrCode') }}</span>
+                                    <span>{{ qrCode ? t('fileErr') : t('emptyQrCode') }}</span>
                                 </div>
                             </template>
                         </el-image>
@@ -221,26 +235,26 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { onMounted, ref } from "vue";
+import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { t } from '@/lang'
-import {img} from '@/utils/common'
+import { img } from '@/utils/common'
 import { getAliappConfig } from '@/app/api/aliapp'
 
 const router = useRouter()
-let activeName = ref("/website/channel/aliapp");
-let active = ref(2);
-let qr_code = ref('')
+const activeName = ref('/channel/aliapp')
+const active = ref(2)
+const qrCode = ref<string>('')
 onMounted(async () => {
-    let res = await getAliappConfig()
-    qr_code.value = res.data.qr_code
+    const res = await getAliappConfig()
+    qrCode.value = res.data.qr_code
 })
 const linkEvent = (url: string) => {
-    window.open(url, "_blank")
+    window.open(url, '_blank')
 }
 const handleClick = (val: any) => {
-    router.push({ path: activeName.value });
-};
+    router.push({ path: activeName.value })
+}
 </script>
 
 <style lang="scss" scoped>
@@ -263,30 +277,36 @@ const handleClick = (val: any) => {
 
 .bg-color1 {
     background-color: var(--el-color-info-light-8);
-} 
-:deep(.el-tabs__item:hover){
+}
+
+:deep(.el-tabs__item:hover) {
     border-bottom: 2px solid var(--el-color-primary);
 }
-:deep(.el-tabs__item){
+
+:deep(.el-tabs__item) {
     padding: 0;
 }
-:deep(.el-tabs__item+.el-tabs__item){
+
+:deep(.el-tabs__item+.el-tabs__item) {
     margin-right: 20px;
     margin-left: 20px;
     // border-bottom: 2px solid var(--el-color-primary);
 }
-:deep(.el-tabs--top){
-    .el-tabs__item.is-top:nth-child(2){
+
+:deep(.el-tabs--top) {
+    .el-tabs__item.is-top:nth-child(2) {
         margin-right: 20px;
     }
-    
+
 }
-:deep(.el-step.is-vertical .el-step__icon.is-icon){
+
+:deep(.el-step.is-vertical .el-step__icon.is-icon) {
     padding: 8px 0;
     height: 40px;
     background-color: #fff;
 }
-:deep(.el-step__title){
+
+:deep(.el-step__title) {
     height: 40px;
     line-height: 40px !important;
 }

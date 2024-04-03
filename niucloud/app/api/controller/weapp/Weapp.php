@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的多应用管理平台
+// | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud.com
+// | 官方网址：https://www.niucloud-admin.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -14,6 +14,7 @@ namespace app\api\controller\weapp;
 use app\service\api\notice\NoticeService;
 use app\service\api\weapp\WeappAuthService;
 use core\base\BaseApiController;
+use EasyWeChat\Kernel\Exceptions\InvalidArgumentException;
 use think\Response;
 
 class Weapp extends BaseApiController

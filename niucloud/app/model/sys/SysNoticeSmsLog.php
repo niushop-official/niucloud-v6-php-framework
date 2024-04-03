@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的多应用管理平台
+// | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud.com
+// | 官方网址：https://www.niucloud-admin.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -52,7 +52,7 @@ class SysNoticeSmsLog extends BaseModel
      */
     public function getResultAttr($value, $data)
     {
-        if ($value && !is_array($value)) {
+        if ($value) {
             $temp = json_decode($value, true);
         }
         if (empty($temp)) {
@@ -98,7 +98,7 @@ class SysNoticeSmsLog extends BaseModel
      * @param $data
      * @return string
      */
-    public function getSmsTypeNameAttr($value, $data)
+    public function getSmsTypesNameAttr($value, $data)
     {
         if (empty($data['sms_type'])) return '';
         $temp = SmsDict::getType()[$data['sms_type']] ?? [];

@@ -122,7 +122,7 @@ class Local extends BaseUpload
     public function thumb($file_path, $thumb_type)
     {
         //todo  判断缩略图是否存在
-        $thumb_config = config('upload.thumb_type');
+        $thumb_config = config('upload.thumb.thumb_type');
         //  ……
         //获取文件原名  获取
         $file_arr = explode('/', $file_path);

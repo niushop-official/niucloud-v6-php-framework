@@ -5,7 +5,7 @@ import request from '@/utils/request'
  * @returns
  */
 export function getAddonLocal(params: Record<string, any>) {
-    return request.get('addon/local', params)
+    return request.get('addon/local', params, { showSuccessMessage: true })
 }
 
 /**
@@ -14,14 +14,6 @@ export function getAddonLocal(params: Record<string, any>) {
  */
 export function getAddonDetial(id: number) {
     return request.get(`addon/${id}`)
-}
-
-/**
- * 插件信息
- * @returns
- */
-export function getAddonByKey(key: string) {
-    return request.get(`addon/addon_by_key/${key}`)
 }
 
 /**
@@ -62,7 +54,7 @@ export function preInstallCheck(addon: string) {
 
 /**
  * 获取正在安装的插件
- * @returns 
+ * @returns
  */
 export function getAddonInstalltask() {
     return request.get('addon/installtask')
@@ -70,8 +62,8 @@ export function getAddonInstalltask() {
 
 /**
  * 获取插件云安装日志
- * @param addon 
- * @returns 
+ * @param addon
+ * @returns
  */
 export function getAddonCloudInstallLog(addon: string) {
     return request.get(`addon/cloudinstall/${addon}`)
@@ -93,4 +85,8 @@ export function preUninstallCheck(addon: string) {
  */
 export function cancelInstall(addon: string) {
     return request.put(`addon/install/cancel/${addon}`, {}, { showErrorMessage: false })
+}
+
+export function getInstalledAddonList() {
+    return request.get('addon/list/install')
 }

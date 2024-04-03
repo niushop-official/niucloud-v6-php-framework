@@ -12,18 +12,6 @@
 					</el-radio-group>
 				</el-form-item>
 
-				<el-form-item :label="t('graphicNavTitle')">
-					<el-input v-model="diyStore.editComponent.navTitle" :placeholder="t('graphicNavTitlePlaceholder')" clearable maxlength="20" show-word-limit/>
-				</el-form-item>
-
-				<el-form-item :label="t('subGraphicNavTitle')">
-					<el-input v-model="diyStore.editComponent.subNavTitle" :placeholder="t('subGraphicNavTitlePlaceholder')" clearable maxlength="20" show-word-limit/>
-				</el-form-item>
-
-				<el-form-item :label="t('subGraphicNavTitleLink')">
-					<diy-link v-model="diyStore.editComponent.subNavTitleLink"/>
-				</el-form-item>
-
 				<el-form-item :label="t('graphicNavSelectMode')">
 					<el-radio-group v-model="diyStore.editComponent.mode">
 						<el-radio :label="'graphic'">{{t('graphicNavModeGraphic')}}</el-radio>
@@ -34,8 +22,15 @@
 
 				<view v-show="diyStore.editComponent.layout == 'horizontal'">
 
+					<el-form-item :label="t('graphicNavPageCount')">
+						<el-radio-group v-model="diyStore.editComponent.pageCount" @change="changePageCount">
+							<el-radio :label="1">{{t('singleLine')}}</el-radio>
+							<el-radio :label="2">{{t('multiline')}}</el-radio>
+						</el-radio-group>
+					</el-form-item>
+
 					<el-form-item :label="t('graphicNavShowStyle')">
-						<el-radio-group v-model="diyStore.editComponent.showStyle">
+						<el-radio-group v-model="diyStore.editComponent.showStyle" @change="changeShowStyle">
 							<el-radio :label="'fixed'">{{t('graphicNavStyleFixed')}}</el-radio>
 							<el-radio :label="'singleSlide'">{{t('graphicNavStyleSingleSlide')}}</el-radio>
 							<el-radio :label="'pageSlide'">{{t('graphicNavStylePageSlide')}}</el-radio>
@@ -49,13 +44,6 @@
 							<el-radio :label="5">5{{t('piece')}}</el-radio>
 						</el-radio-group>
 					</el-form-item>
-
-					<el-form-item :label="t('graphicNavPageCount')">
-						<el-radio-group v-model="diyStore.editComponent.pageCount">
-							<el-radio :label="1">1{{t('line')}}</el-radio>
-							<el-radio :label="2">2{{t('line')}}</el-radio>
-						</el-radio-group>
-					</el-form-item>
 				</view>
 
 			</el-form>
@@ -67,13 +55,13 @@
 				<p class="text-sm text-gray-400 mb-[10px]">{{ t('graphicNavTips') }}</p>
 
 				<div ref="imageBoxRef">
-					<div v-for="(item,index) in diyStore.editComponent.list" :key="item.id" class="item-wrap !cursor-move p-[10px] pb-0 relative border border-dashed border-gray-300 mb-[16px]">
+					<div v-for="(item,index) in diyStore.editComponent.list" :key="item.id" class="item-wrap p-[10px] pb-0 relative border border-dashed border-gray-300 mb-[16px]">
 						<el-form-item :label="t('image')" v-show="diyStore.editComponent.mode === 'graphic' || diyStore.editComponent.mode === 'img'">
 							<upload-image v-model="item.imageUrl" :limit="1"/>
 						</el-form-item>
 
 						<el-form-item :label="t('graphicNavTitle')" v-show="diyStore.editComponent.mode === 'graphic' || diyStore.editComponent.mode === 'text'">
-							<el-input v-model="item.title" :placeholder="t('graphicNavTitlePlaceholder')" clearable maxlength="20" show-word-limit/>
+							<el-input v-model.trim="item.title" :placeholder="t('graphicNavTitlePlaceholder')" clearable maxlength="20" show-word-limit/>
 						</el-form-item>
 
 						<div class="del absolute cursor-pointer z-[2] top-[-8px] right-[-8px]" v-show="diyStore.editComponent.list.length > 1" @click="diyStore.editComponent.list.splice(index,1)">
@@ -120,9 +108,6 @@
 				<el-form-item :label="t('textColor')">
 					<el-color-picker v-model="diyStore.editComponent.font.color" show-alpha :predefine="diyStore.predefineColors"/>
 				</el-form-item>
-				<el-form-item :label="t('subTextColor')">
-					<el-color-picker v-model="diyStore.editComponent.subNavColor" show-alpha :predefine="diyStore.predefineColors"/>
-				</el-form-item>
 
 			</el-form>
 		</div>
@@ -135,96 +120,104 @@
 </template>
 
 <script lang="ts" setup>
-    import {ref, watch, onMounted, nextTick} from 'vue'
-    import {t} from '@/lang'
-    import Sortable from 'sortablejs'
-    import {img} from '@/utils/common'
-    import {range} from 'lodash-es'
+import { ref, watch, onMounted, nextTick } from 'vue'
+import { t } from '@/lang'
+import Sortable from 'sortablejs'
+import { img } from '@/utils/common'
+import { range } from 'lodash-es'
 
-    import useDiyStore from '@/stores/modules/diy'
+import useDiyStore from '@/stores/modules/diy'
 
-    const diyStore = useDiyStore()
-    diyStore.editComponent.ignore = []; // 忽略公共属性
+const diyStore = useDiyStore()
+diyStore.editComponent.ignore = [] // 忽略公共属性
 
-    // 组件验证
-    diyStore.editComponent.verify = (index: number) => {
-        var res = {code: true, message: ''};
+// 组件验证
+diyStore.editComponent.verify = (index: number) => {
+    const res = { code: true, message: '' }
 
-        diyStore.value[index].list.forEach((item: any) => {
-            if ((diyStore.value[index].mode === 'graphic' || diyStore.value[index].mode === 'img') && item.imageUrl === '') {
-                res.code = false;
-                res.message = t('imageUrlTip');
-                return res;
-            }
-            if ((diyStore.value[index].mode === 'graphic' || diyStore.value[index].mode === 'text') && item.title === '') {
-                res.code = false;
-                res.message = t('graphicNavTitlePlaceholder');
-                return res;
-            }
-        });
-        return res;
-    };
-
-    diyStore.editComponent.list.forEach((item: any) => {
-        if (!item.id) item.id = diyStore.generateRandom();
+    diyStore.value[index].list.forEach((item: any) => {
+        if ((diyStore.value[index].mode === 'graphic' || diyStore.value[index].mode === 'img') && item.imageUrl === '') {
+            res.code = false
+            res.message = t('imageUrlTip')
+            return res
+        }
+        if ((diyStore.value[index].mode === 'graphic' || diyStore.value[index].mode === 'text') && item.title === '') {
+            res.code = false
+            res.message = t('graphicNavTitlePlaceholder')
+            return res
+        }
     })
+    return res
+}
 
-    watch(
-        () => diyStore.editComponent.list,
-        (newValue, oldValue) => {
-            // 设置图片宽高
-            diyStore.editComponent.list.forEach((item: any) => {
-                let image = new Image();
-                image.src = img(item.imageUrl);
-                image.onload = async () => {
-                    item.imgWidth = image.width;
-                    item.imgHeight = image.height;
-                };
-            });
-        },
-        {deep: true}
-    )
+diyStore.editComponent.list.forEach((item: any) => {
+    if (!item.id) item.id = diyStore.generateRandom()
+})
 
-    const addGraphicNav = () => {
-        diyStore.editComponent.list.push({
-            id: diyStore.generateRandom(),
-            title: '',
-            imageUrl: '',
-            imgWidth: 0,
-            imgHeight: 0,
-            link: {name: ''},
-            label: {
-                control: false,
-                text: '热门',
-                textColor: '#FFFFFF',
-                bgColorStart: '#F83287',
-                bgColorEnd: '#FE3423'
+watch(
+    () => diyStore.editComponent.list,
+    (newValue, oldValue) => {
+        // 设置图片宽高
+        diyStore.editComponent.list.forEach((item: any) => {
+            const image = new Image()
+            image.src = img(item.imageUrl)
+            image.onload = async () => {
+                item.imgWidth = image.width
+                item.imgHeight = image.height
             }
         })
-    }
+    },
+    { deep: true }
+)
 
-    const imageBoxRef = ref()
-
-    onMounted(() => {
-        nextTick(() => {
-            const sortable = Sortable.create(imageBoxRef.value, {
-                group: 'item-wrap',
-                animation: 200,
-                onEnd: event => {
-                    const temp = diyStore.editComponent.list[event.oldIndex!];
-                    diyStore.editComponent.list.splice(event.oldIndex!, 1);
-                    diyStore.editComponent.list.splice(event.newIndex!, 0, temp);
-                    sortable.sort(
-                        range(diyStore.editComponent.list.length).map(value => {
-                            return value.toString();
-                        })
-                    );
-                }
-            })
-        });
+const addGraphicNav = () => {
+    diyStore.editComponent.list.push({
+        id: diyStore.generateRandom(),
+        title: '',
+        imageUrl: '',
+        imgWidth: 0,
+        imgHeight: 0,
+        link: { name: '' },
+        label: {
+            control: false,
+            text: '热门',
+            textColor: '#FFFFFF',
+            bgColorStart: '#F83287',
+            bgColorEnd: '#FE3423'
+        }
     })
+}
 
-    defineExpose({})
+const imageBoxRef = ref()
+
+onMounted(() => {
+    nextTick(() => {
+        const sortable = Sortable.create(imageBoxRef.value, {
+            group: 'item-wrap',
+            animation: 200,
+            onEnd: event => {
+                const temp = diyStore.editComponent.list[event.oldIndex!]
+                diyStore.editComponent.list.splice(event.oldIndex!, 1)
+                diyStore.editComponent.list.splice(event.newIndex!, 0, temp)
+                sortable.sort(
+                    range(diyStore.editComponent.list.length).map(value => {
+                        return value.toString()
+                    })
+                )
+            }
+        })
+    })
+})
+
+const changePageCount = (value:any)=>{
+    if(value == '1'){
+        diyStore.editComponent.showStyle = 'singleSlide';
+    }else if(value == '2'){
+        diyStore.editComponent.showStyle = 'fixed';
+    }
+}
+
+defineExpose({})
 
 </script>
 

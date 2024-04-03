@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的多应用管理平台
+// | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud.com
+// | 官方网址：https://www.niucloud-admin.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -12,7 +12,9 @@
 namespace app\service\core\addon;
 
 use app\dict\addon\AddonDict;
+use app\dict\sys\AppTypeDict;
 use app\model\addon\Addon;
+use app\service\admin\site\SiteGroupService;
 use app\service\admin\sys\MenuService;
 use app\service\core\niucloud\CoreModuleService;
 use think\db\exception\DbException;
@@ -40,7 +42,7 @@ class CoreAddonService extends CoreAddonBaseService
     {
         $list = [];
         $online_app_list = [];
-        $install_addon_list = $this->model->append(['status_name', 'type_name'])->column('title, icon, key, desc, status, author, version, install_time, update_time, cover, type', 'key');
+        $install_addon_list = $this->model->append(['status_name'])->column('title, icon, key, desc, status, author, version, install_time, update_time, cover', 'key');
         try {
             $niucloud_module_list = (new CoreModuleService())->getModuleList()['data'] ?? [];
             foreach ($niucloud_module_list as $v) {
@@ -49,7 +51,7 @@ class CoreAddonService extends CoreAddonBaseService
                     'desc' => $v['app']['app_desc'],
                     'key' => $v['app']['app_key'] ?? '',
                     'version' => $v['version'] ?? '',
-                    'author' => $v['site_name'],
+                    'author' => $v['app']['app_name'],
                     'type' => $v['app']['app_type'],
                     'support_app' => $v['app']['support_channel'] ?? [],
                     'is_download' => false,
@@ -64,21 +66,19 @@ class CoreAddonService extends CoreAddonBaseService
         } catch ( Throwable $e ) {
             $error = $e->getMessage();
         }
-        if(is_dir($this->addon_path)){
-            $files = get_files_by_dir($this->addon_path);
-            if (!empty($files)) {
-                foreach ($files as $path) {
-                    $data = $this->getAddonConfig($path);
-                    if (isset($data['key'])) {
-                        $data['icon'] = is_file($data['icon']) ? image_to_base64($data['icon']) : '';
-                        $data['cover'] = is_file($data['cover']) ? image_to_base64($data['cover']) : '';
-                        $key = $data['key'];
-                        $data['install_info'] = $install_addon_list[$key] ?? [];
-                        $data['is_download'] = true;
-                        $data['is_local'] = in_array($data['key'], $online_app_list) ? false : true;
-                        $list[$key] = $data;
-                    }
-
+        $files = get_files_by_dir($this->addon_path);
+        if (!empty($files)) {
+            foreach ($files as $path) {
+                $data = $this->getAddonConfig($path);
+                if (isset($data['key'])) {
+                    $data['icon'] = is_file($data['icon']) ? image_to_base64($data['icon']) : '';
+                    $data['cover'] = is_file($data['cover']) ? image_to_base64($data['cover']) : '';
+                    $key = $data['key'];
+                    $data['install_info'] = $install_addon_list[$key] ?? [];
+                    $data['is_download'] = true;
+                    $data['is_local'] = in_array($data['key'], $online_app_list) ? false : true;
+                    $data['version'] = isset($list[ $data['key'] ]) ? $list[ $data['key'] ]['version'] : $data['version'];
+                    $list[$key] = $data;
                 }
             }
         }
@@ -116,9 +116,14 @@ class CoreAddonService extends CoreAddonBaseService
      */
     public function getPage(array $where)
     {
-        $field = 'id, title, key, desc, version, status, type, icon, create_time, install_time';
-        $search_model = $this->model->where([])->append(['status_name', 'type_name'])->withSearch(['title'], $where)->field($field)->order('id desc');
+        $field = 'id, title, key, desc, version, status, icon, create_time, install_time';
+        $search_model = $this->model->where([])->withSearch(['title'], $where)->field($field)->order('id desc');
         return $this->pageQuery($search_model);
+    }
+
+    public function getList(array $where){
+        $field = 'id, title, key, desc, version, status, icon, create_time, install_time';
+        return $this->model->where($where)->field($field)->order('id desc')->select()->toArray();
     }
 
     /**
@@ -205,19 +210,21 @@ class CoreAddonService extends CoreAddonBaseService
         return event('addon', []);
     }
 
-
     /**
      * 查询已安装的有效的应用
      * @return array
      */
-    public function getInstallAddonList()
+    public function getInstallAddonList(){
+        return $this->model->where([['status', '=', AddonDict::ON]])->append(['status_name'])->column('title, icon, key, desc, status, type, support_app', 'key');
+    }
+
+    public function getAddonMemuList()
     {
         $field = 'title, icon, key, desc, status';
-        $addonList = $this->model->where([['status', '=', AddonDict::ON]])->field($field)->append(['status_name', 'type_name'])->with('children')->order('create_time desc')->select()->toArray();
+        $addonList = $this->model->where([['status', '=', AddonDict::ON]])->field($field)->append(['status_name', 'type_name'])->with('menu')->order('create_time desc')->select()->toArray();
         foreach ($addonList as &$value) {
-            $value['children'] = (new MenuService())->menuToTree($value['children'], 'menu_key', 'parent_key', 'children', 'auth', '', '');
+            $value['children'] = (new MenuService())->menuToTree($value['menu'], 'menu_key', 'parent_key', 'children', 'auth', '', 0);
         }
-
         return $addonList;
     }
 
@@ -241,11 +248,6 @@ class CoreAddonService extends CoreAddonBaseService
                     $data['install_info'] = $install_addon_list[$key] ?? [];
                     $data['icon'] = is_file($data['icon']) ? image_to_base64($data['icon']) : '';
                     $data['cover'] = is_file($data['cover']) ? image_to_base64($data['cover']) : '';
-                    //如果已安装就读取库中的
-//                    if($data['install_info']){
-//                        $data['icon'] = is_file($data['install_info']['icon']) ? $data['install_info']['icon'] : $data['icon'];
-//                        $data['cover'] = is_file($data['install_info']['cover']) ? $data['install_info']['icon'] : $data['cover'];
-//                    }
                     $data['is_download'] = true;
                     $data['type_name'] = empty($data['type']) ? '' : AddonDict::getType()[$data['type']] ?? '';
                     $list[$key] = $data;
@@ -286,4 +288,5 @@ class CoreAddonService extends CoreAddonBaseService
         }
         return $data;
     }
+
 }

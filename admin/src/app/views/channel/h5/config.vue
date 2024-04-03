@@ -1,7 +1,7 @@
 <template>
     <div class="main-container">
         <div class="flex ml-[18px] justify-between items-center mt-[20px]">
-			<span class="text-[20px]">{{pageName}}</span>
+			<span class="text-page-title">{{pageName}}</span>
 		</div>
         <el-form :model="formData" label-width="150px" ref="formRef" class="page-form" v-loading="loading">
             <el-card class="box-card !border-none" shadow="never">
@@ -42,8 +42,8 @@ const pageName = route.meta.title
 
 const loading = ref(true)
 
-const formData = reactive<Record<string, string | boolean>>({
-    is_open: false,
+const formData = reactive<Record<string, string | boolean | any>>({
+    is_open: true,
     request_url: ''
 })
 
@@ -54,13 +54,13 @@ const formRef = ref<FormInstance>()
  */
 getH5Config().then(res => {
     Object.assign(formData, res.data)
-    formData.is_open = Boolean(Number(formData.is_open));
+    formData.is_open = Boolean(Number(formData.is_open))
     loading.value = false
 })
 /**
  * 获取h5域名
  */
- getUrl().then(res => {
+getUrl().then(res => {
     formData.request_url = res.data.wap_url + '/'
 })
 
@@ -89,8 +89,8 @@ watch(copied, () => {
 })
 
 // 点击访问
-const visitFn = ()=>{
-    window.open(formData.request_url);
+const visitFn = () => {
+    window.open(formData.request_url)
 }
 
 /**
@@ -102,8 +102,8 @@ const save = async (formEl: FormInstance | undefined) => {
     await formEl.validate(async (valid) => {
         if (valid) {
             loading.value = true
-            let data = {...formData};
-            data.is_open = Number(data.is_open);
+            const data = { ...formData }
+            data.is_open = Number(data.is_open)
             setH5Config(data).then(() => {
                 loading.value = false
             }).catch(() => {

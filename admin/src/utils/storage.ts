@@ -8,17 +8,19 @@ interface setParam {
 }
 
 class Storage {
+    private prefix = ''
 
     public constructor() {
+        this.prefix = 'admin'
     }
 
     /**
      * 设置缓存
-     * @param param 
+     * @param param
      */
     public set(param: setParam) {
         try {
-            window.localStorage.setItem(param.key, JSON.stringify(param.data))
+            window.localStorage.setItem(`${this.prefix}.${param.key}`, JSON.stringify(param.data))
             typeof param.success == 'function' && param.success()
         } catch (error) {
             typeof param.fail == 'function' && param.fail(error)
@@ -27,25 +29,25 @@ class Storage {
 
     /**
      * 获取缓存
-     * @param key 
-     * @returns 
+     * @param key
+     * @returns
      */
     public get(key: string) {
         try {
-            const json: any = window.localStorage.getItem(key)
+            const json: any = window.localStorage.getItem(`${this.prefix}.${key}`)
             return JSON.parse(json)
         } catch (error) {
-            return null
+            return window.localStorage.getItem(`${this.prefix}.${key}`)
         }
     }
 
     /**
      * 移除指定缓存
-     * @param key 
+     * @param key
      */
     public remove(key: string | string[]) {
-        if (typeof key == 'string') window.localStorage.removeItem(key)
-        else key.forEach(item => { window.localStorage.removeItem(item) })
+        if (typeof key == 'string') window.localStorage.removeItem(`${this.prefix}.${key}`)
+        else key.forEach(item => { window.localStorage.removeItem(`${this.prefix}.${item}`) })
     }
 
     /**

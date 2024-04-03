@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的多应用管理平台
+// | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud.com
+// | 官方网址：https://www.niucloud-admin.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -36,24 +36,45 @@ class DiyRouteService extends BaseAdminService
      */
     public function getList(array $where = [])
     {
-        $link = LinkDict::getLink();
+        $condition = [];
+        if (!empty($where[ 'addon' ])) {
+            $condition[ 'addon' ] = $where[ 'addon' ];
+        }
+        $link = LinkDict::getLink($condition);
+
         $diy_route_list = [];
         $sort = 0;
         foreach ($link as $k => $v) {
             if (!empty($v[ 'child_list' ])) {
                 foreach ($v[ 'child_list' ] as $ck => $cv) {
                     if (!empty($cv[ 'url' ])) {
-                        if (empty($where[ 'title' ]) || ( !empty($where[ 'title' ]) && str_contains($cv[ 'title' ], $where[ 'title' ]) )) {
-                            $diy_route_list[] = [
-                                'key' => $v[ 'key' ] ?? '',
-                                'addon_title' => $v[ 'addon_title' ] ?? '',
-                                'title' => $cv[ 'title' ],
-                                'name' => $cv[ 'name' ],
-                                'page' => $cv[ 'url' ],
-                                'is_share' => $cv[ 'is_share' ],
-                                'action' => $cv[ 'action' ] ?? '',
-                                'sort' => ++$sort
-                            ];
+                        $is_add = true;
+
+                        if (!empty($where[ 'title' ]) && !str_contains($cv[ 'title' ], $where[ 'title' ])) {
+                            $is_add = false;
+                        }
+
+                        if (!empty($where[ 'url' ]) && $where[ 'url' ] != $cv[ 'url' ]) {
+                            $is_add = false;
+                        }
+
+                        if (!empty($where[ 'addon_name' ]) && $where[ 'addon_name' ] != $v[ 'addon_info' ][ 'key' ]) {
+                            $is_add = false;
+                        }
+
+                        $item = [
+                            'addon_info' => $v[ 'addon_info' ] ?? '',
+                            'title' => $cv[ 'title' ],
+                            'name' => $cv[ 'name' ],
+                            'parent' => $k,
+                            'page' => $cv[ 'url' ],
+                            'is_share' => $cv[ 'is_share' ],
+                            'action' => $cv[ 'action' ] ?? '',
+                            'sort' => ++$sort
+                        ];
+
+                        if ($is_add) {
+                            $diy_route_list[] = $item;
                         }
                     }
                 }
@@ -84,7 +105,6 @@ class DiyRouteService extends BaseAdminService
     public function getInfo(int $id)
     {
         $field = 'title,name,page,share,is_share,sort';
-
         return $this->model->field($field)->where([ [ 'id', '=', $id ] ])->findOrEmpty()->toArray();
     }
 
@@ -147,6 +167,19 @@ class DiyRouteService extends BaseAdminService
             $this->model->create($data);
         }
         return true;
+    }
+
+    /**
+     * 获取路由列表（存在的应用插件列表）
+     * @return array|null
+     */
+    public function getApps()
+    {
+        $link = LinkDict::getLink([
+            'query' => 'addon'
+        ]);
+
+        return $link;
     }
 
 }

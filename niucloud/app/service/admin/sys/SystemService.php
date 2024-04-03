@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的多应用管理平台
+// | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud.com
+// | 官方网址：https://www.niucloud-admin.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -11,9 +11,8 @@
 
 namespace app\service\admin\sys;
 
-use app\job\sys\CheckComposer;
 use app\job\sys\CheckJob;
-use app\job\sys\CheckNpm;
+use app\service\core\site\CoreSiteService;
 use app\service\core\sys\CoreConfigService;
 use core\base\BaseAdminService;
 use core\exception\CommonException;
@@ -27,6 +26,10 @@ use Throwable;
  */
 class SystemService extends BaseAdminService
 {
+    public function __construct()
+    {
+        parent::__construct();
+    }
 
     /**
      * 获取版权信息(网站整体，不按照站点设置)
@@ -50,10 +53,8 @@ class SystemService extends BaseAdminService
         $wap_domain = !empty(env("system.wap_domain")) ? preg_replace('#/$#', '', env("system.wap_domain")) : request()->domain();
         $web_domain = !empty(env("system.web_domain")) ? preg_replace('#/$#', '', env("system.web_domain")) : request()->domain();
 
-        // 默认域名， 发布版本，这里默认写：://localhost:6666
-        $default_domain = ''; // $_SERVER[ 'REQUEST_SCHEME' ] . 'localhost:6666';
         return [
-            'wap_domain' => env("system.wap_domain") ? env("system.wap_domain") : $default_domain,
+            'wap_domain' => env("system.wap_domain"),
             'wap_url' => $wap_domain . "/wap",
             'web_url' => $web_domain . "/web",
         ];
@@ -68,7 +69,7 @@ class SystemService extends BaseAdminService
         $server = [];
         $server[] = [ "name" => get_lang('dict_setting.server_system'), "server" => PHP_OS ];
         $server[] = [ "name" => get_lang('dict_setting.server_setting'), "server" => PHP_SAPI ];
-        $server[] = [ "name" => get_lang('dict_setting.php_version'), "server" => PHP_VERSION ];
+        $server[] = [ "name" => get_lang('dict_setting.php_version'), "server" => PHP_VERSION];
 
         //环境权限
         $system_variables = [];
@@ -111,7 +112,7 @@ class SystemService extends BaseAdminService
         //获取环境版本
         $server_version = [];
         $row = (array) Db::query("select VERSION() as verson");
-        $server_version[] = [ "name" => get_lang('dict_setting.php_version'), "demand" => get_lang('dict_setting.php_ask'), "server" => PHP_VERSION ];
+        $server_version[] = [ "name" => get_lang('dict_setting.php_version'), "demand" => get_lang('dict_setting.php_ask'), "server" => PHP_VERSION];
         $server_version[] = [ "name" => get_lang('dict_setting.mysql_version'), "demand" => get_lang('dict_setting.mysql_ask'), "server" => $row[ 0 ][ 'verson' ] ];
 
         // 进程
@@ -141,10 +142,19 @@ class SystemService extends BaseAdminService
         $secret = uniqid('', true);
         $file = root_path('runtime') . $secret . '.job';
         try {
-            CheckJob::invoke([ 'file' => $file ]);
-        } catch (Throwable $e) {
+            CheckJob::dispatch([ 'file' => $file ]);
+        } catch ( Throwable $e) {
             return false;
         }
+//        $timeout = 0;
+//        while($timeout < 5){
+//            if (file_exists($file)) {
+//                @unlink($file);
+//                return true;
+//            }
+//            $timeout++;
+//            sleep(1);
+//        }
         sleep(3);
         if (file_exists($file)) {
             @unlink($file);
@@ -170,57 +180,13 @@ class SystemService extends BaseAdminService
     }
 
     /**
-     * 检验npm是否安装
-     * @return bool
-     */
-    public static function checkNpm()
-    {
-        $secret = uniqid('', true);
-        $file = root_path('runtime') . $secret . '.job';
-        try {
-            CheckNpm::invoke([ 'file' => $file ]);
-        } catch (Throwable $e) {
-            return false;
-        }
-        sleep(4);
-        if (file_exists($file)) {
-            @unlink($file);
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * 检验composer是否安装
-     * @return bool
-     */
-    public static function checkComposer()
-    {
-        $secret = uniqid('', true);
-        $file = root_path('runtime') . $secret . '.job';
-        try {
-            CheckComposer::invoke([ 'file' => $file ]);
-        } catch (Throwable $e) {
-            return false;
-        }
-        sleep(4);
-        if (file_exists($file)) {
-            @unlink($file);
-            return true;
-        }
-        return false;
-    }
-
-    /**
      * 设置布局
      * @param string $key
-     * @return void
      */
-    public function setLayout(string $key)
-    {
+    public function setLayout(string $key) {
         $layouts = array_column(event('SiteLayout'), 'key');
         if (!in_array($key, $layouts)) throw new CommonException('LAYOUT_NOT_EXIST');
-        ( new CoreConfigService() )->setConfig('SITE_LAYOUT', [ 'key' => $key ]);
+        (new CoreConfigService())->setConfig('SITE_LAYOUT', [ 'key' => $key ]);
         return true;
     }
 }

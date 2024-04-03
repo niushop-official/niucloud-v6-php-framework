@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的多应用管理平台
+// | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud.com
+// | 官方网址：https://www.niucloud-admin.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -44,6 +44,7 @@ class CoreWechatReplyService extends BaseCoreService
     public function getKeywordPage(array $data = [])
     {
         $where = [
+            
             ['reply_type', '=', WechatDict::REPLY_KEYWORD]
         ];
         if (!empty($data['keyword'])) {
@@ -63,6 +64,7 @@ class CoreWechatReplyService extends BaseCoreService
     public function getKeywordInfo(int $id)
     {
         return $this->model->where([
+                
                 ['id', '=', $id],
                 ['reply_type', '=', WechatDict::REPLY_KEYWORD]]
         )->findOrEmpty()->toArray();
@@ -79,6 +81,7 @@ class CoreWechatReplyService extends BaseCoreService
     public function getKeywordInfoByKeyword(string $keyword)
     {
         $list = $this->model->where([
+                
                 ['keyword', 'like', '%' . $keyword . '%'],
                 ['reply_type', '=', WechatDict::REPLY_KEYWORD]],
                 ['status', '=', ReplyDict::STATUS_ON]
@@ -125,6 +128,7 @@ class CoreWechatReplyService extends BaseCoreService
     public function editKeyword(int $id, array $data)
     {
         $where = [
+            
             ['id', '=', $id],
             ['reply_type', '=', WechatDict::REPLY_KEYWORD]
         ];
@@ -138,6 +142,7 @@ class CoreWechatReplyService extends BaseCoreService
     public function delKeyword(int $id)
     {
         $where = array(
+            
             ['id', '=', $id],
             ['reply_type', '=', WechatDict::REPLY_KEYWORD]
         );
@@ -165,6 +170,7 @@ class CoreWechatReplyService extends BaseCoreService
     public function getDefault()
     {
         return $this->model->where([
+                
                 ['reply_type', '=', WechatDict::REPLY_DEFAULT]
             ]
         )->findOrEmpty()->toArray();
@@ -178,6 +184,7 @@ class CoreWechatReplyService extends BaseCoreService
     public function editDefault(array $data)
     {
         $where = [
+            
             ['reply_type', '=', WechatDict::REPLY_DEFAULT]
         ];
         $reply = $this->find($where);
@@ -198,6 +205,7 @@ class CoreWechatReplyService extends BaseCoreService
     public function getSubscribe()
     {
         return $this->model->where([
+                
                 ['reply_type', '=', WechatDict::REPLY_DEFAULT]
             ]
         )->findOrEmpty()->toArray();
@@ -211,6 +219,7 @@ class CoreWechatReplyService extends BaseCoreService
     public function editSubscribe(array $data)
     {
         $where = [
+            
             ['reply_type', '=', WechatDict::REPLY_SUBSCRIBE]
         ];
         $reply = $this->find($where);
@@ -241,7 +250,7 @@ class CoreWechatReplyService extends BaseCoreService
                 $info = $this->getSubscribe();
                 break;
             case WechatDict::REPLY_KEYWORD://关键词回复
-                $info = $this->getKeywordInfoByKeyword( $content);
+                $info = $this->getKeywordInfoByKeyword($content);
                 break;
         }
         //没有配置相关回复的话默认启用默认回复
@@ -253,13 +262,10 @@ class CoreWechatReplyService extends BaseCoreService
             if ($info['status'] == ReplyDict::STATUS_ON) {
                 switch($info['content_type']) {
                     case ReplyDict::CONTENT_TYPE_TEXT://文本
-                        return new Text($info['content']);
+                        return CoreWechatService::text($info['content']);
                     case ReplyDict::CONTENT_TYPE_NEW://图文
                         //todo  转化为临时素材或永久素材
-                        $items = [
-                            new NewsItem($info['content']),
-                        ];
-                        return new News($items);
+                        return CoreWechatService::news($info['content']);
                 }
             }
         }

@@ -1,7 +1,7 @@
 <template>
     <div class="main-container">
         <div class="detail-head">
-            <div class="left" @click="router.push({ path: '/website/channel/aliapp' })">
+            <div class="left" @click="router.push({ path: '/channel/aliapp' })">
                 <span class="iconfont iconxiangzuojiantou !text-xs"></span>
                 <span class="ml-[1px]">{{ t('returnToPreviousPage') }}</span>
             </div>
@@ -13,7 +13,8 @@
                 <h3 class="panel-title !text-sm">{{ t('aliappSet') }}</h3>
 
                 <el-form-item :label="t('aliappName')">
-                    <el-input v-model="formData.name" :placeholder="t('aliappNamePlaceholder')" class="input-width" clearable />
+                    <el-input v-model="formData.name" :placeholder="t('aliappNamePlaceholder')" class="input-width"
+                        clearable />
                 </el-form-item>
 
                 <el-form-item :label="t('aliappQrcode')">
@@ -27,15 +28,17 @@
                 <h3 class="panel-title !text-sm">{{ t('aliappDevelopInfo') }}</h3>
 
                 <el-form-item :label="t('aliappOriginal')">
-                    <el-input v-model="formData.private_key" :placeholder="t('aliappOriginalPlaceholder')" class="input-width" clearable />
+                    <el-input v-model="formData.private_key" :placeholder="t('aliappOriginalPlaceholder')"
+                        class="input-width" clearable />
                 </el-form-item>
 
                 <el-form-item :label="t('aliappAppid')">
-                    <el-input v-model="formData.app_id" :placeholder="t('appidPlaceholder')" class="input-width" clearable />
+                    <el-input v-model="formData.app_id" :placeholder="t('appidPlaceholder')" class="input-width"
+                        clearable />
                 </el-form-item>
 
                 <el-form-item :label="t('countersignType')">
-                    {{t('certificate')}}
+                    {{ t('certificate') }}
                 </el-form-item>
 
                 <el-form-item :label="t('publicKey')">
@@ -44,14 +47,14 @@
                     </div>
                     <div class="form-tip">{{ t('publicKeyTips') }}</div>
                 </el-form-item>
-                
+
                 <el-form-item :label="t('alipayPublicKey')">
                     <div class="input-width">
                         <upload-file v-model="formData.alipay_public_key_crt" api="sys/document/aliyun" />
                     </div>
                     <div class="form-tip">{{ t('alipayPublicKeyTips') }}</div>
                 </el-form-item>
-                
+
                 <el-form-item :label="t('alipayWithCrt')">
                     <div class="input-width">
                         <upload-file v-model="formData.alipay_with_crt" api="sys/document/aliyun" />
@@ -64,7 +67,8 @@
                 <h3 class="panel-title !text-sm">{{ t('theServerSetting') }}</h3>
 
                 <el-form-item label="AESKey">
-                    <el-input v-model="formData.aes_key" :placeholder="t('AESKeyPlaceholder')" class="input-width"  show-word-limit clearable />
+                    <el-input v-model="formData.aes_key" :placeholder="t('AESKeyPlaceholder')" class="input-width"
+                        show-word-limit clearable />
                 </el-form-item>
             </el-card>
 
@@ -98,7 +102,7 @@ import { t } from '@/lang'
 import { setAliappConfig, getAliappConfig, getAliappStatic } from '@/app/api/aliapp'
 import { useClipboard } from '@vueuse/core'
 import { ElMessage, FormInstance } from 'element-plus'
-import { useRoute,useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 
 const route = useRoute()
 const router = useRouter()

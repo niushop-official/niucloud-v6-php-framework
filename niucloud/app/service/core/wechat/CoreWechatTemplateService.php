@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的多应用管理平台
+// | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud.com
+// | 官方网址：https://www.niucloud-admin.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -18,6 +18,7 @@ use EasyWeChat\Kernel\Support\Collection;
 use EasyWeChat\OfficialAccount\TemplateMessage\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Psr\Http\Message\ResponseInterface;
+use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
 /**
  * easywechat主体提供
@@ -26,14 +27,7 @@ use Psr\Http\Message\ResponseInterface;
  */
 class CoreWechatTemplateService extends BaseCoreService
 {
-    /**
-     * 获取模板消息业务对象
-     * @return Client
-     */
-    public function template()
-    {
-        return CoreWechatService::app()->template_message;
-    }
+
 
     /**
      * 发送模板消息
@@ -46,34 +40,40 @@ class CoreWechatTemplateService extends BaseCoreService
      * @param string $miniprogram
      * @return array|Collection|object|ResponseInterface|string
      * @throws InvalidArgumentException
-     * @throws InvalidConfigException
-     * @throws GuzzleException
+     * @throws TransportExceptionInterface
      */
     public function send(string $open_id, string $wechat_template_id, array $data, string $first, string $remark, string $url = '', $miniprogram = '')
     {
         if (!empty($first)) $data[ 'first' ] = $first;
         if (!empty($remark)) $data[ 'remark' ] = $remark;
-
-        return $this->template()->send([
+        $api = CoreWechatService::appApiClient();
+        $param = [
             'touser' => $open_id,
             'template_id' => $wechat_template_id,
             'url' => $url,
             'miniprogram' => $miniprogram,
             'data' => $data,
-        ]);
-
+        ];
+        if(!empty($client_msg_id)){
+            $param['client_msg_id'] = $client_msg_id;
+        }
+        return $api->postJson('cgi-bin/message/template/send', $param);
     }
 
     /**
      * 删除
      * @param string $templateId
      * @return array|Collection|object|ResponseInterface|string
-     * @throws GuzzleException
-     * @throws InvalidConfigException
+     * @throws InvalidArgumentException
+     * @throws TransportExceptionInterface
      */
     public function deletePrivateTemplate(string $templateId)
     {
-        return $this->template()->deletePrivateTemplate($templateId);
+        $api = CoreWechatService::appApiClient();
+
+        return $api->postJson('cgi-bin/template/del_private_template', [
+            'template_id' => $templateId,
+        ]);
     }
 
     /**
@@ -81,12 +81,17 @@ class CoreWechatTemplateService extends BaseCoreService
      * @param string $shortId
      * @param string $keyword_name_list
      * @return array|Collection|object|ResponseInterface|string
-     * @throws GuzzleException
-     * @throws InvalidConfigException
+     * @throws InvalidArgumentException
+     * @throws TransportExceptionInterface
      */
     public function addTemplate(string $shortId, string $keyword_name_list)
     {
-        return $this->template()->addTemplate($shortId, $keyword_name_list);
+        $api = CoreWechatService::appApiClient();
+
+        return $api->postJson('cgi-bin/template/api_add_template', [
+            'template_id_short' => $shortId,
+            'keyword_name_list' => $keyword_name_list
+        ]);
     }
 
 }

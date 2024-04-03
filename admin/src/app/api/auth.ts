@@ -5,15 +5,22 @@ import request from '@/utils/request'
  * @param params
  */
 export function login(params: Record<string, any>) {
-    return request.get('login', { params })
+    return request.get(`login`, {params})
+}
+
+/**
+ * 退出登录
+ */
+export function logout() {
+    return request.put('auth/logout', {}, { showErrorMessage: false })
 }
 
 /**
  * 获取登录用户权限
  * @returns
  */
-export function getAuthMenus() {
-    return request.get('auth/authmenu')
+export function getAuthMenus(params: Record<string, any>) {
+    return request.get('auth/authmenu', {params})
 }
 
 /**
@@ -32,12 +39,6 @@ export function getLoginConfig() {
     return request.get('login/config')
 }
 
-/**
- * 获取默认页面应用列表
- */
-export function getAuthaddon() {
-    return request.get(`auth/authaddon`)
-}
 /**
  * 获取当前版本信息
  */

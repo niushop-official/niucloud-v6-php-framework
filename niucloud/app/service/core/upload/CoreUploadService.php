@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的多应用管理平台
+// | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud.com
+// | 官方网址：https://www.niucloud-admin.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -29,6 +29,7 @@ class CoreUploadService extends CoreFileService
     /**
      * 图片上传
      * @param string $file
+
      * @param string $file_dir
      * @param int $cate_id
      * @return array
@@ -46,6 +47,7 @@ class CoreUploadService extends CoreFileService
 
     /**
      * 上传
+
      * @param string $file_dir
      * @param string $type
      * @param int $cate_id
@@ -88,6 +90,7 @@ class CoreUploadService extends CoreFileService
     /**
      * 视频上传
      * @param string $file
+
      * @param string $file_dir
      * @param int $cate_id
      * @return array
@@ -105,6 +108,7 @@ class CoreUploadService extends CoreFileService
     /**
      * 上传文件
      * @param string $file
+
      * @param string $type
      * @param string $file_dir
      * @param string $storage_type

@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的多应用管理平台
+// | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud.com
+// | 官方网址：https://www.niucloud-admin.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -40,11 +40,8 @@ class CoreFetchService extends CoreFileService
         $this->upload_driver = $this->driver($storage_type);
         [$link, $ext] = explode('.', $url);
         $ext = empty($ext) ? $ext : 'jpg';
-        if(!$this->rename){
-            $file_path = $this->upload_driver->createFileName($link, $ext);
-        }else{
-            $file_path = $this->rename;
-        }
+        $file_path = $this->upload_driver->createFileName($link, $ext);
+
         $dir = $this->root_path .'/'.  $file_dir.'/'.$file_path;
         $result = $this->upload_driver->fetch($url, $dir);
 

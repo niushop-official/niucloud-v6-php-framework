@@ -1,35 +1,27 @@
 <template>
-    <el-dialog v-model="showDialog" :title="t('noticeInfo')" width="550px" :destroy-on-close="true">
+    <el-dialog v-model="showDialog" :title="t('messageInfo')" width="550px" :destroy-on-close="true">
         <el-form :model="formData" label-width="110px" ref="formRef" :rules="formRules" class="page-form" v-loading="loading">
 
-            <el-form-item :label="t('noticeKey')">
+            <el-form-item :label="t('messageKey')">
                 <div class="input-width"> {{ formData.name }} </div>
             </el-form-item>
 
-            <el-form-item :label="t('noticeType')">
-                <div class="input-width"> {{ formData.sms_type_name }} </div>
-            </el-form-item>
-
-            <!-- <el-form-item :label="t('messageType')">
+            <el-form-item :label="t('messageType')">
                 <div v-if="formData.message_type == 'sms'">{{ t('sms') }}</div>
                 <div v-if="formData.message_type == 'wechat'">{{ t('wechat') }}</div>
                 <div v-if="formData.message_type == 'weapp'">{{ t('weapp') }}</div>
-            </el-form-item> -->
-
-            <!-- <el-form-item :label="t('messageData')">
-                <div class="input-width"> {{ formData.message_data }} </div>
-            </el-form-item> -->
-
-            <!-- <el-form-item :label="t('nickname')">
-                <div class="input-width"> {{ formData.nickname }} </div>
-            </el-form-item> -->
-
-            <el-form-item :label="t('receiver')">
-                <div class="input-width"> {{ formData.mobile }} </div>
             </el-form-item>
 
-            <el-form-item :label="t('statusName')">
-                <div class="input-width"> {{ formData.status_name }} </div>
+            <el-form-item :label="t('messageData')">
+                <div class="input-width"> {{ formData.message_data }} </div>
+            </el-form-item>
+
+            <el-form-item :label="t('nickname')">
+                <div class="input-width"> {{ formData.nickname }} </div>
+            </el-form-item>
+
+            <el-form-item :label="t('receiver')">
+                <div class="input-width"> {{ formData.receiver }} </div>
             </el-form-item>
 
             <el-form-item :label="t('createTime')">
@@ -50,7 +42,7 @@
 import { ref, reactive, computed } from 'vue'
 import { t } from '@/lang'
 import type { FormInstance } from 'element-plus'
-import { editNoticeStatus } from '@/app/api/notice'
+// import { editNoticeStatus } from '@/app/api/notice'
 
 const showDialog = ref(false)
 const loading = ref(true)
@@ -60,12 +52,12 @@ const loading = ref(true)
  */
 const initialFormData = {
     create_time: 0,
-    sms_type_name: '',
-    mobile: '',
-    key: '',
+    message_data: '',
+    message_key: '',
+    message_type: '',
     name: '',
-    receiver: '',
-    status_name: ''
+    nickname: '',
+    receiver: ''
 }
 const formData: Record<string, any> = reactive({ ...initialFormData })
 
@@ -78,10 +70,10 @@ const formRules = computed(() => {
     }
 })
 
-const emit = defineEmits(['complete'])
+// const emit = defineEmits(['complete'])
 
 const setFormData = async (row: any = null) => {
-    loading.value = true;
+    loading.value = true
     Object.assign(formData, initialFormData)
 
     if (row) {

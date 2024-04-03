@@ -23,20 +23,16 @@ const prop = defineProps({
     api: {
         type: String,
         default: 'sys/document/document'
-    },
-    accept: {
-        type: String,
-        default: '.doc,.docx,.xml,.txt,.pem,.zip,.rar,.7z,.crt,.key'
     }
 })
 
 const emit = defineEmits(['update:modelValue'])
 
 const value = computed({
-    get() {
+    get () {
         return prop.modelValue
     },
-    set(value) {
+    set (value) {
         emit('update:modelValue', value)
     }
 })
@@ -45,7 +41,7 @@ const upload: Record<string, any> = {
     action: `${import.meta.env.VITE_APP_BASE_URL}/${prop.api}`,
     showFileList: false,
     headers: {},
-    accept: prop.accept,
+    accept: '.doc,.docx,.xml,.txt,.pem,.zip,.rar,.7z,.crt,.key',
     onSuccess: (response: any, uploadFile: UploadFile) => {
         if (response.code != undefined && response.code != 1) {
             ElMessage({ message: response.msg, type: 'error' })
@@ -56,7 +52,6 @@ const upload: Record<string, any> = {
     }
 }
 upload.headers[import.meta.env.VITE_REQUEST_HEADER_TOKEN_KEY] = getToken()
-
 </script>
 
 <style lang="scss">

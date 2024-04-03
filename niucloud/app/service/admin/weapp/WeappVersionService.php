@@ -33,7 +33,6 @@ class WeappVersionService extends BaseAdminService
     /**
      * 添加小程序版本
      * @param array $data
-     * @return mixed
      */
     public function add(array $data)
     {
@@ -76,7 +75,7 @@ class WeappVersionService extends BaseAdminService
     {
         $field = 'id, version, version_no, desc, create_time, status, fail_reason, task_key';
         $order = 'version_no desc';
-        $search_model = $this->model->field($field)->order($order)->append(['status_name']);
+        $search_model = $this->model->where($where)->field($field)->order($order)->append(['status_name']);
         return $this->pageQuery($search_model);
     }
 
@@ -90,7 +89,7 @@ class WeappVersionService extends BaseAdminService
     {
         $data['status'] = 0;
         $data['update_time'] = time();
-        $this->model->where([['id', '=', $id]])->create($data);
+        $this->model->where([['id', '=', $id] ])->create($data);
         return true;
     }
 

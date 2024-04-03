@@ -7,13 +7,13 @@
             </el-form-item>
 
             <el-form-item :label="t('mobile')" prop="mobile">
-                <el-input v-model="formData.mobile" clearable :placeholder="t('mobilePlaceholder')" type="number" class="input-width" />
+                <el-input v-model="formData.mobile" clearable :placeholder="t('mobilePlaceholder')" @keyup="filterNumber($event)" class="input-width" />
             </el-form-item>
 
             <el-form-item :label="t('nickname')">
                 <el-input v-model="formData.nickname" clearable :placeholder="t('nickNamePlaceholder')" class="input-width" />
             </el-form-item>
-            
+
             <el-form-item :label="t('password')" prop="password">
                 <el-input v-model="formData.password" type="password" :placeholder="t('passwordPlaceholder')" clearable class="input-width" />
             </el-form-item>
@@ -37,6 +37,7 @@ import { ref, reactive, computed } from 'vue'
 import { t } from '@/lang'
 import type { FormInstance } from 'element-plus'
 import { addMember, getMemberList, getMemberNo } from '@/app/api/member'
+import { filterNumber } from '@/utils/common'
 
 const showDialog = ref(false)
 const loading = ref(false)
@@ -66,6 +67,7 @@ const formRules = computed(() => {
             { required: true, message: t('memberNoPlaceholder'), trigger: 'blur' },
             { validator: memberNoVerify, trigger: 'blur' }
         ],
+
         mobile: [
             { required: true, message: t('mobilePlaceholder'), trigger: 'blur' },
             { validator: mobileVerify, trigger: 'blur' }

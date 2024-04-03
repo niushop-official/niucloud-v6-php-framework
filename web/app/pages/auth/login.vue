@@ -7,8 +7,7 @@
                 <div class="qrcode p-[10px] mt-[30px] border h-[120px] leading-none box-content">
                     <div class="relative">
                         <el-image :src="weixinCode.url" class="w-[120px]" />
-                        <div class="flex flex-col justify-center items-center absolute inset-0 bg-gray-50"
-                            v-if="weixinCode.pastDue">
+                        <div class="flex flex-col justify-center items-center absolute inset-0 bg-gray-50" v-if="weixinCode.pastDue">
                             <span class="text-xs text-gray-600">{{ weixinCode.pastDueContent }}</span>
                             <span @click="scanLoginFn()" class="text-xs cursor-pointer text-color mt-2">点击刷新</span>
                         </div>
@@ -18,19 +17,16 @@
 
             <div class="bg-white w-[380px] p-[30px]">
                 <div class="flex items-end my-[30px]">
-                    <div class="mr-[20px] text-base cursor-pointer leading-none" :class="{ 'font-bold': type == item.type }"
-                        v-for="item in loginType" @click="type = item.type">{{ item.title }}</div>
+                    <div class="mr-[20px] text-base cursor-pointer leading-none" :class="{ 'font-bold': type == item.type }" v-for="item in loginType" @click="type = item.type">{{item.title }}</div>
                 </div>
                 <el-form :model="formData" ref="formRef" :rules="formRules" :validate-on-rule-change="false">
                     <div v-show="type == 'username'">
                         <el-form-item prop="username">
-                            <el-input v-model="formData.username" :placeholder="t('usernamePlaceholder')" clearable
-                                :inline-message="true">
+                            <el-input v-model="formData.username" :placeholder="t('usernamePlaceholder')" clearable :inline-message="true">
                             </el-input>
                         </el-form-item>
                         <el-form-item prop="password">
-                            <el-input v-model="formData.password" :placeholder="t('passwordPlaceholder')" type="password"
-                                clearable :show-password="true">
+                            <el-input v-model="formData.password" :placeholder="t('passwordPlaceholder')" type="password" clearable :show-password="true">
                             </el-input>
                         </el-form-item>
                     </div>
@@ -42,8 +38,7 @@
                         <el-form-item prop="mobile_code">
                             <el-input v-model="formData.mobile_code" :placeholder="t('codePlaceholder')">
                                 <template #suffix>
-                                    <sms-code :mobile="formData.mobile" type="login" v-model="formData.mobile_key"
-                                        @click="sendSmsCode" ref="smsCodeRef"></sms-code>
+                                    <sms-code :mobile="formData.mobile" type="login" v-model="formData.mobile_key" @click="sendSmsCode" ref="smsCodeRef"></sms-code>
                                 </template>
                             </el-input>
                         </el-form-item>
@@ -59,8 +54,7 @@
                     </div>
 
                     <el-form-item>
-                        <el-button type="primary" class="mt-[20px] w-full" size="large" @click="handleLogin"
-                            :loading="loading">{{ loading ? t('logining') : t('login') }}</el-button>
+                        <el-button type="primary" class="mt-[20px] w-full" size="large" @click="handleLogin" :loading="loading">{{ loading ? t('logining') : t('login') }}</el-button>
                     </el-form-item>
 
                     <div class="text-xs py-[50rpx] flex justify-center w-full" v-if="configStore.login.agreement_show">
@@ -87,6 +81,10 @@ import { usernameLogin, mobileLogin, scanlogin, checkscan } from '@/app/api/auth
 import useMemberStore from '@/stores/member'
 import useConfigStore from '@/stores/config'
 import QRCode from "qrcode";
+
+definePageMeta({
+    layout: "container"
+});
 
 // 校验二维码
 const checkScanFn = (key) => {
@@ -256,4 +254,4 @@ const sendSmsCode = async () => {
 .text-color {
     color: var(--el-color-primary);
 }
-</style>~/app/api/auth
+</style>

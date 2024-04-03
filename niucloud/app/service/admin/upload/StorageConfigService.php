@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的多应用管理平台
+// | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud.com
+// | 官方网址：https://www.niucloud-admin.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -17,6 +17,7 @@ use app\service\core\upload\CoreStorageService;
 use app\service\core\sys\CoreConfigService;
 use core\base\BaseAdminService;
 use core\exception\AdminException;
+use think\Response;
 
 /**
  * 用户服务层
@@ -26,6 +27,10 @@ use core\exception\AdminException;
 class StorageConfigService extends BaseAdminService
 {
 
+    public function __construct()
+    {
+        parent::__construct();
+    }
     /**
      * 获取云存储列表
      * @return array
@@ -44,10 +49,10 @@ class StorageConfigService extends BaseAdminService
     {
         $storage_type_list = StorageDict::getType();
         if(!array_key_exists($storage_type, $storage_type_list)) throw new AdminException('OSS_TYPE_NOT_EXIST');
-        $info = (new CoreConfigService())->getConfig( 'STORAGE');
+        $info = (new CoreConfigService())->getConfig('STORAGE');
         if(empty($info))
         {
-            $config_type = ['default' => ''];//初始化
+            $config_type = ['default' => StorageDict::LOCAL];//初始化
         }else
             $config_type = $info['value'];
 
@@ -75,23 +80,6 @@ class StorageConfigService extends BaseAdminService
      */
     public function setStorageConfig(string $storage_type, array $data)
     {
-        if($data['is_use'] == 0)
-        {
-            $list = (new CoreStorageService())->getStorageList();
-            $is_use = [];
-            foreach ($list as $value)
-            {
-                if($value['storage_type'] != $storage_type)
-                {
-                    $is_use[] = $value['is_use'];
-                }
-            }
-            $use = in_array('1',$is_use);
-            if(!$use)
-            {
-                throw new AdminException('至少启用一种存储方式');
-            }
-        }
         $storage_type_list = StorageDict::getType();
         if(!array_key_exists($storage_type, $storage_type_list)) throw new AdminException('OSS_TYPE_NOT_EXIST');
         if($storage_type != FileDict::LOCAL){
@@ -100,8 +88,7 @@ class StorageConfigService extends BaseAdminService
                 throw new AdminException('STORAGE_NOT_HAS_HTTP_OR_HTTPS');
             }
         }
-        $info = (new CoreConfigService())->getConfig( 'STORAGE');
-
+        $info = (new CoreConfigService())->getConfig('STORAGE');
         if(empty($info))
         {
             $config['default'] = '';
@@ -114,18 +101,13 @@ class StorageConfigService extends BaseAdminService
         {
             $config['default'] = $storage_type;
         }else{
-            if(empty($info))
-            {
-                $config['default'] = '';
-
-            }else{
-                $config['default'] = $info['value']['default'];
-            }
+            $config['default'] = '';
         }
         foreach ($storage_type_list[$storage_type]['params'] as $k_param => $v_param)
         {
             $config[$storage_type][$k_param] = $data[$k_param] ?? '';
         }
+
         return (new CoreConfigService())->setConfig('STORAGE', $config);
     }
 

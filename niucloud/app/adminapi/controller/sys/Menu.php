@@ -135,7 +135,10 @@ class Menu extends BaseAdminController
      */
     public function getSystem()
     {
-        return success( (new MenuService())->getSystemMenu('all', 1));
+        $data = $this->request->params([
+            ['status', 'all'],
+        ]);
+        return success( (new MenuService())->getSystemMenu($data['status'], 1));
     }
 
     /**

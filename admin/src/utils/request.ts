@@ -7,13 +7,13 @@ import useUserStore from '@/stores/modules/user'
 import storage from '@/utils/storage'
 
 interface RequestConfig extends AxiosRequestConfig {
-    showSuccessMessage?: boolean,
     showErrorMessage?: boolean
+    showSuccessMessage?: boolean
 }
 
 interface InternalRequestConfig extends InternalAxiosRequestConfig {
-    showSuccessMessage?: boolean,
     showErrorMessage?: boolean
+    showSuccessMessage?: boolean
 }
 
 interface requestResponse extends AxiosResponse {
@@ -28,7 +28,7 @@ class Request {
             baseURL: import.meta.env.VITE_APP_BASE_URL.substr(-1) == '/' ? import.meta.env.VITE_APP_BASE_URL : `${import.meta.env.VITE_APP_BASE_URL}/`,
             timeout: 30000,
             headers: {
-                'Content-Type': 'application/json;',
+                'Content-Type': 'application/json',
                 'lang': storage.get('lang') ?? 'zh-cn'
             }
         });
@@ -50,18 +50,18 @@ class Request {
         // 全局响应拦截器
         this.instance.interceptors.response.use(
             (response: requestResponse) => {
-                if (response.request.responseType != 'blob') {
-                    const res = response.data
-                    if (res.code != 1) {
-                        this.handleAuthError(res.code)
-                        if (res.code != 401 && response.config.showErrorMessage !== false) ElMessage({ message: res.msg, type: 'error' })
-                        return Promise.reject(new Error(res.msg || 'Error'))
-                    } else {
-                        if (response.config.showSuccessMessage) ElMessage({ message: res.msg, type: 'success' })
-                        return res
-                    }
-                }
-                return response.data
+				if (response.request.responseType != 'blob') {
+					const res = response.data
+					if (res.code != 1) {
+					    this.handleAuthError(res.code)
+					    if (res.code != 401 && response.config.showErrorMessage !== false) ElMessage({ message: res.msg, type: 'error', dangerouslyUseHTMLString: true, duration: 5000 })
+					    return Promise.reject(new Error(res.msg || 'Error'))
+					} else {
+					    if (response.config.showSuccessMessage) ElMessage({ message: res.msg, type: 'success' })
+					    return res
+					}
+				}
+				return response.data
             },
             (err: any) => {
                 this.handleNetworkError(err)
@@ -72,9 +72,9 @@ class Request {
 
     /**
      * 发送get请求
-     * @param url 
-     * @param config 
-     * @returns 
+     * @param url
+     * @param config
+     * @returns
      */
     public get<T = any, R = AxiosResponse<T>>(url: string, config?: RequestConfig): Promise<R> {
         return this.instance.get(url, config)
@@ -82,9 +82,9 @@ class Request {
 
     /**
      * 发送get请求
-     * @param url 
-     * @param config 
-     * @returns 
+     * @param url
+     * @param config
+     * @returns
      */
     public post<T = any, R = AxiosResponse<T>, D = any>(url: string, data?: D, config?: RequestConfig): Promise<R> {
         return this.instance.post(url, data, config)
@@ -92,9 +92,9 @@ class Request {
 
     /**
      * 发送get请求
-     * @param url 
-     * @param config 
-     * @returns 
+     * @param url
+     * @param config
+     * @returns
      */
     public put<T = any, R = AxiosResponse<T>, D = any>(url: string, data?: D, config?: RequestConfig): Promise<R> {
         return this.instance.put(url, data, config)
@@ -102,9 +102,9 @@ class Request {
 
     /**
      * 发送get请求
-     * @param url 
-     * @param config 
-     * @returns 
+     * @param url
+     * @param config
+     * @returns
      */
     public delete<T = any, R = AxiosResponse<T>>(url: string, config?: RequestConfig): Promise<R> {
         return this.instance.delete(url, config)
@@ -112,7 +112,7 @@ class Request {
 
     /**
      * 处理网络请求错误
-     * @param err 
+     * @param err
      */
     private handleNetworkError(err: any) {
         let errMessage = ''
@@ -167,7 +167,7 @@ class Request {
             const baseURL = isUrl(err.config.baseURL) ? err.config.baseURL : `${location.origin}${err.config.baseURL}`
             errMessage = baseURL + t('axios.baseUrlError')
         }
-        errMessage && ElMessage({ message: errMessage, type: 'error' })
+        errMessage && ElMessage({ dangerouslyUseHTMLString: true, duration: 5000, message: errMessage, type: 'error' })
     }
 
     private handleAuthError(code: number) {

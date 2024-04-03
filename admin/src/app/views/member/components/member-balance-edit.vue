@@ -1,7 +1,7 @@
 <template>
     <el-dialog v-model="showDialog" :title="t('adjustBalance')" width="550px" :destroy-on-close="true">
         <el-form :model="formData" label-width="110px" ref="formRef" :rules="formRules" class="page-form" v-loading="loading">
- 
+
             <el-form-item :label="t('currBalance')" >
                 <div class="input-width"> {{ formData.balance }} </div>
             </el-form-item>
@@ -14,7 +14,7 @@
             </el-form-item>
 
             <el-form-item :label="t('adjustBalance')" prop="adjust">
-                <el-input-number v-model="formData.adjust" clearable :min="0" :max="999999" :placeholder="t('adjustPlaceholder')" class=""/>
+                <el-input-number v-model="formData.adjust" clearable :min="0" :max="999999" :placeholder="t('adjustPlaceholder')"/>
             </el-form-item>
 
             <el-form-item :label="t('memo')" prop="memo">
@@ -36,7 +36,6 @@
 import { ref, reactive, computed } from 'vue'
 import { t } from '@/lang'
 import type { FormInstance } from 'element-plus'
-import { img } from '@/utils/common'
 import { adjustBalance } from '@/app/api/member'
 
 const showDialog = ref(false)
@@ -47,11 +46,11 @@ const loading = ref(true)
  */
 const initialFormData = {
     member_id: 0,
-    balance:'',
-    memo:'',
-    adjust:'',
-    account_data:'',
-    adjust_type:1,
+    balance: '',
+    memo: '',
+    adjust: '',
+    account_data: '',
+    adjust_type: 1
 }
 const formData: Record<string, any> = reactive({ ...initialFormData })
 
@@ -64,21 +63,21 @@ const formRules = computed(() => {
             { required: true, message: t('adjustBalancePlaceholder'), trigger: 'blur' },
             {
                 validator: (rule: any, value: string, callback: any) => {
-                    let adjust = Math.abs(parseFloat(formData.adjust));
-                    
-                    if(!adjust){
+                    const adjust = Math.abs(parseFloat(formData.adjust))
+
+                    if (!adjust) {
                         callback(new Error(t('adjustBalancePlaceholder')))
                     }
 
                     if (formData.adjust_type == -1 && (parseFloat(formData.balance) - adjust < 0)) {
                         callback(new Error(t('adjustBalanceMaxAccountMessage')))
                     }
-                    
+
                     callback()
                 },
                 trigger: 'blur'
             }
-        ],
+        ]
     }
 })
 
@@ -86,27 +85,26 @@ const formRules = computed(() => {
  * 确认
  * @param formEl
  */
- const confirm = async (formEl: FormInstance | undefined) => {
+const confirm = async (formEl: FormInstance | undefined) => {
     if (loading.value || !formEl) return
 
     await formEl.validate(async (valid) => {
         if (valid) {
             loading.value = true
-            formData.account_data = Math.abs(parseFloat(formData.adjust)) * formData.adjust_type;
-            let data = formData
+            formData.account_data = Math.abs(parseFloat(formData.adjust)) * formData.adjust_type
+            const data = formData
 
             adjustBalance(data).then(res => {
                 loading.value = false
                 showDialog.value = false
                 emit('complete')
-            }).catch(err => {
+            }).catch(() => {
                 loading.value = false
                 // showDialog.value = false
             })
         }
     })
 }
-
 
 const emit = defineEmits(['complete'])
 

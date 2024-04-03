@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的多应用管理平台
+// | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud.com
+// | 官方网址：https://www.niucloud-admin.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -10,17 +10,6 @@
 // +----------------------------------------------------------------------
 
 return [
-    //公共
-    'common_validate' => [
-        'require' => '%s必须填写',
-        'number' => '%s必须是正整数',
-        'mobile' => '%s手机号格式错误',
-        'id_card' => '%s身份证号格式错误',
-        'email' => '%s邮箱格式错误',
-        'max' => '%s最大值不能超过%d',
-        'min' => '%s最小值不能超过%d',
-        'between' => '%s必须是%d到%d之间'
-    ],
     //菜单
     'validate_menu' => [
         'menu_name_require' => '菜单名称必须填写',
@@ -58,9 +47,10 @@ return [
         'expire_time_number' => '到期时间必须是时间戳',
         'group_name_require' => '站点分组名称必须填写',
         'group_name_max' => '站点分组名称不能超过20字符',
-        'group_roles_require' => '分组权限必须填写',
+        'app_require' => '套餐主应用必须选择',
         'front_end_name_require' => '前台名称必须填写',
         'front_end_name_max' => '前台名称最多不能超过20个字符',
+        'site_domain_cannot_repeated' => '站点域名不能重复'
     ],
     //附件
     'validate_attachment' => [
@@ -191,7 +181,6 @@ return [
         'schedule_unique' => '当前计划任务已存在',
         'not_exit_schedule_type' => '不是有效的任务类型',
     ],
-
     //插件
     'validate_addon' => [
         'key_require' => '插件标识不能为空',

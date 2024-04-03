@@ -1,5 +1,5 @@
 <template>
-    <view class="w-screen h-screen bg-page">
+    <view class="w-screen h-screen bg-page" :style="themeColor()">
         <mescroll-body ref="mescrollRef" @init="mescrollInit" @down="downCallback" @up="getCashoutAccountListFn">
             <view class="h-[20rpx]"></view>
             <view class="p-[30rpx] bg-white mx-[32rpx] my-[20rpx] rounded flex" v-for="(item, index) in accountList" :key="index" @click="handleClick(item)">
@@ -32,19 +32,19 @@
     import useMescroll from '@/components/mescroll/hooks/useMescroll.js'
     import { onPageScroll, onReachBottom, onLoad } from '@dcloudio/uni-app'
     import { t } from '@/locale'
-    
+
     const { mescrollInit, downCallback, getMescroll } = useMescroll(onPageScroll, onReachBottom)
     const accountList = ref<Array<any>>([])
     const loading = ref(false)
     const accountType = ref('bank')
     const mescrollRef = ref(null)
     const mode = ref('get')
-    
+
     onLoad((data) => {
         data.type && (accountType.value = data.type)
         data.mode && (mode.value = data.mode)
     })
-    
+
     const getCashoutAccountListFn = (mescroll : mescrollStructure) => {
     	loading.value = false;
     	let data : object = {
@@ -52,7 +52,7 @@
     		limit: mescroll.size,
             account_type: accountType.value
     	};
-    
+
     	getCashoutAccountList(data).then((res) => {
     		const newArr = (res.data.data as Array<Object>);
     		//设置列表数据
@@ -67,7 +67,7 @@
     		mescroll.endErr(); // 请求失败, 结束加载
     	})
     }
-    
+
     const handleClick = (data: AnyObject) => {
         if (mode.value == 'get') redirect({ url: '/app/pages/member/account_edit', param: { id: data.account_id, type: accountType.value, mode: mode.value } })
         else redirect({ url: '/app/pages/member/apply_cash_out', param: { account_id: data.account_id, type: accountType.value } })

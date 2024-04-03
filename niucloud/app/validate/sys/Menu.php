@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的多应用管理平台
+// | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud.com
+// | 官方网址：https://www.niucloud-admin.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -13,7 +13,6 @@ namespace app\validate\sys;
 
 use app\dict\sys\MenuTypeDict;
 use app\dict\sys\MethodDict;
-use core\base\BaseValidate;
 use think\facade\Lang;
 use think\Validate;
 
@@ -21,7 +20,7 @@ use think\Validate;
  * Class Menu
  * @package app\validate\sys
  */
-class Menu extends BaseValidate
+class Menu extends Validate
 {
 
     //用户名或密码的规范可能是从数据库中获取的
@@ -30,7 +29,7 @@ class Menu extends BaseValidate
 //        'menu_key' => 'unique:sys_menu',//防止key值重复
         'menu_type' => 'require|checkMenuType',
         'methods' => 'requireWith:api_url|checkMethodType',
-        'router_path' => 'requireIf:menu_type,0|requireIf:menu_type,1',
+        'router_path' => 'requireIf:menu_type,1',
         'view_path' => 'requireIf:menu_type,1'
 
     ];

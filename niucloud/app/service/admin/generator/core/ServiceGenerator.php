@@ -14,6 +14,8 @@ declare(strict_types=1);
 namespace app\service\admin\generator\core;
 
 
+use think\helper\Str;
+
 /**
  * service生成器
  * Class ServiceGenerator
@@ -39,7 +41,11 @@ class ServiceGenerator extends BaseGenerator
             '{DATE}',
             '{FIELDS}',
             '{SEARCH_FIELDS}',
-            '{ORDER}'
+            '{ORDER}',
+            '{SEARCH_MODEL}',
+            '{INFO_SEARCH_MODEL}',
+            '{WITH_ALL_FUNCTION}'
+
         ];
 
         $new = [
@@ -54,10 +60,12 @@ class ServiceGenerator extends BaseGenerator
             $this->getField(),
             $this->getSearchField(),
             $this->getOrderString(),
+            $this->getSearchModel(),
+            $this->getInfoSearchModel(),
+            $this->getWithAllFunction()
         ];
-
+        $fileds = array_column($this->tableColumn, 'column_name');
         $vmPath = $this->getvmPath('service');
-
         $text = $this->replaceFileText($old, $new, $vmPath);
 
         $this->setText($text);
@@ -140,15 +148,19 @@ class ServiceGenerator extends BaseGenerator
         if(!empty($this->addonName))
         {
             if (!empty($this->moduleName)) {
-                $tpl = "use addon\\".$this->addonName."\\app\\model\\" . $this->moduleName . "\\" . $this->getUCaseClassName() . ';';
+                $tpl = "use addon\\".$this->addonName."\\app\\model\\" . $this->moduleName . "\\" . $this->getUCaseClassName() . ';'.PHP_EOL;
             }
 
         }else{
             if (!empty($this->moduleName)) {
-                $tpl = "use app\\model\\" . $this->moduleName . "\\" . $this->getUCaseClassName() . ';';
+                $tpl = "use app\\model\\" . $this->moduleName . "\\" . $this->getUCaseClassName() . ';'.PHP_EOL;
             }
         }
-
+        foreach ($this->tableColumn as $column) {
+            if (!empty($column['model'])) {
+                $tpl.= 'use '.$column['model'].';'.PHP_EOL;
+            }
+        }
         return $tpl;
     }
 
@@ -185,9 +197,9 @@ class ServiceGenerator extends BaseGenerator
      */
     public function getModuleOutDir()
     {
-        $dir = $this->basePath . '/service/admin/';
+        $dir = $this->basePath . DIRECTORY_SEPARATOR.'service'.DIRECTORY_SEPARATOR.'admin'.DIRECTORY_SEPARATOR;
         if (!empty($this->moduleName)) {
-            $dir .= $this->moduleName . '/';
+            $dir .= $this->moduleName . DIRECTORY_SEPARATOR;
             $this->checkDir($dir);
         }
         return $dir;
@@ -202,15 +214,15 @@ class ServiceGenerator extends BaseGenerator
     {
         if(!empty($this->addonName))
         {
-            $dir = $this->outDir . '/addon/'.$this->addonName.'/app/service/admin/';
+            $dir = $this->outDir . DIRECTORY_SEPARATOR.'addon'.DIRECTORY_SEPARATOR.$this->addonName.DIRECTORY_SEPARATOR.'app'.DIRECTORY_SEPARATOR.'service'.DIRECTORY_SEPARATOR.'admin'.DIRECTORY_SEPARATOR;
         }else{
-            $dir = $this->outDir . 'niucloud/app/service/admin/';
+            $dir = $this->outDir . 'niucloud'.DIRECTORY_SEPARATOR.'app'.DIRECTORY_SEPARATOR.'service'.DIRECTORY_SEPARATOR.'admin'.DIRECTORY_SEPARATOR;
         }
 
 
         $this->checkDir($dir);
         if (!empty($this->moduleName)) {
-            $dir .= $this->moduleName . '/';
+            $dir .= $this->moduleName . DIRECTORY_SEPARATOR;
             $this->checkDir($dir);
         }
         return $dir;
@@ -224,16 +236,15 @@ class ServiceGenerator extends BaseGenerator
     {
         if(!empty($this->addonName))
         {
-            $dir = $this->rootDir . '/niucloud/addon/'.$this->addonName.'/app/service/admin/';
+            $dir = $this->rootDir . DIRECTORY_SEPARATOR.'niucloud'.DIRECTORY_SEPARATOR.'addon'.DIRECTORY_SEPARATOR.$this->addonName.DIRECTORY_SEPARATOR.'app'.DIRECTORY_SEPARATOR.'service'.DIRECTORY_SEPARATOR.'admin'.DIRECTORY_SEPARATOR;
         }else{
-//            $dir = '';
-            $dir = $this->rootDir . '/niucloud/app/service/admin/';
+            $dir = $this->rootDir . DIRECTORY_SEPARATOR.'niucloud'.DIRECTORY_SEPARATOR.'app'.DIRECTORY_SEPARATOR.'service'.DIRECTORY_SEPARATOR.'admin'.DIRECTORY_SEPARATOR;
         }
 
 
         $this->checkDir($dir);
         if (!empty($this->moduleName)) {
-            $dir .= $this->moduleName . '/';
+            $dir .= $this->moduleName . DIRECTORY_SEPARATOR;
             $this->checkDir($dir);
         }
         return $dir;
@@ -286,6 +297,109 @@ class ServiceGenerator extends BaseGenerator
             $order = [];
         }
         return implode(',', $order);
+    }
+
+    /**
+     * 远程下拉（list）
+     * @return string
+     */
+    public function getSearchModel()
+    {
+        $content = '';
+        $with = [];
+        $search_field = [];
+        foreach ($this->tableColumn as $column) {
+            if (!empty($column['model'])) {
+                $str = strripos($column['model'],'\\');
+                $with[] = Str::camel(substr($column['model'],$str+1));
+            }
+            if (!$column['is_search']) {
+                continue;
+            }
+            $search_field[] = '"'.$column['column_name'].'"';
+
+        }
+        $search_field = implode(',', $search_field);
+        if(empty($with))
+        {
+            $content.= '$this->model->withSearch(['."'$search_field'".'], $where)->field('.'$field'.')->order('.'$order'.');';
+
+        }else{
+            $with = implode(',', $with);
+            $content.= '$this->model->withSearch(['."'$search_field'".'], $where)->with('."'$with'".')->field('.'$field'.')->order('.'$order'.');';
+        }
+
+        return $content;
+    }
+
+    /**
+     * 远程下拉（info）
+     */
+    public function getInfoSearchModel()
+    {
+        $content = '';
+        $with = [];
+        $col = [];
+        $pk = 'id';
+        if (empty($this->tableColumn)) {
+            $pk = 'id';
+        }else{
+            foreach ($this->tableColumn as $column) {
+                if (!empty($column['model'])) {
+                    $str = strripos($column['model'],'\\');
+                    $with[] = Str::camel(substr($column['model'],$str+1));
+                }
+                if ($column['is_pk']) {
+                    $pk = $column['column_name'];}
+                if(!empty($column['dict_type']))
+                {
+                    if($column['view_type'] == 'radio')
+                    {
+                        $col[] = $column['column_name'];
+                    }
+                }
+            }
+        }
+        if(empty($with))
+        {
+            $content.= '$this->model->field($field)->where([['."'$pk'".', "=", $id]])->findOrEmpty()->toArray();';
+        }else{
+            $with = implode(',', $with);
+            $content.= '$this->model->field($field)->where([['."'$pk'".', "=", $id]])->with('."'$with'".')->findOrEmpty()->toArray();';
+        }
+        if(!empty($col))
+        {
+            foreach ($col as $v)
+            {
+                $content.= PHP_EOL.'   $info['."'".$v."'".'] = strval($info['."'".$v."'])";
+            }
+
+        }
+        return $content;
+    }
+
+    /**
+     * 关联表方法
+     * @return void
+     */
+    public function getWithAllFunction()
+    {
+        $with = [];
+        $content = '';
+        foreach ($this->tableColumn as $column) {
+            if (!empty($column['model'])) {
+                $str = strripos($column['model'],'\\');
+                $with[] = Str::camel(substr($column['model'],$str+1));
+            }
+        }
+        if(!empty($with))
+        {
+            foreach ($with as $value)
+            {
+                $content.= PHP_EOL.'    public function get'.Str::studly($value).'All(){'.PHP_EOL.'       $'.$value.'Model = new '.Str::studly($value).'();'.PHP_EOL.'       return $'.$value.'Model->select()->toArray();'.PHP_EOL.'    }'.PHP_EOL;
+            }
+        }
+        return $content;
     }
 
 }

@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的多应用管理平台
+// | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud.com
+// | 官方网址：https://www.niucloud-admin.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -60,7 +60,6 @@ class Role extends BaseAdminController
             ['status', RoleStatusDict::ON],
         ]);
         $this->validate($data, 'app\validate\sys\Role.add');
-
         (new RoleService())->add($data);
         return success('ADD_SUCCESS');
     }
@@ -94,12 +93,4 @@ class Role extends BaseAdminController
         return success('DELETE_SUCCESS');
     }
 
-    /**
-     * 状态修改
-     */
-    public function setStatus(int $id, int $status)
-    {
-        (new RoleService())->setStatus($id, $status);
-        return success('SET_SUCCESS');
-    }
 }

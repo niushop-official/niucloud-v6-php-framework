@@ -5,7 +5,7 @@
             <el-card class="box-card flex-1 ml-4" shadow="never">
                 <template #header>
                     <div class="card-header">
-                        <span>{{ t('myPoint') }}</span>
+                        <span>{{t('myPoint')}}</span>
                     </div>
                 </template>
                 <div class="px-6">
@@ -17,9 +17,7 @@
                         <el-table-column prop="create_time" :label="t('occurrenceTime')" />
                     </el-table>
                     <div class="mt-[16px] flex justify-end">
-                        <el-pagination v-model:current-page="pointTableData.page" v-model:page-size="pointTableData.limit"
-                            layout="total, sizes, prev, pager, next, jumper" :total="pointTableData.total"
-                            @size-change="loadPointList()" @current-change="loadPointList" />
+                        <el-pagination v-model:current-page="pointTableData.page" v-model:page-size="pointTableData.limit" layout="total, sizes, prev, pager, next, jumper" :total="pointTableData.total" @size-change="loadPointList()" @current-change="loadPointList" />
                     </div>
                 </div>
             </el-card>
@@ -59,10 +57,10 @@ loadPointList()
 </script>
 
 <style lang="scss" scoped>
-.box-card {
+.box-card{
     border: none !important;
 }
-
-.text-color {
+.text-color{
     color: var(--jjext-color-brand);
-}</style>~/app/api/member
+}
+</style>

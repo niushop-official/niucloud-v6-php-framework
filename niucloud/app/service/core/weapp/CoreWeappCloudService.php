@@ -11,11 +11,14 @@
 
 namespace app\service\core\weapp;
 
+use app\dict\addon\AddonDict;
 use app\dict\sys\CloudDict;
 use app\model\addon\Addon;
 use app\model\weapp\WeappVersion;
 use app\service\core\addon\CoreAddonDevelopDownloadService;
+use app\service\core\addon\WapTrait;
 use app\service\core\niucloud\CoreCloudBaseService;
+use app\service\core\site\CoreSiteService;
 use core\exception\CommonException;
 use core\util\niucloud\CloudService;
 
@@ -26,10 +29,22 @@ use core\util\niucloud\CloudService;
  */
 class CoreWeappCloudService extends CoreCloudBaseService
 {
+    private $addon;
+
+    private $addon_path;
+
+    use WapTrait;
+
+     public function __construct()
+     {
+         parent::__construct();
+         $this->root_path = dirname(root_path()) . DIRECTORY_SEPARATOR;
+         $this->addon_path = root_path() . 'addon' . DIRECTORY_SEPARATOR;
+     }
+
     /**
      * 上传小程序
      * @param $addon
-     * @return void
      */
     public function uploadWeapp(array $data) {
         if (!request()->isSsl()) throw new CommonException('CURR_SITE_IS_NOT_OPEN_SSL');
@@ -166,5 +181,15 @@ class CoreWeappCloudService extends CoreCloudBaseService
             }
         }
         return $build_log;
+    }
+
+    /**
+     * 获取插件定义的package目录
+     * @param string $addon
+     * @return string
+     */
+    public function geAddonPackagePath(string $addon)
+    {
+        return $this->addon_path . $addon . DIRECTORY_SEPARATOR . 'package' . DIRECTORY_SEPARATOR;
     }
 }

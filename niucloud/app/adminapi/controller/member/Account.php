@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的多应用管理平台
+// | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud.com
+// | 官方网址：https://www.niucloud-admin.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -196,8 +196,8 @@ class Account extends BaseAdminController
         if (empty($data['member_id'])) {
 
             $balance_data = [
-                MemberAccountTypeDict::BALANCE => number_format($member_account_service->getSumAccount(MemberAccountTypeDict::BALANCE), 2),
-                MemberAccountTypeDict::MONEY => number_format($member_account_service->getSumAccount(MemberAccountTypeDict::MONEY), 2),
+                MemberAccountTypeDict::BALANCE => number_format($member_account_service->getSumAccount(MemberAccountTypeDict::BALANCE), 2, '.', ''),
+                MemberAccountTypeDict::MONEY => number_format($member_account_service->getSumAccount(MemberAccountTypeDict::MONEY), 2, '.', ''),
             ];
             return success($balance_data);
         } else {

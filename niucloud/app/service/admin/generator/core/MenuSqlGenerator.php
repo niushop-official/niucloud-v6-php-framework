@@ -30,6 +30,7 @@ class MenuSqlGenerator extends BaseGenerator
      */
     public function replaceText()
     {
+
         $old = [
             '{SQL}',
         ];
@@ -56,27 +57,27 @@ class MenuSqlGenerator extends BaseGenerator
         if(!empty($this->addonName))
         {
             $dir = dirname(root_path());
-            $file = $dir.'\niucloud\addon\\'.$this->addonName.'\\sql\\install.sql';
+            $file = $dir.DIRECTORY_SEPARATOR.'niucloud'.DIRECTORY_SEPARATOR.'addon'.DIRECTORY_SEPARATOR.$this->addonName.DIRECTORY_SEPARATOR.'sql'.DIRECTORY_SEPARATOR.'install.sql';
             $res = $this->getMenuSql();
             $addSql = $res['sql'];
 
-            $sql = PHP_EOL . $this->getBegin() . PHP_EOL;
-            $sql .= $addSql . PHP_EOL;
-            $sql .= $this->getEnd() . PHP_EOL;
-
-            if (file_exists($file)) {
-                $content = file_get_contents($file);
-                $code_begin = '-- USER_CODE_BEGIN -- '.$this->getTableName() . PHP_EOL;
-                $code_end = '-- USER_CODE_END -- '.$this->getTableName() . PHP_EOL;
-                if(strpos($content,$code_begin) !== false && strpos($content,$code_end) !== false)
-                {
-                    $pattern = "/\s+{$code_begin}[\S\s]+{$code_end}?/";
-                    $replace_sql = preg_replace($pattern, $sql, $content);
-                    file_put_contents($file, $replace_sql);
-                    return;
-                }
-            }
-            file_put_contents($file, $sql, FILE_APPEND);
+//            $sql = PHP_EOL . $this->getBegin() . PHP_EOL;
+//            $sql .= $addSql . PHP_EOL;
+//            $sql .= $this->getEnd() . PHP_EOL;
+//
+//            if (file_exists($file)) {
+//                $content = file_get_contents($file);
+//                $code_begin = '-- USER_CODE_BEGIN -- '.$this->getTableName() . PHP_EOL;
+//                $code_end = '-- USER_CODE_END -- '.$this->getTableName() . PHP_EOL;
+//                if(strpos($content,$code_begin) !== false && strpos($content,$code_end) !== false)
+//                {
+//                    $pattern = "/\s+{$code_begin}[\S\s]+{$code_end}?/";
+//                    $replace_sql = preg_replace($pattern, $sql, $content);
+//                    file_put_contents($file, $replace_sql);
+//                    return;
+//                }
+//            }
+//            file_put_contents($file, $sql, FILE_APPEND);
         }
     }
 
@@ -98,9 +99,9 @@ class MenuSqlGenerator extends BaseGenerator
      */
     public function getModuleOutDir()
     {
-        $dir = $this->basePath .'/adminapi/controller/';
+        $dir = $this->basePath .DIRECTORY_SEPARATOR.'adminapi'.DIRECTORY_SEPARATOR.'controller'.DIRECTORY_SEPARATOR;
         if (!empty($this->moduleName)) {
-            $dir .= $this->moduleName . '/';
+            $dir .= $this->moduleName . DIRECTORY_SEPARATOR;
             $this->checkDir($dir);
         }
         return $dir;
@@ -114,9 +115,9 @@ class MenuSqlGenerator extends BaseGenerator
     {
         if(!empty($this->addonName))
         {
-            $dir = $this->outDir . '/addon/'.$this->addonName.'/sql/';
+            $dir = $this->outDir . DIRECTORY_SEPARATOR.'addon'.DIRECTORY_SEPARATOR.$this->addonName.DIRECTORY_SEPARATOR.'sql'.DIRECTORY_SEPARATOR;
         }else{
-            $dir = $this->outDir . '/niucloud/app/sql/';
+            $dir = $this->outDir . DIRECTORY_SEPARATOR.'niucloud'.DIRECTORY_SEPARATOR.'app'.DIRECTORY_SEPARATOR.'sql'.DIRECTORY_SEPARATOR;
         }
         $this->checkDir($dir);
         if (!empty($this->moduleName)) {
@@ -132,12 +133,13 @@ class MenuSqlGenerator extends BaseGenerator
      */
     public function getObjectOutDir()
     {
-
         if(!empty($this->addonName))
         {
-            $dir = $this->rootDir . '/niucloud/addon/'.$this->addonName.'/sql/';
+            $dir = $this->rootDir . DIRECTORY_SEPARATOR.'niucloud'.DIRECTORY_SEPARATOR.'addon'.DIRECTORY_SEPARATOR.$this->addonName.DIRECTORY_SEPARATOR.'sql'.DIRECTORY_SEPARATOR;
             $this->checkDir($dir);
             return $dir;
+        }else{
+            return '';
         }
     }
 
@@ -159,6 +161,7 @@ class MenuSqlGenerator extends BaseGenerator
      */
     public function getFileName()
     {
+        return '';
         return 'menu.sql';
     }
 
@@ -191,6 +194,7 @@ class MenuSqlGenerator extends BaseGenerator
         }
         $data = [
             [
+                'app_type' => 'admin',
                 'menu_name' => $table_content,
                 'menu_key' => $key,
                 'parent_key' => $this->table['parent_menu'],
@@ -209,13 +213,14 @@ class MenuSqlGenerator extends BaseGenerator
                 'source' => MenuDict::GENERATOR
             ],
             [
+                'app_type' => 'admin',
                 'menu_name' => $table_content.'列表',
                 'menu_key' => $key.'_list',
                 'parent_key' => $key,
                 'menu_type' => 1,
                 'icon' => '',
                 'api_url' => $this->getRouteName(),
-                'router_path' => $this->className ? Str::lower($this->className) : 'list',
+                'router_path' => $this->moduleName.'/'.($this->className ? Str::lower($this->className) : 'list'),
                 'view_path' => $this->moduleName.'/'.($this->className ? Str::lower($this->className) : 'list'),
                 'methods' => 'get',
                 'sort' => 90,
@@ -227,13 +232,14 @@ class MenuSqlGenerator extends BaseGenerator
                 'source' => MenuDict::GENERATOR
             ],
             [
+                'app_type' => 'admin',
                 'menu_name' => $table_content.'添加',
                 'menu_key' => $key.'_add',
                 'parent_key' => $key,
                 'menu_type' => $this->table['edit_type'] == 1 ? 2 : 1,
                 'icon' => '',
                 'api_url' => $this->getRouteName(),
-                'router_path' => $this->table['edit_type'] == 2 ? ($this->className ? Str::lower($this->className) . '_edit' : 'edit') : '',
+                'router_path' => $this->table['edit_type'] == 2 ? $this->moduleName.'/'.($this->className ? Str::lower($this->className) . '_edit' : 'edit') : '',
                 'view_path' => $this->table['edit_type'] == 2 ? $this->moduleName.'/'.($this->className ? Str::lower($this->className) . '_edit' : 'edit') : '',
                 'methods' => 'post',
                 'sort' => 70,
@@ -245,13 +251,14 @@ class MenuSqlGenerator extends BaseGenerator
                 'source' => MenuDict::GENERATOR
             ],
             [
+                'app_type' => 'admin',
                 'menu_name' => $table_content.'编辑',
                 'menu_key' => $key.'_edit',
                 'parent_key' => $key,
                 'menu_type' => $this->table['edit_type'] == 1 ? 2 : 1,
                 'icon' => '',
                 'api_url' => $this->getRouteName().'/<id>',
-                'router_path' => $this->table['edit_type'] == 2 ? ($this->className ? Str::lower($this->className) . '_edit' : 'edit') : '',
+                'router_path' => $this->table['edit_type'] == 2 ? $this->moduleName.'/'.($this->className ? Str::lower($this->className) . '_edit' : 'edit') : '',
                 'view_path' => $this->table['edit_type'] == 2 ? $this->moduleName.'/'.($this->className ? Str::lower($this->className) . '_edit' : 'edit') : '',
                 'methods' => 'put',
                 'sort' => 60,
@@ -263,6 +270,7 @@ class MenuSqlGenerator extends BaseGenerator
                 'source' => MenuDict::GENERATOR
             ],
             [
+                'app_type' => 'admin',
                 'menu_name' => $table_content.'删除',
                 'menu_key' => $key.'_delete',
                 'parent_key' => $key,
@@ -340,6 +348,7 @@ class MenuSqlGenerator extends BaseGenerator
         }
         $data = [
             [
+                'app_type' => 'admin',
                 'menu_name' => $table_content,
                 'menu_key' => $key,
                 'parent_key' => $this->table['parent_menu'],
@@ -358,13 +367,14 @@ class MenuSqlGenerator extends BaseGenerator
                 'source' => MenuDict::GENERATOR
             ],
             [
+                'app_type' => 'admin',
                 'menu_name' => $table_content.'列表',
                 'menu_key' => $key.'_list',
                 'parent_key' => $key,
                 'menu_type' => 1,
                 'icon' => '',
                 'api_url' => $this->getRouteName(),
-                'router_path' => $this->className ? Str::lower($this->className) : 'list',
+                'router_path' => $this->moduleName.'/'.($this->className ? Str::lower($this->className) : 'list'),
                 'view_path' => $this->moduleName.'/'.($this->className ? Str::lower($this->className) : 'list'),
                 'methods' => 'get',
                 'sort' => 90,
@@ -376,13 +386,14 @@ class MenuSqlGenerator extends BaseGenerator
                 'source' => MenuDict::GENERATOR
             ],
             [
+                'app_type' => 'admin',
                 'menu_name' => $table_content.'添加',
                 'menu_key' => $key.'_add',
                 'parent_key' => $key,
                 'menu_type' => $this->table['edit_type'] == 1 ? 2 : 1,
                 'icon' => '',
                 'api_url' => $this->getRouteName(),
-                'router_path' => $this->table['edit_type'] == 2 ? ($this->className ? Str::lower($this->className) . '_edit' : 'edit') : '',
+                'router_path' => $this->table['edit_type'] == 2 ? $this->moduleName.'/'.($this->className ? Str::lower($this->className) . '_edit' : 'edit') : '',
                 'view_path' => $this->table['edit_type'] == 2 ? $this->moduleName.'/'.($this->className ? Str::lower($this->className) . '_edit' : 'edit') : '',
                 'methods' => 'post',
                 'sort' => 70,
@@ -394,13 +405,14 @@ class MenuSqlGenerator extends BaseGenerator
                 'source' => MenuDict::GENERATOR
             ],
             [
+                'app_type' => 'admin',
                 'menu_name' => $table_content.'编辑',
                 'menu_key' => $key.'_edit',
                 'parent_key' => $key,
                 'menu_type' => $this->table['edit_type'] == 1 ? 2 : 1,
                 'icon' => '',
                 'api_url' => $this->getRouteName().'/<id>',
-                'router_path' => $this->table['edit_type'] == 2 ? ($this->className ? Str::lower($this->className) . '_edit' : 'edit') : '',
+                'router_path' => $this->table['edit_type'] == 2 ? $this->moduleName.'/'.($this->className ? Str::lower($this->className) . '_edit' : 'edit') : '',
                 'view_path' => $this->table['edit_type'] == 2 ? $this->moduleName.'/'.($this->className ? Str::lower($this->className) . '_edit' : 'edit') : '',
                 'methods' => 'put',
                 'sort' => 60,
@@ -412,6 +424,7 @@ class MenuSqlGenerator extends BaseGenerator
                 'source' => MenuDict::GENERATOR
             ],
             [
+                'app_type' => 'admin',
                 'menu_name' => $table_content.'删除',
                 'menu_key' => $key.'_delete',
                 'parent_key' => $key,
@@ -432,7 +445,7 @@ class MenuSqlGenerator extends BaseGenerator
         ];
         $menu_model = new SysMenu();
 
-        (new SysMenu())->where([['menu_key','in', array_column($data, 'menu_key') ]])->select()->delete();
+        (new SysMenu())->where([['app_type', '=', 'admin'],['menu_key','in', array_column($data, 'menu_key') ]])->select()->delete();
 
         (new $menu_model())->saveAll($data);
         $cache_tag_name = 'menu_cache';

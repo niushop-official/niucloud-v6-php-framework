@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的多应用管理平台
+// | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud.com
+// | 官方网址：https://www.niucloud-admin.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -70,7 +70,7 @@ class RegisterService extends BaseApiService
             }
             $data[ 'register_channel' ] = $this->channel;
             $data[ 'register_type' ] = $type;
-            $pid = $this->request->get('pid');
+            $pid = $this->request->get('pid', $this->request->post('pid', 0));
             if ($pid > 0) {
                 $p_member_info = $member_service->findMemberInfo([ 'member_id' => $pid ]);
                 if (!$p_member_info->isEmpty()) $data[ 'pid' ] = $pid;//设置上级推荐人
@@ -95,7 +95,7 @@ class RegisterService extends BaseApiService
         $chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $username = '';
         for ($i = 0; $i < 6; $i++) {
-            $username .= $chars[ random_int(0, strlen($chars)) ];
+            $username .= $chars[ random_int(0, (strlen($chars) - 1)) ];
         }
 
         return $microtime . strtoupper(base_convert(time() - 1420070400, 10, 36)) . $username;

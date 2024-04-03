@@ -2,7 +2,7 @@
     <div class="main-container">
         <el-card class="box-card !border-none" shadow="never">
             <div class="flex justify-between items-center">
-                <span class="text-[20px]">{{pageName}}</span>
+                <span class="text-page-title">{{pageName}}</span>
                 <el-button type="primary" @click="addEvent">{{ t('addMemberLabel') }}</el-button>
             </div>
 
@@ -30,7 +30,7 @@
                     <el-table-column prop="memo" :label="t('memo')" min-width="120" />
                     <el-table-column prop="sort" :label="t('sort')" min-width="120" />
 
-                    <el-table-column :label="t('operation')" fixed="right" align="right" width="130">
+                    <el-table-column :label="t('operation')" align="right" fixed="right" width="130">
                        <template #default="{ row }">
                            <el-button type="primary" link @click="editEvent(row)">{{ t('edit') }}</el-button>
                            <el-button type="primary" link @click="deleteEvent(row.label_id)">{{ t('delete') }}</el-button>
@@ -59,25 +59,25 @@ import EditMemberLabel from '@/app/views/member/components/edit-label.vue'
 import { useRoute } from 'vue-router'
 
 const route = useRoute()
-const pageName = route.meta.title;
+const pageName = route.meta.title
 
-let memberLabelTableData = reactive({
+const memberLabelTableData = reactive({
     page: 1,
     limit: 10,
     total: 0,
     loading: true,
     data: [],
-    searchParam:{
-    "label_name":""
+    searchParam: {
+        label_name: ''
     }
 })
 
 const searchFormRef = ref<FormInstance>()
 
-const resetForm = (formEl: FormInstance | undefined)=>{
+const resetForm = (formEl: FormInstance | undefined) => {
     if (!formEl) return
-    formEl.resetFields();
-    loadMemberLabelList();
+    formEl.resetFields()
+    loadMemberLabelList()
 }
 
 /**

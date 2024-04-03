@@ -1,9 +1,6 @@
 <template>
 	<div class="main-container attachment-container">
 		<el-card class="box-card !border-none full-container" shadow="never">
-			<div class="flex justify-between items-center mb-4">
-                <span class="text-[20px]">素材管理</span>
-            </div>
 			<el-tabs v-model="type">
 				<el-tab-pane :label="t(tab)" v-for="(tab, index) in attachmentType" :name="tab" :key="index">
 					<attachment scene="attachment" :type="tab" />
@@ -14,12 +11,12 @@
 </template>
 
 <script lang="ts" setup>
-    import {ref} from 'vue'
-    import {t} from '@/lang'
-    import attachment from '@/components/upload-attachment/attachment.vue'
+import { ref } from 'vue'
+import { t } from '@/lang'
+import attachment from '@/components/upload-attachment/attachment.vue'
 
-    const attachmentType: string[] = ['image', 'video', 'icon']
-    const type = ref(attachmentType[0])
+const attachmentType: string[] = ['image', 'video', 'icon']
+const type = ref(attachmentType[0])
 
 </script>
 
@@ -27,7 +24,7 @@
 <style lang="scss">
 	.attachment-container {
 		.el-card__body {
-			height: 96%;
+			height: 100%;
 		}
 
 		.el-tabs {

@@ -3,18 +3,23 @@
 namespace app\install\controller;
 
 
+use app\model\site\Site;
 use app\model\sys\SysUser;
+use app\service\admin\auth\LoginService;
 use app\service\admin\install\InstallSystemService;
+use app\service\admin\site\SiteGroupService;
+use app\service\admin\site\SiteService;
 use app\service\core\addon\CoreAddonInstallService;
+use app\service\core\addon\CoreAddonService;
 use app\service\core\schedule\CoreScheduleInstallService;
-use app\service\admin\sys\ConfigService;
 use Exception;
 use think\facade\Cache;
+use think\facade\Db;
 use think\facade\View;
 use think\Response;
 
 
-class  Index extends BaseInstall
+class Index extends BaseInstall
 {
 
     /**
@@ -37,7 +42,7 @@ class  Index extends BaseInstall
             $host = ( empty($_SERVER[ 'REMOTE_ADDR' ]) ? $_SERVER[ 'REMOTE_HOST' ] : $_SERVER[ 'REMOTE_ADDR' ] );
             $name = $_SERVER[ 'SERVER_NAME' ];
 
-            $verison = !( version_compare(PHP_VERSION, '8.0.0') == -1 );
+            $verison = !(version_compare(PHP_VERSION, '8.0.0') == -1);
             //pdo
             $pdo = extension_loaded('pdo') && extension_loaded('pdo_mysql');
             $system_variables[] = [ "name" => "pdo", "need" => "开启", "status" => $pdo ];
@@ -54,15 +59,25 @@ class  Index extends BaseInstall
             $fileinfo = extension_loaded('fileinfo');
             $system_variables[] = [ "name" => "fileinfo", "need" => "开启", "status" => $fileinfo ];
 
+            //sodium
+            $sodium = extension_loaded('sodium');
+            $system_variables[] = [ "name" => "sodium", "need" => "开启", "status" => $sodium ];
+
             $root_path = str_replace("\\", DIRECTORY_SEPARATOR, dirname(__FILE__, 4));
             $root_path = str_replace("../", DIRECTORY_SEPARATOR, $root_path);
+
+            $project_path = dirname($root_path);
+
             $dirs_list = [
                 [ "path" => $root_path . DIRECTORY_SEPARATOR, "path_name" => "niucloud/", "name" => "网站目录" ],
+                [ "path" => $project_path . DIRECTORY_SEPARATOR . 'admin', "path_name" => "admin/", "name" => "admin端源码目录" ],
+                [ "path" => $project_path . DIRECTORY_SEPARATOR . 'uni-app', "path_name" => "uni-app/", "name" => "uni-app源码目录" ],
+                [ "path" => $project_path . DIRECTORY_SEPARATOR . 'web', "path_name" => "web/", "name" => "web端源码目录" ],
                 [ "path" => $root_path . DIRECTORY_SEPARATOR . ".env", "path_name" => "niucloud/.env", "name" => "env" ],
                 [ "path" => $root_path . DIRECTORY_SEPARATOR . ".example.env", "path_name" => "niucloud/.example_env", "name" => "env" ],
-                [ "path" => $root_path . DIRECTORY_SEPARATOR . 'runtime' . DIRECTORY_SEPARATOR, "path_name" => "niucloud/runtime", "name" => "runtime" ],
-                [ "path" => $root_path . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'upload' . DIRECTORY_SEPARATOR, "path_name" => "niucloud/public/upload", "name" => "upload" ],
-                [ "path" => $root_path . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'install' . DIRECTORY_SEPARATOR, "path_name" => "niucloud/app/install", "name" => "安装目录" ]
+                [ "path" => $root_path . DIRECTORY_SEPARATOR . 'runtime'.DIRECTORY_SEPARATOR, "path_name" => "niucloud/runtime", "name" => "runtime" ],
+                [ "path" => $root_path . DIRECTORY_SEPARATOR . 'public'.DIRECTORY_SEPARATOR.'upload'.DIRECTORY_SEPARATOR, "path_name" => "niucloud/public/upload", "name" => "upload" ],
+                [ "path" => $root_path . DIRECTORY_SEPARATOR . 'app'.DIRECTORY_SEPARATOR.'install'.DIRECTORY_SEPARATOR, "path_name" => "niucloud/app/install", "name" => "安装目录" ]
             ];
             //目录 可读 可写检测
             $is_dir = true;
@@ -98,12 +113,23 @@ class  Index extends BaseInstall
         }
     }
 
+    public function build() {
+        $install_user = Cache::get('install_user');
+        $token = (new LoginService())->login($install_user['username'], $install_user['password']);
+        $this->assign('token', $token['token']);
+        return $this->fetch('index/step-4');
+    }
 
+    /**
+     * 安装成功
+     * @return string
+     */
     public function installSuccess()
     {
         Cache::delete('install_data');
         Cache::delete('install_status');
-        return $this->fetch('index/step-4');
+        $this->assign('is_build', request()->get('is_build', 1));
+        return $this->fetch('index/step-5');
     }
 
     /**
@@ -169,7 +195,7 @@ class  Index extends BaseInstall
             }
 
             return success($result);
-        } catch (Exception $e) {
+        } catch ( Exception $e) {
             $result = [
                 "status" => -1,
                 "message" => $e->getMessage()
@@ -185,7 +211,7 @@ class  Index extends BaseInstall
     public function getSqlQuery($sql_data)
     {
         $this->checkLock();
-        $sql_data = preg_replace("/TYPE=(InnoDB|MyISAM|MEMORY)( DEFAULT CHARSET=[^; ]+)?/", "ENGINE=\\1 DEFAULT CHARSET=utf8mb4", $sql_data);
+        $sql_data = preg_replace("/TYPE=(InnoDB|MyISAM|MEMORY)( DEFAULT CHARSET=[^; ]+)?/", "ENGINE=\\1 DEFAULT CHARSET=utf8", $sql_data);
 
         $sql_data = str_replace("\r", "\n", $sql_data);
         $sql_query = [];
@@ -197,7 +223,7 @@ class  Index extends BaseInstall
             $sqls = explode("\n", trim($sql));
             $sqls = array_filter($sqls);
             foreach ($sqls as $query) {
-                $str1 = $query[ 0 ] ?? '';
+                $str1 = $query[0] ?? '';
                 if ($str1 != '#' && $str1 != '-')
                     $sql_query[ $num ] .= $query;
             }
@@ -208,6 +234,8 @@ class  Index extends BaseInstall
 
     public function install()
     {
+
+
         set_time_limit(300);
         Cache::delete('install_data');
         Cache::set('install_status', 0);//进行中
@@ -246,12 +274,11 @@ class  Index extends BaseInstall
                 $this->setSuccessLog([ $res[ 'msg' ], 'error' ]);
                 return fail($res[ 'msg' ]);
             }
-            //安装插件 todo
-//            $this->installAddon();
 
             Cache::set('install_status', 1);//成功
+            Cache::set('install_user', ['username' => $username, 'password' => $password]);
             return success();
-        } catch (Exception $e) {
+        } catch ( Exception $e) {
             $this->setSuccessLog([ '安装失败' . $e->getMessage(), 'error' ]);
             return fail('安装失败' . $e->getMessage());
         }
@@ -281,57 +308,62 @@ class  Index extends BaseInstall
                 return fail('菜单初始化失败');
             }
             //初始化计划任务
-            $res = ( new CoreScheduleInstallService() )->installSystemSchedule();
+            $res = ( new CoreScheduleInstallService())->installSystemSchedule();
             if (!$res) {
                 $this->setSuccessLog([ '计划任务初始化失败', 'error' ]);
                 return fail('计划任务初始化失败');
             }
 
-
             $user = ( new SysUser() )->where([ [ 'uid', '=', 1 ] ])->findOrEmpty();
-            if ($user->isEmpty()) {
+            if (!$user->isEmpty()) {
                 $user->save([
                     'username' => $username,
                     'password' => create_password($password),
-                    'is_admin' => 1
                 ]);
             }
 
-            $data = [
-                'site_name' => $admin_name,
-                'logo' => '',
-                'keywords' => '',
-                'desc' => '',
-                'latitude' => '',
-                'longitude' => '',
-                'province_id' => 0,
-                'city_id' => 0,
-                'district_id' => 0,
-                'address' => '',
-                'full_address' => '',
-                'phone' => '',
-                'business_hours' => '',
-                'front_end_name' => '',
-                'front_end_logo' => '',
-                'icon' => '',
-            ];
-            ( new ConfigService() )->setWebSite($data);
+            // 安装插件
+            $this->installAddon();
 
             $fp = fopen($this->lock_file, 'wb');
             if (!$fp) {
                 $this->setSuccessLog([ "写入失败，请检查目录" . dirname(__FILE__, 2) . "是否可写入！'", 'error' ]);
                 return fail("写入失败，请检查目录" . dirname(__FILE__, 2) . "是否可写入！'");
             }
-            $this->setSuccessLog([ '初始化成功', 'success' ]);
             fwrite($fp, '已安装');
             fclose($fp);
+
+            $this->setSuccessLog([ '初始化成功', 'success' ]);
+
             Cache::set('install_status', 2);//成功
-//            Cache::tag(MenuService::$cache_tag_name)->clear();
             return success();
-        } catch (Exception $e) {
+        } catch ( Exception $e) {
             $this->setSuccessLog([ '安装失败' . $e->getMessage(), 'error' ]);
             return fail('安装失败' . $e->getMessage());
         }
+    }
+
+    /**
+     * 安装插件
+     * @return true
+     */
+    public function installAddon() {
+        $root_path = str_replace("\\", DIRECTORY_SEPARATOR, dirname(__FILE__, 4));
+        $root_path = str_replace("../", DIRECTORY_SEPARATOR, $root_path);
+        $addon_path = $root_path . DIRECTORY_SEPARATOR . 'addon';
+
+        $files = get_files_by_dir($addon_path);
+        if (!empty($files)) {
+            foreach ($files as $path) {
+                $data = (new CoreAddonService())->getAddonConfig($path);
+                if (isset($data['key'])) {
+                    $install_service = (new CoreAddonInstallService($data['key']));
+                    $install_service->installCheck();
+                    $install_service->install();
+                }
+            }
+        }
+        return true;
     }
 
     /**
@@ -402,14 +434,11 @@ class  Index extends BaseInstall
             if ($match_item > 0) {
                 try {
                     $table_name = $match_data[ 1 ];
-                    if (substr($dbprefix, -1) !== "_") {
-                        $dbprefix .= '_';
-                    }
                     $new_table_name = $dbprefix . $table_name;
                     $sql_item = $this->str_replace_first($table_name, $new_table_name, $sql);
                     @mysqli_query($conn, $sql_item);
-                    if ($is_write) $this->setSuccessLog([ '创建表' . $new_table_name, 'success' ]);
-                } catch (Exception $e) {
+                    if ($is_write) $this->setSuccessLog([ '创建表' . $table_name, 'success' ]);
+                } catch ( Exception $e) {
                     $this->setSuccessLog([ $e->getMessage(), 'error' ]);
                     return fail('数据库解析失败' . $e->getMessage());
                 }
@@ -438,9 +467,6 @@ class  Index extends BaseInstall
         $dbpwd = $data[ 'dbpwd' ] ?? '';
         $dbname = $data[ 'dbname' ] ?? '';
         $dbprefix = $data[ 'dbprefix' ] ?? '';
-        if (substr($dbprefix, -1) !== "_") {
-            $dbprefix .= '_';
-        }
 
         $replace_key = [
             '{dbhost}',
@@ -469,35 +495,6 @@ class  Index extends BaseInstall
         return success();
     }
 
-    /**
-     * 安装插件
-     * @return void
-     */
-    public function installAddon()
-    {
-        $addon_path = root_path() . 'addon' . DIRECTORY_SEPARATOR;
-        $addon_files = [];
-
-        $fp = dir($addon_path);
-        while ($file = $fp->read()) {
-            if ($file != '.' && $file != '..') {
-                if (is_dir($addon_path . $file)) {
-                    if (file_exists($addon_path . $file . DIRECTORY_SEPARATOR . 'info.json'))
-                        $addon_files[] = $file;
-                }
-            }
-        }
-        $fp->close();
-
-        if (!empty($addon_files)) {
-            foreach ($addon_files as $addon) {
-                $service = ( new CoreAddonInstallService($addon) );
-                $service->installCheck();
-                $service->install();
-            }
-        }
-    }
-
     public function getInstallInfo()
     {
         $install_data = Cache::get('install_data') ?? [];
@@ -513,7 +510,7 @@ class  Index extends BaseInstall
         if ($data[ 1 ] == 'error') {
             Cache::set('install_status', -1);
         }
-        $time = @(int) microtime(true);
+        $time = @(int)microtime(true);
         $data[] = date('Y-m-d H:i:s', $time);
         $install_data = Cache::get('install_data') ?? [];
         $install_data[] = $data;

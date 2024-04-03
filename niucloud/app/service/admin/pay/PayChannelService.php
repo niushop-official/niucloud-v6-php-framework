@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的多应用管理平台
+// | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud.com
+// | 官方网址：https://www.niucloud-admin.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -77,7 +77,7 @@ class PayChannelService extends BaseAdminService
     public function getChannelList()
     {
         $channel_list = PayChannelDict::getPayChannel();
-        $where = array();
+        $where = [];
         $pay_channel_list_temp = $this->model->where($where)->field('type, channel, config, sort, status')->select()->toArray();
 
         $pay_channel_list = [];
@@ -87,7 +87,7 @@ class PayChannelService extends BaseAdminService
         foreach ($channel_list as $k => $v) {
             $temp_item = $pay_channel_list[$k] ?? [];
             foreach ($v['pay_type'] as $item_k => $item_v) {
-                $temp_v_item = $temp_item[$item_k] ?? ['status' => 0, 'config' => [], 'sort' => 0];
+                $temp_v_item = $temp_item[$item_k] ?? ['status' => 0, 'config' => ['name' => ''], 'sort' => 0];
                 $item_v['config'] = $temp_v_item['config'];
                 $item_v['status'] = $temp_v_item['status'];
                 $item_v['sort'] = $temp_v_item['sort'];

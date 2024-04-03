@@ -1,59 +1,79 @@
 <template>
     <div class="main-container" v-loading="noticeTableData.loading">
         <div class="flex ml-[18px] justify-between items-center mt-[20px]">
-			<span class="text-[20px]">{{pageName}}</span>
-		</div>
+            <span class="text-page-title">{{ pageName }}</span>
+        </div>
         <el-card class="box-card !border-none" shadow="never">
             <h3 class="panel-title !text-base">{{ t('buyerNotice') }}</h3>
             <div class="flex flex-row flex-wrap m-[-4px]">
-				<el-table :data="noticeTableData.seller" size="large">
-				    <el-table-column prop="name" :label="t('noticeType')" min-width="120" />
-				    <el-table-column :label="t('operation')" fixed="right"  align="right" min-width="300">
-				        <template #default="{ row }">
-				            <div class="flex">
-								<div class="text-sm mr-1 flex items-center cursor-pointer" v-if="row.sms_type == 1" @click="setNotice(row, 'sms')">
-								    <el-icon class="text-[15px] mr-[3px]" :class="row.is_sms ? 'open' : ''"><SuccessFilled /></el-icon>
-								    <span class="ml-0.5">{{ t('sms') }}</span>
-								</div>
-								<div class="text-sm  flex items-center cursor-pointer ml-[20px]" v-if="row.wechat_type" @click="setNotice(row, 'wechat')">
-								    <el-icon class="text-[15px] mr-[3px]" :class="row.is_wechat ? 'open' : ''"><SuccessFilled /></el-icon>
-								    <span class="ml-0.5">{{ t('wechat') }}</span>
-								</div>
-								<div class="text-sm  flex items-center cursor-pointer ml-[20px]" v-if="row.weapp_type" @click="setNotice(row, 'weapp')">
-								    <el-icon class="text-[15px] mr-[3px]" :class="row.is_weapp ? 'open' : ''"><SuccessFilled /></el-icon>
-								    <span class="ml-0.5">{{ t('weapp') }}</span>
-								</div>
-				            </div>
-				        </template>
-				    </el-table-column>
-				</el-table>
+                <el-table :data="noticeTableData.buyer" size="large" :span-method="buyerSpan">
+                    <el-table-column prop="addon_name" :label="t('addon')" min-width="120" />
+                    <el-table-column prop="name" :label="t('noticeType')" min-width="120" />
+                    <el-table-column :label="t('operation')" align="right" fixed="right" min-width="300">
+                        <template #default="{ row }">
+                            <div class="flex">
+                                <div class="text-sm mr-1 flex items-center cursor-pointer" v-if="row.support_type.indexOf('sms') != -1"
+                                    @click="setNotice(row, 'sms')">
+                                    <el-icon class="text-[15px] mr-[3px]" :class="row.is_sms ? 'open' : ''">
+                                        <SuccessFilled />
+                                    </el-icon>
+                                    <span class="ml-0.5">{{ t('sms') }}</span>
+                                </div>
+                                <div class="text-sm  flex items-center cursor-pointer ml-[20px]" v-if="row.support_type.indexOf('wechat') != -1"
+                                    @click="setNotice(row, 'wechat')">
+                                    <el-icon class="text-[15px] mr-[3px]" :class="row.is_wechat ? 'open' : ''">
+                                        <SuccessFilled />
+                                    </el-icon>
+                                    <span class="ml-0.5">{{ t('wechat') }}</span>
+                                </div>
+                                <div class="text-sm  flex items-center cursor-pointer ml-[20px]" v-if="row.support_type.indexOf('weapp') != -1"
+                                    @click="setNotice(row, 'weapp')">
+                                    <el-icon class="text-[15px] mr-[3px]" :class="row.is_weapp ? 'open' : ''">
+                                        <SuccessFilled />
+                                    </el-icon>
+                                    <span class="ml-0.5">{{ t('weapp') }}</span>
+                                </div>
+                            </div>
+                        </template>
+                    </el-table-column>
+                </el-table>
             </div>
         </el-card>
 
         <el-card class="box-card !border-none mt-[16px]" shadow="never">
             <h3 class="panel-title !text-base">{{ t('sellerNotice') }}</h3>
             <div class="flex flex-row flex-wrap m-[-4px]">
-				<el-table :data="noticeTableData.buyer" size="large">
-				    <el-table-column prop="name" :label="t('noticeType')" min-width="120" />
-				    <el-table-column :label="t('operation')" fixed="right" align="right" min-width="300">
-				        <template #default="{ row }">
-				            <div class="flex">
-								<div class="text-sm mr-1 flex items-center cursor-pointer" v-if="row.sms_type == 1" @click="setNotice(row, 'sms')">
-								    <el-icon class="text-[15px] mr-[3px]" :class="row.is_sms ? 'open' : ''"><SuccessFilled /></el-icon>
-								    <span class="ml-0.5">{{ t('sms') }}</span>
-								</div>
-								<div class="text-sm  flex items-center cursor-pointer ml-[20px]" v-if="row.wechat_type" @click="setNotice(row, 'wechat')">
-								    <el-icon class="text-[15px] mr-[3px]" :class="row.is_wechat ? 'open' : ''"><SuccessFilled /></el-icon>
-								    <span class="ml-0.5">{{ t('wechat') }}</span>
-								</div>
-								<div class="text-sm  flex items-center cursor-pointer ml-[20px]" v-if="row.weapp_type" @click="setNotice(row, 'weapp')">
-								    <el-icon class="text-[15px] mr-[3px]" :class="row.is_weapp ? 'open' : ''"><SuccessFilled /></el-icon>
-								    <span class="ml-0.5">{{ t('weapp') }}</span>
-								</div>
-				            </div>
-				        </template>
-				    </el-table-column>
-				</el-table>
+                <el-table :data="noticeTableData.seller" size="large" :span-method="buyerSpan">
+                    <el-table-column prop="addon_name" :label="t('addon')" min-width="120" />
+                    <el-table-column prop="name" :label="t('noticeType')" min-width="120" />
+                    <el-table-column :label="t('operation')" align="right" fixed="right" min-width="300">
+                        <template #default="{ row }">
+                            <div class="flex">
+                                <div class="text-sm mr-1 flex items-center cursor-pointer" v-if="row.support_type.indexOf('sms') != -1"
+                                     @click="setNotice(row, 'sms')">
+                                    <el-icon class="text-[15px] mr-[3px]" :class="row.is_sms ? 'open' : ''">
+                                        <SuccessFilled />
+                                    </el-icon>
+                                    <span class="ml-0.5">{{ t('sms') }}</span>
+                                </div>
+                                <div class="text-sm  flex items-center cursor-pointer ml-[20px]" v-if="row.support_type.indexOf('wechat') != -1"
+                                     @click="setNotice(row, 'wechat')">
+                                    <el-icon class="text-[15px] mr-[3px]" :class="row.is_wechat ? 'open' : ''">
+                                        <SuccessFilled />
+                                    </el-icon>
+                                    <span class="ml-0.5">{{ t('wechat') }}</span>
+                                </div>
+                                <div class="text-sm  flex items-center cursor-pointer ml-[20px]" v-if="row.support_type.indexOf('weapp') != -1"
+                                     @click="setNotice(row, 'weapp')">
+                                    <el-icon class="text-[15px] mr-[3px]" :class="row.is_weapp ? 'open' : ''">
+                                        <SuccessFilled />
+                                    </el-icon>
+                                    <span class="ml-0.5">{{ t('weapp') }}</span>
+                                </div>
+                            </div>
+                        </template>
+                    </el-table-column>
+                </el-table>
             </div>
         </el-card>
 
@@ -71,8 +91,8 @@ import { getNoticeList } from '@/app/api/notice'
 import Sms from '@/app/views/setting/components/notice-sms.vue'
 import Wechat from '@/app/views/setting/components/notice-wechat.vue'
 import Weapp from '@/app/views/setting/components/notice-weapp.vue'
-import { useRoute } from 'vue-router'
 
+import { useRoute } from 'vue-router'
 const route = useRoute()
 const pageName = route.meta.title
 
@@ -80,10 +100,10 @@ const smsDialog: Record<string, any> | null = ref(null)
 const wechatDialog: Record<string, any> | null = ref(null)
 const weappDialog: Record<string, any> | null = ref(null)
 
-let noticeTableData = reactive({
+const noticeTableData = reactive({
     loading: true,
-    buyer:[],
-    seller:[]
+    buyer: [],
+    seller: []
 })
 
 /**
@@ -91,47 +111,67 @@ let noticeTableData = reactive({
  */
 const loadNoticeList = () => {
     noticeTableData.loading = true
-    noticeTableData.buyer = [];
-    noticeTableData.seller = [];
+
     getNoticeList().then(res => {
-        Object.keys(res.data).forEach(key => {
-            let item = res.data[key];
-            item.sms_type = item.support_type.indexOf('sms') !== -1 ? 1 : 0;
-            item.wechat_type = item.support_type.indexOf('wechat') !== -1 ? 1 : 0;
-            item.weapp_type = item.support_type.indexOf('weapp') !== -1 ? 1 : 0;
-            if(item.receiver_type == 0){
-                noticeTableData.buyer.push(item)
-            }
-            if(item.receiver_type == 1){
-                noticeTableData.seller.push(item)
+        const data = []
+        res.data.forEach(item => {
+            if (item.notice.length) {
+                const buyer = [], seller = []
+                Object.keys(item.notice).forEach((key, index) => {
+                    const notice = item.notice[key]
+                    notice.addon_name = item.title
+                    notice.receiver_type == 1 ? buyer.push(notice) : seller.push(notice)
+                })
+                if (buyer.length) {
+                    buyer[0].rowspan = buyer.length
+                    noticeTableData.buyer = buyer
+                }
+                if (seller.length) {
+                    seller[0].rowspan = seller.length
+                    noticeTableData.seller = seller
+                }
             }
         })
 
         noticeTableData.loading = false
-    }).catch(() => {
+    }).catch((e) => {
         noticeTableData.loading = false
     })
+}
 
+const buyerSpan = (row: any) => {
+    if (row.columnIndex === 0) {
+        if (row.row.rowspan) {
+            return {
+                rowspan: row.row.rowspan,
+                colspan: 1
+            }
+        } else {
+            return {
+                rowspan: 0,
+                colspan: 0
+            }
+        }
+    }
 }
 
 loadNoticeList()
 
 const setNotice = (data: any, type: string) => {
-    data.type = type;
-    eval('data.status=data.is_'+type);
-    eval(type+'Dialog.value.setFormData(data)');
-    eval(type+'Dialog.value.showDialog = true;');
+    data.type = type
+    eval('data.status=data.is_' + type)
+    eval(type + 'Dialog.value.setFormData(data)')
+    eval(type + 'Dialog.value.showDialog = true;')
 }
 
 </script>
 
-<style lang="scss" scoped>
-.open{
+<style lang="scss" scoped>.open {
     color: var(--el-color-primary);
 }
-.notice-type{
-    >div:nth-last-child(1):first-child{
-        width:100%;
+
+.notice-type {
+    >div:nth-last-child(1):first-child {
+        width: 100%;
     }
-}
-</style>
+}</style>

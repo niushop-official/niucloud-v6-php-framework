@@ -31,18 +31,19 @@ return [
         'image' => [
             'ext' => ['jpg', 'jpeg', 'webp', 'png', 'gif'],
             'mime' => ['image/jpeg', 'image/gif', 'image/png', 'image/webp'],
-            'size' => 2097152
+            'size' => 10485760
         ],
         'video' => [
             'ext' => ['mp4'],
             'mime' => ['video/mp4'],
-            'size' => 2097152
+            'size' => 10485760
         ],
         'wechat' => [
             'ext' => ['pem', 'key'],
             'mime' => [
                 'application/x-x509-ca-cert',
-                'application/octet-stream'
+                'application/octet-stream',
+                'application/x-iwork-keynote-sffkey'
             ],
             'size' => 2097152
         ],
@@ -64,19 +65,22 @@ return [
             'size' => 2097152
         ]
     ],
+    'thumb' => [
+        'thumb_type' => [
+            'big' => [
+                'width' => 800,
+                'height' => 800,
+            ],
+            'mid' => [
+                'width' => 400,
+                'height' => 400,
+            ],
+            'small' => [
+                'width' => 200,
+                'height' => 200,
+            ],
+        ]
 
-    'thumb_type' => [
-        'big' => [
-            'width' => 800,
-            'height' => 800,
-        ],
-        'mid' => [
-            'width' => 400,
-            'height' => 400,
-        ],
-        'small' => [
-            'width' => 200,
-            'height' => 200,
-        ],
+
     ]
 ];

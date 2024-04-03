@@ -76,10 +76,10 @@ class Http {
 
     /**
      * 发送请求
-     * @param url 
-     * @param method 
-     * @param showMessageConfig 
-     * @returns 
+     * @param url
+     * @param method
+     * @param showMessageConfig
+     * @returns
      */
     private request(url: string, method: string, param: AnyObject = {}, config: ConfigOption = {}) {
         return new Promise((resolve, reject) => {
@@ -125,6 +125,9 @@ class Http {
         switch (code) {
             case 401:
                 useMemberStore().logout()
+                break;
+            case 402:
+                navigateTo('/site/close', { replace: true })
                 break;
         }
     }

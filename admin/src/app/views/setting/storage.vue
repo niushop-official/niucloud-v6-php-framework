@@ -2,7 +2,7 @@
     <div class="main-container">
         <el-card class="box-card !border-none" shadow="never">
            <div class="flex justify-between items-center">
-                <span class="text-[20px]">{{pageName}}</span>
+                <span class="text-page-title">{{pageName}}</span>
             </div>
             <div class="mt-[16px]">
                 <el-table :data="storageTableData.data" size="large" v-loading="loading">
@@ -20,7 +20,7 @@
                         </template>
                     </el-table-column>
 
-                    <el-table-column :label="t('operation')" fixed="right" align="right" width="100">
+                    <el-table-column :label="t('operation')" align="right" fixed="right" width="100">
                        <template #default="{ row }">
                            <el-button type="primary" link @click="editEvent(row)">{{ t('config') }}</el-button>
                        </template>
@@ -40,22 +40,22 @@
 <script lang="ts" setup>
 import { reactive, ref } from 'vue'
 import { t } from '@/lang'
-import { getStorageList,getStorageInfo } from '@/app/api/sys'
+import { getStorageList } from '@/app/api/sys'
 import storageLocal from '@/app/views/setting/components/storage-local.vue'
 import storageQiniu from '@/app/views/setting/components/storage-qiniu.vue'
 import storageAli from '@/app/views/setting/components/storage-ali.vue'
 import storageTencent from '@/app/views/setting/components/storage-tencent.vue'
-import { useRouter,useRoute } from 'vue-router'
+import { useRoute } from 'vue-router'
 
 const route = useRoute()
-const pageName = route.meta.title;
+const pageName = route.meta.title
 
 const localDialog: Record<string, any> | null = ref(null)
 const qiniuDialog: Record<string, any> | null = ref(null)
 const aliyunDialog: Record<string, any> | null = ref(null)
 const tencentDialog: Record<string, any> | null = ref(null)
 
-let storageTableData = reactive({
+const storageTableData = reactive({
     data: []
 })
 const loading = ref(true)
@@ -71,14 +71,13 @@ const loadStorageList = () => {
     }).catch(() => {
         loading.value = false
     })
-
 }
 
 loadStorageList()
 
 const editEvent = (data: any) => {
-    eval(data.storage_type+'Dialog.value.setFormData(data)');
-    eval(data.storage_type+'Dialog.value.showDialog = true;');
+    eval(data.storage_type + 'Dialog.value.setFormData(data)');
+    eval(data.storage_type + 'Dialog.value.showDialog = true;');
 }
 
 </script>

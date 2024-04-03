@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的多应用管理平台
+// | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud.com
+// | 官方网址：https://www.niucloud-admin.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -35,7 +35,7 @@ class UploadService extends BaseAdminService
      * @return array
      */
     public function image($file, int $cate_id = 0, $is_attachment = true){
-        $dir = $this->root_path.'/'.'image'.'/'.'/'.date('Ym').'/'.date('d');
+        $dir = $this->root_path.'/image/'.date('Ym').'/'.date('d');
         $core_upload_service = new CoreUploadService($is_attachment);
         //如果没有选择相册分组的话,就选择第一个相册分组
         return $core_upload_service->image($file, $dir, $cate_id);
@@ -48,7 +48,7 @@ class UploadService extends BaseAdminService
      * @return array
      */
     public function video($file, int $cate_id = 0){
-        $dir = $this->root_path.'/'.'video'.'/'.'/'.date('Ym').'/'.date('d');
+        $dir = $this->root_path.'/video/'.date('Ym').'/'.date('d');
         $core_upload_service = new CoreUploadService(true);
         return $core_upload_service->video($file, $dir, $cate_id);
     }
@@ -63,7 +63,7 @@ class UploadService extends BaseAdminService
     public function document($file, string $type){
         if(!in_array($type, FileDict::getSceneType()))
             throw new UploadFileException('UPLOAD_TYPE_ERROR');
-        $dir = $this->root_path.'/document/'.$type.'/'.'/'.date('Ym').'/'.date('d');
+        $dir = $this->root_path.'/document/'.$type.'/'.date('Ym').'/'.date('d');
         $core_upload_service = new CoreUploadService();
         return $core_upload_service->document($file, $type, $dir, StorageDict::LOCAL);
     }

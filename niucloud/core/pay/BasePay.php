@@ -4,6 +4,7 @@ namespace core\pay;
 
 use core\exception\PayException;
 use core\loader\Storage;
+use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\MessageInterface;
 use Yansongda\Supports\Collection;
 
@@ -123,7 +124,7 @@ abstract class BasePay extends Storage
      * @param string $transfer_no
      * @return mixed
      */
-    abstract protected function getTransfer(string $transfer_no);
+    abstract protected function getTransfer(string $transfer_no, $out_transfer_no = '');
 
     /**
      * 初始化
@@ -139,8 +140,8 @@ abstract class BasePay extends Storage
                     'enable' => true,
                     'file' => root_path('runtime') . 'paylog' . DIRECTORY_SEPARATOR . date('Ym') . DIRECTORY_SEPARATOR . date('d') . '.log',
                     'level' => env('app_debug') ? 'debug' : 'info', // 建议生产环境等级调整为 info，开发环境为 debug
-                    'type' => 'single', // type, 可选 daily.
-                    'max_file' => 30, // max_file, 当 type 为 daily 时有效，默认 30 天
+                    'type' => 'single', // optional, 可选 daily.
+                    'max_file' => 30, // optional, 当 type 为 daily 时有效，默认 30 天
                 ],
                 'http' => [ // optional
                     'timeout' => 5.0,
@@ -150,23 +151,19 @@ abstract class BasePay extends Storage
                 $type => [
                     'default' => $config
                 ]
-            ]
-
-
+            ],
+            ['_force' => true]
         );
     }
 
     public function returnFormat($param)
     {
-        if ($param instanceof MessageInterface) {
+        if ($param instanceof MessageInterface || $param instanceof Response) {
             $return_value =  $param->getBody()->getContents();
         } else if ($param instanceof Collection) {
-            $return_value = $param->all();
+            $return_value = $param->toArray();
         } else {
             $return_value = $param;
-        }
-        if(isset($return_value['code'])){
-            throw new  PayException($return_value['message']);
         }
         return $return_value;
     }

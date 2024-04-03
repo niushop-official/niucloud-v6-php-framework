@@ -13,7 +13,7 @@
 			<div class="flex justify-between mt-[100px]">
 				<div class="w-[280px]">
 					<div class="flex items-center">
-						<div class="w-[30px] h-[30px] mr-[10px]"><img src="@/app/assets/images/word/course.jpg" /></div>
+						<div class="w-[30px] h-[30px] mr-[10px]"><img src="@/assets/images/word/course.jpg" /></div>
 						<p class="text-[20px] text-[#666] font-bold">官方教程</p>
 					</div>
 					<p class="text-[14px] w-[280px] h-[100px] text-[#666666] leading-[22px] mt-[30px] mb-[20px]">
@@ -27,7 +27,7 @@
 				</div>
 				<div class="w-[280px]">
 					<div class="flex items-center">
-						<div class="w-[30px] h-[30px] mr-[10px]"><img src="@/app/assets/images/word/api.jpg" /></div>
+						<div class="w-[30px] h-[30px] mr-[10px]"><img src="@/assets/images/word/api.jpg" /></div>
 						<p class="text-[20px] text-[#666] font-bold">API文档</p>
 					</div>
 					<p class="text-[14px] w-[280px] h-[100px] text-[#666666] leading-[22px] mt-[30px] mb-[20px]">
@@ -41,7 +41,7 @@
 				</div>
 				<div class="w-[280px]">
 					<div class="flex items-center">
-						<div class="w-[30px] h-[30px] mr-[10px]"><img src="@/app/assets/images/word/community.jpg" /></div>
+						<div class="w-[30px] h-[30px] mr-[10px]"><img src="@/assets/images/word/community.jpg" /></div>
 						<p class="text-[20px] text-[#666] font-bold">问答社区</p>
 					</div>
 					<p class="text-[14px] w-[280px] h-[100px] text-[#666666] leading-[22px] mt-[30px] mb-[20px]">
@@ -55,7 +55,7 @@
 				</div>
 				<div class="w-[280px]">
 					<div class="flex items-center">
-						<div class="w-[30px] h-[30px] mr-[10px]"><img src="@/app/assets/images/word/wx.jpg"></div>
+						<div class="w-[30px] h-[30px] mr-[10px]"><img src="@/assets/images/word/wx.jpg"></div>
 						<p class="text-[20px] text-[#666] font-bold">关注公众号</p>
 					</div>
 					<p class="text-[14px] w-[280px] h-[100px] text-[#666666] leading-[22px] mt-[30px] mb-[20px]">
@@ -79,7 +79,7 @@
 }
 
 .word {
-	background-image: url(@/app/assets/images/word/word-back.jpg);
+	background-image: url(@/assets/images/word/word-back.jpg);
 	background-size: 100%;
 	background-repeat: no-repeat;
 }

@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的多应用管理平台
+// | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud.com
+// | 官方网址：https://www.niucloud-admin.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -34,7 +34,7 @@ class CoreAgreementService extends BaseCoreService
      * @param string $key
      * @return array
      */
-    public function getAgreement( string $key)
+    public function getAgreement(string $key)
     {
         if(!array_key_exists($key, AgreementDict::getType())) throw new CommonException('AGREEMENT_TYPE_NOT_EXIST');
         $where = array(

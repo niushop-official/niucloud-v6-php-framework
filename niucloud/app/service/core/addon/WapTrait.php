@@ -33,8 +33,8 @@ trait WapTrait
         $content = "<template>\n";
         $content .= "    <view class=\"diy-group\" id=\"componentList\">\n";
         $content .= "        <view v-for=\"(component, index) in data.value\" :key=\"component.id\"\n";
-        $content .= "        @click=\"diyStore.changeCurrentIndex(index, component)\" class=\"draggable-element relative cursor-move\"\n";
-        $content .= "        :class=\"{ selected: diyStore.currentIndex == index,decorate : diyStore.mode == 'decorate' }\" :style=\"component.pageStyle\">\n";
+        $content .= "        @click=\"diyStore.changeCurrentIndex(index, component)\"\n";
+        $content .= "        :class=\"getComponentClass(index,component)\" :style=\"component.pageStyle\">\n";
 
         $root_path = $compile_path . str_replace('/', DIRECTORY_SEPARATOR, 'app/components/diy'); // 系统自定义组件根目录
         $file_arr = getFileMap($root_path);
@@ -59,7 +59,7 @@ trait WapTrait
                     $file_name = 'diy-' . $path;
 
                     $content .= "            <template v-if=\"component.componentName == '{$name}'\">\n";
-                    $content .= "                <$file_name :component=\"component\" :index=\"index\" :pullDownRefreshCount=\"props.pullDownRefreshCount\"></$file_name>\n";
+                    $content .= "                <$file_name :component=\"component\" :global=\"data.global\" :index=\"index\" :pullDownRefreshCount=\"props.pullDownRefreshCount\"></$file_name>\n";
                     $content .= "            </template>\n";
                 }
             }
@@ -78,7 +78,7 @@ trait WapTrait
         $addon_arr[] = $addon; // 追加新装插件
         $addon_arr = array_unique($addon_arr);
         foreach ($addon_arr as $k => $v) {
-            $addon_path = $compile_path . str_replace('/', DIRECTORY_SEPARATOR, $v . '/components/diy'); // 插件自定义组件根目录
+            $addon_path = $compile_path . str_replace('/', DIRECTORY_SEPARATOR, 'addon/' . $v . '/components/diy'); // 插件自定义组件根目录
             $addon_file_arr = getFileMap($addon_path);
             if (!empty($addon_file_arr)) {
                 foreach ($addon_file_arr as $ck => $cv) {
@@ -100,7 +100,7 @@ trait WapTrait
                         $content .= "                <$file_name :component=\"component\" :index=\"index\" :pullDownRefreshCount=\"props.pullDownRefreshCount\"></$file_name>\n";
                         $content .= "            </template>\n";
 
-                        $addon_import_content .= "   import diy{$name} from '@/" . $v . "/components/diy/{$path}/index.vue';\n";
+                        $addon_import_content .= "   import diy{$name} from '@/addon/" . $v . "/components/diy/{$path}/index.vue';\n";
                     }
                 }
             }
@@ -109,7 +109,7 @@ trait WapTrait
         $content .= "        </view>\n";
         $content .= "        <template v-if=\"diyStore.mode == '' && data.global.bottomTabBarSwitch\">\n";
         $content .= "            <view class=\"pt-[20rpx]\"></view>\n";
-        $content .= "            <tabbar />\n";
+        $content .= "            <tabbar :addon=\"tabbarAddonName\" />\n";
         $content .= "        </template>\n";
         $content .= "    </view>\n";
         $content .= "</template>\n";
@@ -121,9 +121,10 @@ trait WapTrait
         }
 
         $content .= "   import useDiyStore from '@/app/stores/diy';\n";
-        $content .= "   import { onMounted, nextTick, computed, ref,watch } from 'vue';\n";
+        $content .= "   import { ref, onMounted, nextTick, computed } from 'vue';\n";
         $content .= "   import Sortable from 'sortablejs';\n";
         $content .= "   import { range } from 'lodash-es';\n";
+        $content .= "   import useConfigStore from '@/stores/config'\n\n";
 
         $content .= "   const props = defineProps(['data','pullDownRefreshCount']);\n";
         $content .= "   const diyStore = useDiyStore();\n\n";
@@ -136,12 +137,34 @@ trait WapTrait
         $content .= "       }\n";
         $content .= "   })\n\n";
 
+        $content .= "   const tabbarAddonName = computed(() => {\n";
+        $content .= "       return useConfigStore().addon;\n";
+        $content .= "   })\n\n";
+
+        $content .= "   const positionFixed = ref(['fixed', 'top_fixed','right_fixed','bottom_fixed','left_fixed'])\n\n";
+
+        $content .= "   const getComponentClass = (index:any,component:any) => {\n\n";
+        $content .= "      let obj: any = {\n\n";
+        $content .= "         relative: true,\n\n";
+        $content .= "         selected: diyStore.currentIndex == index,\n\n";
+        $content .= "         decorate: diyStore.mode == 'decorate'\n\n";
+        $content .= "      }\n\n";
+        $content .= "      obj['top-fixed-' + diyStore.topFixedStatus] = true;\n\n";
+        $content .= "      if (component.position && positionFixed.value.indexOf(component.position) != -1) {\n\n";
+        $content .= "        //  找出置顶组件，设置禁止拖动\n\n";
+        $content .= "        obj['ignore-draggable-element'] = true;\n\n";
+        $content .= "      } else {\n\n";
+        $content .= "        obj['draggable-element'] = true;\n\n";
+        $content .= "      }\n\n";
+        $content .= "      return obj;\n\n";
+        $content .= "   }\n\n";
+
         $content .= "   onMounted(() => {\n";
         $content .= "       // #ifdef H5\n";
         $content .= "       if (diyStore.mode == 'decorate') {\n";
         $content .= "           var el = document.getElementById('componentList');\n";
         $content .= "           const sortable = Sortable.create(el, {\n";
-        $content .= "               group: 'draggable-element',\n";
+        $content .= "               draggable: '.draggable-element',\n";
         $content .= "               animation: 200,\n";
         $content .= "               // 结束拖拽\n";
         $content .= "               onEnd: event => {\n";
@@ -170,7 +193,7 @@ trait WapTrait
         $content .= "   @import './index.scss';\n";
         $content .= "</style>\n";
 
-        return file_put_contents($compile_path . str_replace('/', DIRECTORY_SEPARATOR, 'app/components/diy/group/index.vue'), $content);
+        return file_put_contents($compile_path . str_replace('/', DIRECTORY_SEPARATOR, 'addon/components/diy/group/index.vue'), $content);
     }
 
     /**
@@ -219,7 +242,7 @@ trait WapTrait
         $addon_arr[] = $addon; // 追加新装插件
         $addon_arr = array_unique($addon_arr);
         foreach ($addon_arr as $k => $v) {
-            $addon_path = $compile_path . str_replace('/', DIRECTORY_SEPARATOR, $v . '/components/fixed'); // 插件固定模板组件根目录
+            $addon_path = $compile_path . str_replace('/', DIRECTORY_SEPARATOR, 'addon/' . $v . '/components/fixed'); // 插件固定模板组件根目录
             $addon_file_arr = getFileMap($addon_path);
 
             if (!empty($addon_file_arr)) {
@@ -242,7 +265,7 @@ trait WapTrait
                         $content .= "            <$file_name :data=\"props.data\" :pullDownRefreshCount=\"props.pullDownRefreshCount\"></$file_name>\n";
                         $content .= "        </template>\n";
 
-                        $addon_import_content .= "   import fixed{$name} from '@/" . $v . "/components/fixed/{$path}/index.vue';\n";
+                        $addon_import_content .= "   import fixed{$name} from '@/addon/" . $v . "/components/fixed/{$path}/index.vue';\n";
                     }
                 }
             }
@@ -262,7 +285,7 @@ trait WapTrait
         $content .= "   @import './index.scss';\n";
         $content .= "</style>\n";
 
-        return file_put_contents($compile_path . str_replace('/', DIRECTORY_SEPARATOR, 'app/components/fixed/group/index.vue'), $content);
+        return file_put_contents($compile_path . str_replace('/', DIRECTORY_SEPARATOR, 'addon/components/fixed/group/index.vue'), $content);
     }
 
     /**
@@ -280,35 +303,27 @@ trait WapTrait
             return;
         }
 
-        $addon = strtoupper($this->addon);
+        $pages = [];
+        $addon_arr = array_unique(array_merge([$this->addon], array_column((new CoreAddonService())->getInstallAddonList(), 'key')));
+        foreach ($addon_arr as $addon) {
+            if (!file_exists($this->geAddonPackagePath($addon) . 'uni-app-pages.php')) continue;
+            $uniapp_pages = require $this->geAddonPackagePath($addon) . 'uni-app-pages.php';
+            if (empty($uniapp_pages[ 'pages' ])) continue;
 
-        $content = @file_get_contents($compile_path . "pages.json");
+            $page_begin = strtoupper($addon) . '_PAGE_BEGIN';
+            $page_end = strtoupper($addon) . '_PAGE_END';
 
-        $page_begin = $addon . '_PAGE_BEGIN';
-        $page_end = $addon . '_PAGE_END';
+            $uniapp_pages[ 'pages' ] = str_replace('PAGE_BEGIN', $page_begin, $uniapp_pages[ 'pages' ]);
+            $uniapp_pages[ 'pages' ] = str_replace('PAGE_END', $page_end, $uniapp_pages[ 'pages' ]);
+            $uniapp_pages[ 'pages' ] = str_replace('{{addon_name}}', $addon, $uniapp_pages[ 'pages' ]);
 
-        // 清除插件页面路由代码块
-        $pattern = "/\s+\/\/ {$page_begin}[\S\s]+\/\/ {$page_end}(\n,)?/";
-        $content = preg_replace($pattern, '', $content);
-
-        $uniapp_pages[ 'pages' ] = str_replace('PAGE_BEGIN', $page_begin, $uniapp_pages[ 'pages' ]);
-        $uniapp_pages[ 'pages' ] = str_replace('PAGE_END', $page_end, $uniapp_pages[ 'pages' ]);
-        $uniapp_pages[ 'pages' ] = str_replace('{{addon_name}}', $this->addon, $uniapp_pages[ 'pages' ]); // 将变量替换为当前安装的插件名称
-
-        $replacement = ",// {{PAGE}}\n";
-        $replacement .= $uniapp_pages[ 'pages' ] . "\n,";
-
-        $page_begin_matches_count = preg_match_all('/PAGE_BEGIN/', $content . $replacement, $page_begin_matches);
-
-        // 如果存在多个插件，要在插件前面加上逗号分割
-        if ($page_begin_matches_count > 0) {
-            $content = str_replace(',// {{PAGE}}', '// {{PAGE}}', $content);
+            $pages[] = $uniapp_pages[ 'pages' ];
         }
 
-        $content = str_replace('// {{PAGE}}', $replacement, $content);
-
-        // 清除最后一个逗号
-        $content = preg_replace('/PAGE_END\n,\s+\],/', "PAGE_END\n],", $content);
+        $content = @file_get_contents($compile_path . "pages.json");
+        $content = preg_replace_callback('/(.*\/\/ \{\{ PAGE_BEGAIN \}\})(.*)(\/\/ \{\{ PAGE_END \}\}.*)/s', function ($match) use ($pages) {
+            return $match[1] . PHP_EOL . implode(PHP_EOL, $pages) . PHP_EOL . $match[3];
+        }, $content);
 
         // 找到页面路由文件 pages.json，写入内容
         return file_put_contents($compile_path . "pages.json", $content);
@@ -329,32 +344,30 @@ trait WapTrait
             return;
         }
 
-        $addon = strtoupper($this->addon);
+        $pages = [];
+        $addon_arr = array_diff(array_column((new CoreAddonService())->getInstallAddonList(), 'key'), [$this->addon]);
 
-        $content = @file_get_contents($compile_path . "pages.json");
+        foreach ($addon_arr as $addon) {
+            if (!file_exists($this->geAddonPackagePath($addon) . 'uni-app-pages.php')) continue;
+            $uniapp_pages = require $this->geAddonPackagePath($addon) . 'uni-app-pages.php';
+            if (empty($uniapp_pages[ 'pages' ])) continue;
 
-        $page_begin = $addon . '_PAGE_BEGIN';
-        $page_end = $addon . '_PAGE_END';
+            $page_begin = strtoupper($addon) . '_PAGE_BEGIN';
+            $page_end = strtoupper($addon) . '_PAGE_END';
 
-        $uniapp_pages[ 'pages' ] = str_replace('PAGE_BEGIN', $page_begin, $uniapp_pages[ 'pages' ]);
-        $uniapp_pages[ 'pages' ] = str_replace('PAGE_END', $page_end, $uniapp_pages[ 'pages' ]);
+            $uniapp_pages[ 'pages' ] = str_replace('PAGE_BEGIN', $page_begin, $uniapp_pages[ 'pages' ]);
+            $uniapp_pages[ 'pages' ] = str_replace('PAGE_END', $page_end, $uniapp_pages[ 'pages' ]);
+            $uniapp_pages[ 'pages' ] = str_replace('{{addon_name}}', $addon, $uniapp_pages[ 'pages' ]);
 
-        // 清除插件页面路由代码块
-        $pattern = "/\s+\/\/ {$page_begin}[\S\s]+\/\/ {$page_end}(\n,)?/";
-        $content = preg_replace($pattern, '', $content);
-
-        $page_begin_matches_count = preg_match_all('/PAGE_BEGIN/', $content, $page_begin_matches);
-
-        //  如果没有页面，清除最后一个逗号
-        if ($page_begin_matches_count == 0) {
-            $content = str_replace(',// {{PAGE}}', '// {{PAGE}}', $content);
+            $pages[] = $uniapp_pages[ 'pages' ];
         }
 
-        // 清除最后一个逗号
-        $content = preg_replace('/PAGE_END\n,\s+\],/', "PAGE_END\n],", $content);
-
+        $content = @file_get_contents($compile_path . "pages.json");
+        $content = preg_replace_callback('/(.*\/\/ \{\{ PAGE_BEGAIN \}\})(.*)(\/\/ \{\{ PAGE_END \}\}.*)/s', function ($match) use ($pages) {
+            return $match[1] . PHP_EOL . implode(PHP_EOL, $pages) . PHP_EOL . $match[3];
+        }, $content);
+        // 找到页面路由文件 pages.json，写入内容
         return file_put_contents($compile_path . "pages.json", $content);
-
     }
 
     /**
@@ -400,7 +413,7 @@ trait WapTrait
         $addon_arr[] = $addon; // 追加新装插件
         $addon_arr = array_unique($addon_arr);
         foreach ($addon_arr as $k => $v) {
-            $addon_path = $compile_path . str_replace('/', DIRECTORY_SEPARATOR, $v . '/locale'); // 插件语言包根目录
+            $addon_path = $compile_path . str_replace('/', DIRECTORY_SEPARATOR, 'addon/' . $v . '/locale'); // 插件语言包根目录
             $addon_file_arr = getFileMap($addon_path, [], false);
             if (!empty($addon_file_arr)) {
                 foreach ($addon_file_arr as $ck => $cv) {
@@ -411,7 +424,7 @@ trait WapTrait
                         foreach ($json as $jk => $jv) {
                             $addon_json[ $v . '.' . $jk ] = $jv;
                         }
-                        $locale_data[ $cv ][ 'json' ] = array_merge($locale_data[ $cv ][ 'json' ], $addon_json);
+                        if (isset($locale_data[ $cv ])) $locale_data[ $cv ][ 'json' ] = array_merge($locale_data[ $cv ][ 'json' ], $addon_json);
                     }
                 }
             }
@@ -421,5 +434,4 @@ trait WapTrait
             file_put_contents($v[ 'path' ], json_encode($v[ 'json' ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
         }
     }
-
 }

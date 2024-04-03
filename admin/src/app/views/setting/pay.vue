@@ -2,15 +2,17 @@
     <el-card class="box-card !border-none" shadow="never" v-loading="payLoading">
         <!-- 设置支付配置 -->
         <div class="flex justify-between items-center" v-if="!payLoading">
-            <span class="text-[20px]">{{ pageName }}</span>
+            <span class="text-page-title">{{ pageName }}</span>
             <el-button type="primary" @click="isEdit = true" ref="setConfigBtn">{{ t('setConfig') }}</el-button>
         </div>
-        <el-card class="box-card box-pay-card !border-none mt-[20px]" shadow="never" v-for="(payItems, payKey) in payConfigData" :key="payKey">
+        <el-card class="box-card box-pay-card !border-none mt-[20px]" shadow="never"
+            v-for="(payItems, payKey) in payConfigData" :key="payKey">
             <div class="flex mb-3">
                 <span class="text-base">{{ payItems.name }}</span>
             </div>
             <div class="pay-table">
-                <div class="flex items-center pay-table-head table-bg table-item-pd table-item-border justify-between table-bg">
+                <div
+                    class="flex items-center pay-table-head table-bg table-item-pd table-item-border justify-between table-bg">
                     <span class="text-base text-[#999] w-[150px]">{{ t('payType') }}</span>
                     <!-- <span class="text-base font-bold text-[#999] w-[110px]">{{t('settingDefaultPay')}}</span> -->
                     <span class="text-base text-[#999] w-[110px] text-center">{{ t('onState') }}</span>
@@ -22,7 +24,8 @@
                         <div class="table-item-flex w-[150px]">
                             <span v-if="isEdit" class="iconfont icontuodong mr-2 handle cursor-pointer"></span>
                             <div class="flex items-center select-none">
-                                <div class="mr-[15px] w-[30px] h-[30px]"><img class="w-[30px]" :src="img(childrenItem.icon)" /></div>
+                                <div class="mr-[15px] w-[30px] h-[30px]"><img class="w-[30px]"
+                                        :src="img(childrenItem.icon)" /></div>
                                 <span class="text-base text-[#666]">{{ childrenItem.name }}</span>
                             </div>
                         </div>
@@ -30,14 +33,17 @@
 							<el-radio v-model="payItems.default_pay_type" :label="childrenItem.redio_key" size="large" @change="settingDefault(childrenItem,payKey)">{{ t('settingDefault') }}</el-radio>
 						</div> -->
                         <div class="table-item-flex w-[110px] justify-center select-none">
-                            <el-switch v-if="isEdit" v-model="childrenItem.status" :active-text="t('isEnable')" @change="enablePaymentMode(childrenItem)" />
+                            <el-switch v-if="isEdit" v-model="childrenItem.status" :active-text="t('isEnable')"
+                                @change="enablePaymentMode(childrenItem)" />
                             <div v-else>
                                 <el-tag v-if="childrenItem.status" class="ml-2" type="success">{{ t('open') }}</el-tag>
                                 <el-tag v-else class="ml-2" type="info">{{ t('notOpen') }}</el-tag>
                             </div>
                         </div>
                         <div class="table-item-flex w-[80px]  justify-center select-none" v-if="isEdit">
-                            <button @click="configPayFn(childrenItem)" class="text-base" v-if="childrenItem.key != 'balancepay'">{{ t('clickConfigure') }}</button>
+                            <button @click="configPayFn(childrenItem)" class="text-base"
+                                v-if="childrenItem.key != 'balancepay'">{{ t('clickConfigure')
+                                }}</button>
                             <button v-else>--</button>
                         </div>
                     </div>
@@ -67,7 +73,6 @@ import { img } from '@/utils/common'
 import { ElMessage } from 'element-plus'
 import Sortable, { SortableEvent } from 'sortablejs'
 import { useRoute } from 'vue-router'
-
 const route = useRoute()
 const pageName = route.meta.title
 
@@ -118,7 +123,7 @@ const checkPayConfigList = () => {
 checkPayConfigList()
 
 // 配置支付宝、微信信息
-const setConfigInfo = (data) => {
+const setConfigInfo = (data:any) => {
     payConfigData.value[data.channel].pay_type.forEach(element => {
         if (element.key == data.type) {
             element.config = data.config
@@ -127,7 +132,7 @@ const setConfigInfo = (data) => {
 }
 
 // 初始化配置信息
-const configPayFn = (data) => {
+const configPayFn = (data:any) => {
     eval(data.key + 'Dialog.value.setFormData(data)')
     eval(data.key + 'Dialog.value.showDialog = true;')
 }
@@ -150,7 +155,7 @@ const fieldBoxRefs = ref<any>([])
 watch(isEdit, (newValue, oldValue) => {
     if (newValue) {
         nextTick(() => {
-            fieldBoxRefs.value.forEach((item, index) => {
+            fieldBoxRefs.value.forEach((item:any, index:any) => {
                 sortableFn(item, index)
             })
         })
@@ -179,7 +184,7 @@ const saveFn = () => {
     payLoading.value = true
     const data = JSON.parse(JSON.stringify(payConfigData.value))
     Object.values(data).forEach((item, index) => {
-        item.pay_type.forEach((subItem, subIndex) => {
+        item.pay_type.forEach((subItem:any, subIndex:any) => {
             subItem.sort = subIndex
             subItem.status = Number(subItem.status)
         })

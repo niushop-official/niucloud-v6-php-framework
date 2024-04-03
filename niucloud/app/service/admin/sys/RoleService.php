@@ -143,7 +143,6 @@ class RoleService extends BaseAdminService
         $where = array(
             ['role_id', '=', $role_id],
         );
-        $data['update_time'] = time();
         $rules = $data['rules'];
         if(!isset($rules['addon']))
         {
@@ -161,6 +160,7 @@ class RoleService extends BaseAdminService
         $addon_rules = array_reduce($addon_rules,'array_merge',[]);
         $data['rules'] = array_merge($rules['system'],$addon_rules);
         $data['addon_keys'] = $add_list;
+        $data['update_time'] = time();
         $this->model->update($data, $where);
         Cache::tag(self::$cache_tag_name)->clear();
         return true;

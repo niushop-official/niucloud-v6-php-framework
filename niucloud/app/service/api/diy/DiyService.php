@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的多应用管理平台
+// | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud.com
+// | 官方网址：https://www.niucloud-admin.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -12,6 +12,7 @@
 namespace app\service\api\diy;
 
 use app\dict\diy\PagesDict;
+use app\dict\diy\TemplateDict;
 use app\model\diy\Diy;
 use core\base\BaseApiService;
 
@@ -36,27 +37,31 @@ class DiyService extends BaseApiService
      */
     public function getInfo(array $params = [])
     {
+        $start_up_page = [];
+        $page_template = [];
 
-        // 查询启动页
-        $diy_config_service = new DiyConfigService();
-        $start_up_page = $diy_config_service->getStartUpPageConfig($params[ 'name' ]);
+        if (!empty($params[ 'name' ])) {
 
-        if (!empty($start_up_page) && $start_up_page[ 'mode' ] == 'other' && $params[ 'name' ] != $start_up_page[ 'name' ]) {
+            // 查询启动页
+            $diy_config_service = new DiyConfigService();
+            $start_up_page = $diy_config_service->getStartUpPageConfig($params[ 'name' ]);
+
+            $page_template = TemplateDict::getTemplate([ 'key' => [ $params[ 'name' ] ] ]);
+            if (!empty($page_template)) {
+                $page_template = $page_template [ $params[ 'name' ] ];
+            }
+        }
+
+        if (!empty($start_up_page) && !empty($page_template) && !empty($start_up_page[ 'page' ]) && $start_up_page[ 'page' ] != $page_template[ 'page' ]) {
             $info = $start_up_page;
             return $info;
         } else {
-
             $condition = [];
-
             if (!empty($params[ 'id' ])) {
                 $condition[] = [ 'id', '=', $params[ 'id' ] ];
             } elseif (!empty($params[ 'name' ])) {
                 $condition[] = [ 'name', '=', $params[ 'name' ] ];
                 $condition[] = [ 'is_default', '=', 1 ];
-            }
-
-            if (!empty($params[ 'template' ])) {
-                $condition[] = [ 'template', '=', $params[ 'template' ] ];
             }
 
             $field = 'id,title,name,type,template, mode,value,is_default,share,visit_count';
@@ -65,7 +70,7 @@ class DiyService extends BaseApiService
             if (empty($info)) {
                 // 查询默认页面数据
                 if (!empty($params[ 'name' ])) {
-                    $page_data = $this->getFirstPageData($params[ 'name' ], $params[ 'template' ]);
+                    $page_data = $this->getFirstPageData($params[ 'name' ]);
                     if (!empty($page_data)) {
                         $info = [
                             'title' => $page_data[ 'title' ],
@@ -88,19 +93,14 @@ class DiyService extends BaseApiService
     /**
      * 获取默认页面数据
      * @param $type
-     * @param $template
      * @return array|mixed
      */
-    public function getFirstPageData($type, $template)
+    public function getFirstPageData($type)
     {
         $pages = PagesDict::getPages([ 'type' => $type ]);
         if (!empty($pages)) {
-            if (empty($template)) {
-                $template = array_key_first($pages);
-                $page = array_shift($pages);
-            } else {
-                $page = $pages[ $template ];
-            }
+            $template = array_key_first($pages);
+            $page = array_shift($pages);
             $page[ 'template' ] = $template;
             $page[ 'type' ] = $type;
             return $page;

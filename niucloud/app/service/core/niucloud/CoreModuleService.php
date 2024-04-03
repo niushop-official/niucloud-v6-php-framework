@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的多应用管理平台
+// | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud.com
+// | 官方网址：https://www.niucloud-admin.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -11,7 +11,9 @@
 
 namespace app\service\core\niucloud;
 
+use app\dict\sys\ConfigKeyDict;
 use app\service\admin\niucloud\NiucloudService;
+use app\service\core\sys\CoreConfigService;
 use core\util\niucloud\BaseNiucloudClient;
 use core\util\niucloud\http\Response;
 use GuzzleHttp\Exception\GuzzleException;
@@ -27,9 +29,9 @@ class CoreModuleService extends BaseNiucloudClient
     public function getModuleList()
     {
         $params = [
-            'app_type' => '',
             'code' => $this->code,
-            'secret' => $this->secret
+            'secret' => $this->secret,
+            'product_key' => self::PRODUCT
         ];
         return $this->httpGet('member_app_all', $params);
     }
@@ -72,6 +74,7 @@ class CoreModuleService extends BaseNiucloudClient
 
     }
 
+
     /**
      * 操作token
      * @param $action
@@ -82,5 +85,61 @@ class CoreModuleService extends BaseNiucloudClient
     public function getActionToken($action, $data)
     {
         return $this->httpGet('member_app_action/'.$action, $data);
+    }
+
+    /**
+     * 获取升级内容
+     * @param $data
+     * @return array|\core\util\niucloud\Response|object|ResponseInterface
+     * @throws GuzzleException
+     */
+    public function getUpgradeContent($data) {
+        return $this->httpGet('member_app_upgrade/content', $data);
+    }
+
+    /**
+     * 校验key是否被占用
+     * @param $key
+     * @return array|Response|object|ResponseInterface
+     * @throws GuzzleException
+     */
+    public function checkKey($key)
+    {
+        return $this->httpGet('store/app_check/'.$key, ['product_key' => self::PRODUCT])['data'] ?? false;
+    }
+
+    /**
+     * 获取框架最新版本
+     * @return array|\core\util\niucloud\Response|object|ResponseInterface
+     * @throws GuzzleException
+     */
+    public function getFrameworkLastVersion() {
+        return $this->httpGet('store/framework/lastversion', ['product_key' => self::PRODUCT])['data'] ?? false;
+    }
+
+    /**
+     * 获取框架版本更新记录
+     * @return false|mixed
+     * @throws GuzzleException
+     */
+    public function getFrameworkVersionList() {
+        return $this->httpGet('store/framework/version', ['product_key' => self::PRODUCT])['data'] ?? false;
+    }
+
+    /**
+     * 申请体验
+     * @throws GuzzleException
+     */
+    public function applyExperience() {
+        $data = $this->httpGet('apply/experience', ['product_key' => self::PRODUCT])['data'] ?? [];
+        if (!empty($data)) {
+            (new CoreConfigService())->setConfig(ConfigKeyDict::NIUCLOUD_CONFIG, [
+                'auth_code' => $data['auth_code'],
+                'auth_secret' => $data['auth_secret']
+            ]);
+            return $data;
+        } else {
+            return false;
+        }
     }
 }

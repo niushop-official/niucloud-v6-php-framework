@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的多应用管理平台
+// | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud.com
+// | 官方网址：https://www.niucloud-admin.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -26,11 +26,9 @@ class CoreFileService extends BaseCoreService
 {
 
     protected $root_path = 'upload';
-    protected $is_rename = true;//是否重命名
-    protected $validate = [];
-    protected $rename = '';
 
-    protected $config = [];
+    protected $validate = [];
+
     public function __construct(protected $is_attachment = false)
     {
         parent::__construct();
@@ -39,7 +37,7 @@ class CoreFileService extends BaseCoreService
     /**
      * 设置上传根目录
      * @param $root_path
-     * @return $this
+     * @return void
      */
     public function setRootPath($root_path){
         $this->root_path = $root_path;
@@ -49,7 +47,7 @@ class CoreFileService extends BaseCoreService
     /**
      * 设置上传规则
      * @param array $validate  ['ext' => [], 'mime' => [], 'size' => 0]
-     * @return $this
+     * @return void
      */
     public function setValidate(array $validate){
         $this->validate = $validate;
@@ -92,6 +90,6 @@ class CoreFileService extends BaseCoreService
         $storage_config = $storage_config ?? [];
         $storage_config['storage_type'] = self::$storage_type;
         //查询启用的上传方式
-        return new UploadLoader(self::$storage_type, array_merge($this->config, $storage_config ?? []));
+        return new UploadLoader(self::$storage_type, $storage_config ?? []);
     }
 }

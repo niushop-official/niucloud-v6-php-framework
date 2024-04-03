@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的多应用管理平台
+// | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud.com
+// | 官方网址：https://www.niucloud-admin.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -16,6 +16,9 @@ use app\service\core\member\CoreMemberService;
 use core\base\BaseApiService;
 use core\exception\ApiException;
 use core\util\Barcode;
+use think\db\exception\DataNotFoundException;
+use think\db\exception\DbException;
+use think\db\exception\ModelNotFoundException;
 use think\Model;
 
 /**
@@ -33,7 +36,6 @@ class MemberService extends BaseApiService
 
     /**
      * 新增会员
-     * @return void
      */
     public function add(array $data){
         return $this->model->create($data)?->member_id ?? 0;

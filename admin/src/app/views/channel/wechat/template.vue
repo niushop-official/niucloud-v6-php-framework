@@ -1,22 +1,25 @@
 <template>
     <div class="main-container p-5">
         <div class="flex justify-between items-center mb-[20px]">
-            <span class="text-[20px]">{{ pageName }}</span>
+            <span class="text-page-title">{{ pageName }}</span>
         </div>
         <el-tabs v-model="activeName" class="demo-tabs" @tab-change="handleClick">
-            <el-tab-pane :label="t('wechatAccessFlow')" name="/website/channel/wechat" />
-            <el-tab-pane :label="t('customMenu')" name="/website/channel/wechat/menu" />
-            <el-tab-pane :label="t('wechatTemplate')" name="/website/channel/wechat/message" />
+            <el-tab-pane :label="t('wechatAccessFlow')" name="/channel/wechat" />
+            <el-tab-pane :label="t('customMenu')" name="/channel/wechat/menu" />
+            <el-tab-pane :label="t('wechatTemplate')" name="/channel/wechat/message" />
         </el-tabs>
         <el-card class="box-card !border-none" shadow="never">
             <div class="flex justify-between items-center">
-                <span class="text-[20px]">{{pageName}}</span>
-                <el-button type="primary" class="w-[100px]" @click="batchAcquisitionFn">{{ t('batchAcquisition') }}</el-button>
+                <span class="text-page-title">{{ pageName }}</span>
+                <el-button type="primary" class="w-[100px]" @click="batchAcquisitionFn">{{ t('batchAcquisition')
+                }}</el-button>
             </div>
             <el-alert class="warm-prompt !my-[20px]" type="info">
                 <template #default>
                     <div class="flex">
-                        <el-icon class="mr-2 mt-[2px]" size="18"><Warning /></el-icon>
+                        <el-icon class="mr-2 mt-[2px]" size="18">
+                            <Warning />
+                        </el-icon>
                         <div>
                             <p class="text-base">{{ t('operationTip') }}</p>
                             <p class="text-base">1、{{ t('operationTipOne') }}</p>
@@ -49,15 +52,17 @@
 
                     <el-table-column :label="t('response')" min-width="180">
                         <template #default="{ row }">
-                            <div v-for="(item, index) in row.wechat.content" :key="'a' + index" class="text-left">{{item.join("：") }}</div>
+                            <div v-for="(item, index) in row.wechat.content" :key="'a' + index" class="text-left">
+                                {{ item.join("：") }}</div>
                         </template>
                     </el-table-column>
 
                     <el-table-column prop="wechat_template_id" :label="t('serialNumber')" min-width="140" />
 
-                    <el-table-column :label="t('operation')" fixed="right"  align="right" width="200">
+                    <el-table-column :label="t('operation')" fixed="right" align="right" width="200">
                         <template #default="{ row }">
-                            <el-button type="primary" link @click="infoSwitch(row)">{{ row.is_wechat == 1 ? t('close') : t('open') }}</el-button>
+                            <el-button type="primary" link @click="infoSwitch(row)">{{ row.is_wechat == 1 ? t('close') :
+                                t('open') }}</el-button>
                             <el-button type="primary" link @click="batchAcquisitionFn(row)">{{ t('regain') }}</el-button>
                         </template>
                     </el-table-column>
@@ -75,19 +80,19 @@ import { getTemplateList, getBatchAcquisition } from '@/app/api/wechat'
 import { editNoticeStatus } from '@/app/api/notice'
 import { AnyObject } from '@/types/global'
 import { ElLoading } from 'element-plus'
-import { useRoute,useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 
 const route = useRoute()
 const router = useRouter()
-const pageName = route.meta.title;
+const pageName = route.meta.title
 const cronTableData = reactive({
     loading: true,
     data: []
 })
-let activeName = ref("/website/channel/wechat/message");
+const activeName = ref('/channel/wechat/message')
 const handleClick = (val: any) => {
-    router.push({ path: activeName.value });
-};
+    router.push({ path: activeName.value })
+}
 /**
  * 获取消息模板列表
  */
@@ -143,7 +148,6 @@ const infoSwitch = (res: AnyObject) => {
 }
 </script>
 <style lang="scss" scoped>
-
 :deep(.el-tabs__item:hover) {
     border-bottom: 2px solid var(--el-color-primary);
 }
@@ -159,17 +163,16 @@ const infoSwitch = (res: AnyObject) => {
 }
 
 :deep(.el-tabs--top) {
-	.el-tabs__active-bar {
-		display: none;
-	}
+    .el-tabs__active-bar {
+        display: none;
+    }
 
-	.el-tabs__item.is-active {
-		border-bottom: 2px solid var(--el-color-primary);
-	}
+    .el-tabs__item.is-active {
+        border-bottom: 2px solid var(--el-color-primary);
+    }
 
-	.el-tabs__item.is-top:nth-child(2) {
-		margin-right: 20px;
-	}
+    .el-tabs__item.is-top:nth-child(2) {
+        margin-right: 20px;
+    }
 
-}
-</style>
+}</style>

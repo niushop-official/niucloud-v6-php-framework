@@ -2,7 +2,7 @@
     <div class="main-container">
         <el-card class="box-card !border-none" shadow="never">
             <div class="flex justify-between items-center">
-                <span class="text-[20px]">{{ pageName }}</span>
+                <span class="text-page-title">{{ pageName }}</span>
                 <el-button type="primary" class="w-[100px]" @click="addEvent">
                     {{ t('addMenu') }}
                 </el-button>
@@ -80,7 +80,7 @@
                             </el-table-column>
                             <el-table-column prop="sort" :label="t('sort')" min-width="100" />
                             <el-table-column :label="t('operation')" fixed="right"  align="right" width="130">
-                                <template #default="{ row }"> 
+                                <template #default="{ row }">
                                     <el-button v-if="row.menu_key.indexOf('1') ==-1" type="primary" link @click="editEvent(row)" >{{ t('edit') }}</el-button>
                                     <el-button v-if="row.menu_key.indexOf('1') ==-1" type="primary" link @click="deleteEvent(row.menu_key)" >{{ t('delete') }}</el-button>
                                 </template>
@@ -126,7 +126,7 @@ const getMenuList = async () => {
     menusTableData.data = applicationMenus.data
     menusTableData.applicationDate = applicationRes.data ? applicationRes.data.map((el: any) => { el.menu_name = el.title;el.menu_key = el.key+'1'; return el }) : []
     menusTableData.loading = false
-   
+
 }
 getMenuList()
 

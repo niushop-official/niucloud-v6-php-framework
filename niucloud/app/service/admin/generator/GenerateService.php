@@ -157,7 +157,12 @@ class GenerateService extends BaseAdminService
                     $value['max_number'] = 120;
                     $value['min_number'] = 1;
                 }
-
+                if(!empty($value['model']))
+                {
+                    $value['select_type'] = 2;
+                }else{
+                    $value['select_type'] = 1;
+                }
 
             }
         }
@@ -220,7 +225,11 @@ class GenerateService extends BaseAdminService
 //                    'is_query' => !in_array($v['name'], $default_column) ? 1 : 0,
                     'query_type' => '=',
                     'view_type' => 'input',
-                    'dict_type' => '',
+                    'dict_type' => $v['dict_type'] ?? '',
+                    'addon' => $v['addon'] ?? '',
+                    'model' => $v['model'] ?? '',
+                    'label_key' => $v['label_key'] ?? '',
+                    'value_key' => $v['value_key'] ?? '',
                     'create_time' => time(),
                     'update_time' => time()
                 ];
@@ -309,6 +318,11 @@ class GenerateService extends BaseAdminService
                     $item['validate_type'] = $validate_type;
                     $item['validate_type'] = json_encode($validate_type,JSON_UNESCAPED_UNICODE);
                 }
+                if(!empty($item['model']))
+                {
+
+                    $item['dict_type'] = '';
+                }
 
                 $add_column_data[] = [
                     'table_id' => $id,
@@ -326,6 +340,10 @@ class GenerateService extends BaseAdminService
                     'query_type' => $item['query_type'],
                     'view_type' => $item['view_type'] ?? 'input',
                     'dict_type' => $item['dict_type'] ?? '',
+                    'addon' => $item['addon'] ?? '',
+                    'model' => $item['model'] ?? '',
+                    'label_key' => $item['label_key'] ?? '',
+                    'value_key' => $item['value_key'] ?? '',
                     'update_time' => time(),
                     'create_time' => time(),
                     'column_type' => $item['column_type'] ?? 'string',
@@ -372,7 +390,7 @@ class GenerateService extends BaseAdminService
         {
             try {
                 $id = $params['id'];
-                $table_info = (new GenerateTable())->where([ ['id', '=', $id] ])->field('*')->find()->toArray();
+                $table_info = (new GenerateTable())->where([ ['id', '=', $id] ])->field('*')->findOrEmpty()->toArray();
                 $table_info['fields'] = (new GenerateColumn())->where([ ['table_id', '=', $id] ])->field('*')->select()->toArray();
 
                 $generator = new Generate();
@@ -400,7 +418,7 @@ class GenerateService extends BaseAdminService
         }else if($params['generate_type'] == 3){
             try {
                 $id = $params['id'];
-                $table_info = (new GenerateTable())->where([ ['id', '=', $id] ])->field('*')->find()->toArray();
+                $table_info = (new GenerateTable())->where([ ['id', '=', $id] ])->field('*')->findOrEmpty()->toArray();
                 $table_info['fields'] = (new GenerateColumn())->where([ ['table_id', '=', $id] ])->field('*')->select()->toArray();
                 $synchronous_number = $table_info['synchronous_number'] +1;
                 (new GenerateTable())->where([ ['id', '=', $id] ])->save(['synchronous_number' => $synchronous_number]);
@@ -417,6 +435,8 @@ class GenerateService extends BaseAdminService
             } catch ( Exception $e) {
                 throw new AdminException($e->getMessage());
             }
+        }else{
+            return [];
         }
 
     }
@@ -430,7 +450,7 @@ class GenerateService extends BaseAdminService
     {
         try {
             $id = $params['id'];
-            $table_info = (new GenerateTable())->where([ ['id', '=', $id] ])->field('*')->find()->toArray();
+            $table_info = (new GenerateTable())->where([ ['id', '=', $id] ])->field('*')->findOrEmpty()->toArray();
             $table_info['fields'] = (new GenerateColumn())->where([ ['table_id', '=', $id] ])->field('*')->select()->toArray();
 
             $generateService = app()->make(Generate::class);
@@ -624,6 +644,13 @@ class GenerateService extends BaseAdminService
             }
         }
         return $targetFiles;
+    }
+
+    public function getModelColumn($data)
+    {
+        $model = new $data['model'];
+        $table = $model->getModelColumn();
+        return $table;
     }
 
 }

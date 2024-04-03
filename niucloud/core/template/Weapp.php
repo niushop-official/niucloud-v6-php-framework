@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的多应用管理平台
+// | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud.com
+// | 官方网址：https://www.niucloud-admin.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -23,6 +23,7 @@ use Psr\Http\Message\ResponseInterface;
 class Weapp extends BaseTemplate
 {
 
+
     /**
      * @param array $config
      * @return void
@@ -30,16 +31,6 @@ class Weapp extends BaseTemplate
     protected function initialize(array $config = [])
     {
         parent::initialize($config);
-
-    }
-
-    /**
-     * 实例化订阅消息业务
-     * @return Client
-     */
-    public function template()
-    {
-        return CoreWeappService::app()->subscribe_message;
     }
 
     /**
@@ -52,10 +43,11 @@ class Weapp extends BaseTemplate
      */
     public function send(array $data)
     {
-        return $this->template()->send([
-            'template_id' => $data['template_id'],
-            'touser' => $data['openid'],
-            'page' => $data['page'],
+        $api = CoreWeappService::appApiClient();
+        $api->postJson('cgi-bin/message/subscribe/send', [
+            'template_id' => $data['template_id'], // 所需下发的订阅模板id
+            'touser' => $data['openid'],     // 接收者（用户）的 openid
+            'page' => $data['page'],       // 点击模板卡片后的跳转页面，仅限本小程序内的页面。支持带参数,（示例index?foo=bar）。该字段不填则模板无跳转。
             'data' => $data['data'],
         ]);
     }
@@ -69,7 +61,12 @@ class Weapp extends BaseTemplate
      */
     public function addTemplate(array $data)
     {
-        return $this->template()->addTemplate($data['tid'], $data['kid_list'], $data['scene_desc']);
+        $api = CoreWeappService::appApiClient();
+        return $api->postJson('wxaapi/newtmpl/addtemplate', [
+            'tid' => $data['tid'],
+            'kidList' => $data['kid_list'],
+            'kidList' => $data['scene_desc'],
+        ]);
     }
 
     /**
@@ -81,7 +78,10 @@ class Weapp extends BaseTemplate
      */
     public function delete(array $data)
     {
-        return $this->template()->deleteTemplate($data['template_id']);
+        $api = CoreWeappService::appApiClient();
+        return $api->postJson('wxaapi/newtmpl/deltemplate', [
+            'priTmplId' => $data['template_id'],
+        ]);
     }
 
     /**

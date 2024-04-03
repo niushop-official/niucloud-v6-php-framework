@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的多应用管理平台
+// | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud.com
+// | 官方网址：https://www.niucloud-admin.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -41,7 +41,6 @@ class AttachmentService extends BaseAdminService
     /**
      * 新增素材
      * @param array $data
-     * @return mixed
      */
     public function add(array $data)
     {
@@ -119,7 +118,7 @@ class AttachmentService extends BaseAdminService
      */
     public function getPage(array $data)
     {
-
+        $where = [];
         if (!empty($data[ 'att_type' ])) {
             $where[] = [ 'att_type', '=', $data[ 'att_type' ] ];
         }
@@ -129,7 +128,7 @@ class AttachmentService extends BaseAdminService
         if (!empty($data[ 'real_name' ])) {
             $where[] = [ 'real_name', 'like', '%' . $data[ 'real_name' ] . '%' ];
         }
-        return $this->getPageList($this->model, $where ?? [], 'att_id,path,real_name,att_type,url', 'att_id desc', each:function($item, $key)
+        return $this->getPageList($this->model, $where, 'att_id,path,real_name,att_type,url', 'att_id desc', each:function($item, $key)
     {
         $item[ 'thumb' ] = get_thumb_images($item[ 'url' ], FileDict::SMALL);
     });
@@ -207,13 +206,14 @@ class AttachmentService extends BaseAdminService
      */
     public function getCategoryPage(array $data)
     {
+        $where = [];
         if (!empty($data[ 'type' ])) {
             $where[] = [ 'type', '=', $data[ 'type' ] ];
         }
         if (!empty($data[ 'name' ])) {
             $where[] = [ 'name', 'like', '%' . $data[ 'name' ] . '%' ];
         }
-        return $this->getPageList(( new SysAttachmentCategory() ), $where ?? [], 'id,name', 'id desc');
+        return $this->getPageList(( new SysAttachmentCategory() ), $where, 'id,name', 'id desc');
     }
 
     /**
@@ -226,14 +226,14 @@ class AttachmentService extends BaseAdminService
      */
     public function getCategoryList(array $data)
     {
-
+        $where =[];
         if (!empty($data[ 'type' ])) {
             $where[] = [ 'type', '=', $data[ 'type' ] ];
         }
         if (!empty($data[ 'name' ])) {
             $where[] = [ 'name', 'like', '%' . $data[ 'name' ] . '%' ];
         }
-        return SysAttachmentCategory::where($where ?? [])->field('id,name,type')->order('id desc')->select()->toArray();
+        return SysAttachmentCategory::where($where)->field('id,name,type')->order('id desc')->select()->toArray();
     }
 
     /**

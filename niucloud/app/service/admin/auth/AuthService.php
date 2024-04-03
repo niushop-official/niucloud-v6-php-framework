@@ -81,7 +81,7 @@ class AuthService extends BaseAdminService
      * 当前授权用户菜单权限
      * @return array
      */
-    public function getAuthMenuList(int $is_tree = 0, string $addon = ''){
+    public function getAuthMenuList(int $is_tree = 0, string $addon = 'all'){
         $user_info = ( new UserService())->getUserCache($this->uid);
         if(empty($user_info))
             return [];

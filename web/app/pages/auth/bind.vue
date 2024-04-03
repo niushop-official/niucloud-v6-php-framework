@@ -4,7 +4,7 @@
 
             <div class="bg-white w-[380px] p-[30px]">
                 <div class="flex items-end mb-[30px] mt-[15px]">
-                    <div class="mr-[20px] text-base cursor-pointer leading-none font-bold">{{ t('mobileBind') }}</div>
+                    <div class="mr-[20px] text-base cursor-pointer leading-none font-bold">{{t('mobileBind')}}</div>
                 </div>
                 <el-form :model="formData" ref="formRef" :rules="formRules" :validate-on-rule-change="false">
                     <div>
@@ -15,16 +15,14 @@
                         <el-form-item prop="mobile_code">
                             <el-input v-model="formData.mobile_code" :placeholder="t('codePlaceholder')">
                                 <template #suffix>
-                                    <sms-code :mobile="formData.mobile" type="login" v-model="formData.mobile_key"
-                                        @click="sendSmsCode" ref="smsCodeRef"></sms-code>
+                                    <sms-code :mobile="formData.mobile" type="login" v-model="formData.mobile_key" @click="sendSmsCode" ref="smsCodeRef"></sms-code>
                                 </template>
                             </el-input>
                         </el-form-item>
                     </div>
 
                     <el-form-item>
-                        <el-button type="primary" class="mt-[20px] w-full" size="large" @click="handleRegister"
-                            :loading="loading">{{ loading ? t('binding') : t('bind') }}</el-button>
+                        <el-button type="primary" class="mt-[20px] w-full" size="large" @click="handleRegister" :loading="loading">{{ loading ? t('binding') : t('bind') }}</el-button>
                     </el-form-item>
                 </el-form>
             </div>
@@ -63,7 +61,7 @@ const formRules = computed(() => {
             },
             {
                 validator(rule: any, value: string, callback: any) {
-                    return test.mobile(value)
+                     return test.mobile(value)
                 },
                 message: t('mobileError'),
                 trigger: ['change', 'blur'],
@@ -137,4 +135,4 @@ const sendSmsCode = async () => {
 :deep(.el-form-item__error) {
     padding-top: 5px;
 }
-</style>~/app/api/auth~/app/api/member
+</style>

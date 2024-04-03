@@ -2,6 +2,10 @@
     --aside-width: 210px;
     --el-mask-color: rgba(255,255,255,1);
 }
+body,
+html {
+    font-family: Helvetica Neue, Helvetica, Arial;
+}
 
 .border-color {
     border-color: var(--el-border-color-lighter);
@@ -50,11 +54,11 @@
     height: 48px;
 
     .fixed-footer {
-        position: absolute;
+        position: fixed;
         height: inherit;
         background:var(--el-bg-color-overlay);
+        width: 100%;
         left: 0;
-        right: 0;
         bottom: 0;
         z-index: 4;
         display: flex;
@@ -168,7 +172,7 @@ select:-webkit-autofill {
 // 温馨提示样式
 .warm-prompt {
     background-color: var(--el-color-primary-light-9) !important;
-    .el-icon, p {
+    .el-icon,p,li{
         color: var(--el-color-primary-light-3);
     }
     .el-alert__content{
@@ -181,7 +185,7 @@ html.dark {
         .el-icon, p {
             color: var(--el-color-primary-dark-2);
         }
-    }   
+    }
 }
 .app-item {
 	background: #f7f7f7;
@@ -189,7 +193,7 @@ html.dark {
 html.dark {
     .app-item {
         background: #191a23;
-    }   
+    }
 }
 
 // 详情的头部
@@ -216,6 +220,7 @@ html.dark {
     }
 }
 
+
 // ********************************************** 修改整体样式 **********************************************
 // 修改选择框、ipnut、时间选择、按钮，input带按钮的圆角
 .el-input__wrapper, .el-input-group__append, .el-textarea__inner{
@@ -238,4 +243,21 @@ html.dark {
 	display: -webkit-box;
 	-webkit-line-clamp: 2;
 	-webkit-box-orient: vertical;
+}
+// 滚动条
+//.el-scrollbar__bar.is-vertical{
+//    width: 10px !important;
+//}
+//.el-scrollbar__bar.is-vertical .el-scrollbar__thumb{
+//    background-color: #8b8b8b !important;
+//    opacity: 1 !important;
+//    width: 9px !important;
+//}
+//.el-scrollbar__bar.is-vertical .el-scrollbar__thumb:hover{
+//    background-color: #636363 !important;
+//    opacity: 1 !important;
+//}
+
+:root input:-webkit-autofill, textarea:-webkit-autofill, select:-webkit-autofill {
+	box-shadow: 0 0 50px 50px white inset;
 }

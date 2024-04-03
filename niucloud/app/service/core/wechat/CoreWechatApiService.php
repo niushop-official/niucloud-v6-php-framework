@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的多应用管理平台
+// | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud.com
+// | 官方网址：https://www.niucloud-admin.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -12,6 +12,7 @@
 namespace app\service\core\wechat;
 
 use core\base\BaseCoreService;
+use EasyWeChat\Kernel\Exceptions\InvalidArgumentException;
 use EasyWeChat\Kernel\Exceptions\InvalidConfigException;
 use GuzzleHttp\Exception\GuzzleException;
 
@@ -27,7 +28,10 @@ class CoreWechatApiService extends BaseCoreService
      */
     public function userInfo(string $openid)
     {
-        return CoreWechatService::app()->user->get($openid);
+        $api = CoreWechatService::appApiClient();
+        return $api->get('/cgi-bin/user/info', [
+            'openid' => $openid,
+        ]);
     }
 
     /**
@@ -40,7 +44,15 @@ class CoreWechatApiService extends BaseCoreService
      */
     public function userInfoBatchget(array $openids, string $lang = 'zh_CN')
     {
-        return CoreWechatService::app()->user->select($openids);
+        return CoreWechatService::appApiClient()->postJson('/cgi-bin/user/info/batchget', [
+            'user_list' => array_map(function ($openid) use ($lang) {
+                return [
+                    'openid' => $openid,
+                    'lang' => $lang,
+                ];
+            }, $openids)
+            ]
+        );
     }
     
     /**
@@ -48,7 +60,8 @@ class CoreWechatApiService extends BaseCoreService
      */
     public function userGet(?string $next_openid = '')
     {
-        return CoreWechatService::app()->user->list($next_openid);
+        $api = CoreWechatService::appApiClient();
+        return $api->get('/cgi-bin/user/get', ['next_openid' => $next_openid]);
     }
 
 
@@ -62,9 +75,15 @@ class CoreWechatApiService extends BaseCoreService
      */
     public function menuCreate(array $buttons, array $match_rule = [])
     {
+        $api = CoreWechatService::appApiClient();
+        if (!empty($match_rule)) {
+            return $api->postJson('cgi-bin/menu/addconditional', [
+                'button' => $buttons,
+                'matchrule' => $match_rule,
+            ]);
+        }
 
-//        CoreWechatService::app()->menu->current();
-        return CoreWechatService::app()->menu->create($buttons, $match_rule);
+        return $api->postJson('cgi-bin/menu/create', ['button' => $buttons]);
     }
 
 

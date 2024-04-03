@@ -1,17 +1,16 @@
 <template>
     <div class="main-container min-h-[300px] p-5">
         <div class="flex justify-between items-center mb-[20px]">
-            <span class="text-[20px]">{{ pageName }}</span>
+            <span class="text-page-title">{{ pageName }}</span>
         </div>
         <el-tabs v-model="activeName" class="demo-tabs" @tab-change="handleClick">
-            <el-tab-pane :label="t('weappAccessFlow')" name="/website/channel/weapp" />
-            <el-tab-pane :label="t('subscribeMessage')" name="/website/channel/weapp/message" />
-            <el-tab-pane :label="t('weappRelease')" name="/website/channel/weapp/code" />
+            <el-tab-pane :label="t('weappAccessFlow')" name="/channel/weapp" />
+            <el-tab-pane :label="t('subscribeMessage')" name="/channel/weapp/message" />
+            <el-tab-pane :label="t('weappRelease')" name="/channel/weapp/code" />
         </el-tabs>
         <el-card class="box-card !border-none" shadow="never">
             <div class="mt-[50px]">
-                <el-button type="primary" @click="insert" :loading="uploading" :disabled="weappTableData.loading">{{
-                    t('cloudRelease') }}</el-button>
+                <el-button type="primary" @click="insert" :loading="uploading" :disabled="weappTableData.loading">{{ t('cloudRelease') }}</el-button>
                 <el-button @click="localInsert" :disabled="weappTableData.loading">{{ t('localRelease') }}</el-button>
             </div>
             <el-table class="mt-[15px]" :data="weappTableData.data" v-loading="weappTableData.loading" size="default">
@@ -23,18 +22,18 @@
                 <el-table-column prop="status_name" :label="t('status')" align="left">
                     <template #default="{ row }">
                         <div>{{ row.status_name }}</div>
-                        <div class="text-error" v-if="row.status == -1">{{ t('failReason') }}{{ row.fail_reason }}</div>
                     </template>
                 </el-table-column>
                 <el-table-column prop="create_time" :label="t('createTime')" align="center" />
                 <el-table-column :label="t('operation')" fixed="right" align="right" min-width="120">
                     <template #default="{ row, $index }">
-                        <div class="" v-if="previewContent && $index == 0 && row.status == 1 && weappTableData.page == 1">
+                        <template v-if="previewContent && $index == 0 && row.status == 1 && weappTableData.page == 1">
                             <el-tooltip :content="previewContent" raw-content effect="light">
-                                <el-button type="primary" link>
-                                    {{ t('preview') }}</el-button>
+                                <el-button type="primary" link>{{ t('preview') }}</el-button>
                             </el-tooltip>
-                        </div>
+                        </template>
+                        <el-button type="primary" link v-if="row.status == -1" @click="handleFailReason(row)">
+                            {{ t('failReason') }}</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -45,7 +44,7 @@
             </div>
         </el-card>
         <el-dialog v-model="dialogVisible" :title="t('codeDownTwoDesc')" width="30%" :before-close="handleClose">
-            <el-form ref="ruleFormRef" :model="form" :rules="rules" label-width="120px">
+            <el-form ref="ruleFormRef" :model="form" label-width="120px">
                 <el-form-item prop="code" :label="t('code')">
                     <el-input v-model="form.code" :placeholder="t('codePlaceholder')"
                         onkeyup="this.value = this.value.replace(/[^\d\.]/g,'');" />
@@ -66,6 +65,11 @@
                 </span>
             </template>
         </el-dialog>
+        <el-dialog v-model="failReasonDialogVisible" :title="t('failReason')" width="60%">
+            <el-scrollbar class="h-[60vh] w-full whitespace-pre p-[20px]">
+                {{ failReason }}
+            </el-scrollbar>
+        </el-dialog>
     </div>
 </template>
 
@@ -76,13 +80,20 @@ import { t } from '@/lang'
 import { useRoute, useRouter } from 'vue-router'
 import { getAuthinfo } from '@/app/api/module'
 import { ElMessageBox } from 'element-plus'
+import { AnyObject } from '@/types/global'
 
 const route = useRoute()
 const router = useRouter()
 const pageName = route.meta.title
-const activeNames = ref('1')
+// const activeNames = ref('1')
 const dialogVisible = ref(false)
-const weappTableData = reactive({
+const weappTableData:{
+    page: number,
+    limit: number,
+    total: number,
+    loading: boolean,
+    data: AnyObject
+} = reactive({
     page: 1,
     limit: 10,
     total: 0,
@@ -90,7 +101,10 @@ const weappTableData = reactive({
     data: []
 })
 const form = ref({
-    desc: ''
+    desc: '',
+    code: '',
+    path: '',
+    content: ''
 })
 
 const authCode = ref('')
@@ -102,16 +116,22 @@ getAuthinfo().then(res => {
 }).catch(() => {
 })
 
-const weappConfig = ref({})
+const weappConfig = ref<{
+    app_id:string,
+    app_secret:string
+}>({
+    app_id: '',
+    app_secret: ''
+})
 getWeappConfig().then(res => {
     weappConfig.value = res.data
 })
 
-const activeName = ref('/website/channel/weapp/code')
+const activeName = ref('/channel/weapp/code')
 const handleClick = (val: any) => {
     router.push({ path: activeName.value })
 }
-const ruleFormRef = ref(null)
+const ruleFormRef = ref<any>(null)
 
 /**
  * 获取版本列表
@@ -228,9 +248,16 @@ const configElMessageBox = () => {
             cancelButtonText: t('cancel')
         }
     ).then(() => {
-        router.push({ path: '/website/channel/weapp/config' })
+        router.push({ path: '/channel/weapp/config' })
     }).catch((action: string) => {
     })
+}
+
+const failReason = ref('')
+const failReasonDialogVisible = ref(false)
+const handleFailReason = (data: any) => {
+    failReason.value = data.fail_reason
+    failReasonDialogVisible.value = true
 }
 </script>
 

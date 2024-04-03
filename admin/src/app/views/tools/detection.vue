@@ -1,8 +1,8 @@
 <template>
-	<div class="main-container attachment-container min-h-[80vh]" v-loading="loadingArr.server_load">
-		<el-card class="box-card !border-none" shadow="never" v-if="systemService && !loadingArr.server_load">
+	<div class="main-container attachment-container min-h-[80vh]" v-loading="loading">
+		<el-card class="box-card !border-none" shadow="never"  v-if="Object.keys(systemService).length">
 			<div class="flex justify-between items-center">
-				<span class="text-[20px]">{{ pageName }}</span>
+				<span class="text-page-title">{{ pageName }}</span>
 			</div>
 			<div class="bg-[#fff] pb-[20px] mb-3">
 				<p class="pt-[20px] pb-[10px] text-sm">{{ t('serverInformation') }}</p>
@@ -42,6 +42,7 @@
 					</el-table>
 				</div>
 			</div>
+
 			<div class="bg-[#fff] pb-[20px] mb-3">
 				<p class="py-[20px] text-sm">{{ t('process') }}</p>
 				<div class="text-[14px]">
@@ -74,18 +75,13 @@ import { useRoute } from 'vue-router'
 const route = useRoute()
 const pageName = route.meta.title
 
-const systemService = ref([])
-let loadingArr = reactive({
-	"server_load": true,
-})
+const systemService = ref({})
+let loading = ref(true);
 const getSystemService = () => {
-	loadingArr.server_load = true;
-	getSystem().then(res => {
-		systemService.value = res.data
-		loadingArr.server_load = false;
-	}).catch(()=>{
-		loadingArr.server_load = false;
-	})
+    getSystem().then(res => {
+        systemService.value = res.data
+        loading.value = false
+    })
 }
 getSystemService()
 </script>

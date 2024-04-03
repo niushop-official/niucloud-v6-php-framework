@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的多应用管理平台
+// | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud.com
+// | 官方网址：https://www.niucloud-admin.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -41,19 +41,9 @@ class MemberService extends BaseAdminService
      */
     public function getPage(array $where = [])
     {
-        if($where['status'] == 2)
-        {
-            $status[] = ['status','=',1];
-        }else if($where['status'] == 3)
-        {
-            $status[] = ['status','=',0];
-        }else{
-            $status[] = ['status','in',[1,0]];
-        }
+
         $field = 'member_id, member_no, username, mobile, password, register_channel, register_type, nickname, headimg, member_level, member_label, wx_openid, weapp_openid, wx_unionid, ali_openid, douyin_openid, login_ip, login_type, login_channel, login_count, login_time, create_time, last_visit_time, last_consum_time, sex, status, birthday, point, point_get, balance, balance_get, growth, growth_get, is_member, member_time, is_del, province_id, city_id, district_id, address, location, delete_time, money, money_get, commission, commission_get, commission_cash_outing';
-        $search_model = $this->model->withSearch(['keyword','register_type', 'create_time', 'is_del', 'member_label', 'register_channel'],$where)
-            ->where($status)
-            ->field($field)->order('member_id desc')->append(['register_channel_name', 'register_type_name', 'sex_name', 'login_channel_name', 'login_type_name', 'status_name']);
+        $search_model = $this->model->withSearch(['keyword','register_type', 'create_time', 'is_del', 'member_label', 'register_channel'],$where)->field($field)->order('member_id desc')->append(['register_channel_name', 'register_type_name', 'sex_name', 'login_channel_name', 'login_type_name', 'status_name']);
         return $this->pageQuery($search_model, function ($item, $key) {
             $item = $this->makeUp($item);
         });
@@ -93,23 +83,28 @@ class MemberService extends BaseAdminService
 
         //检测手机是否重复
         if(!empty($data['mobile'])){
-            if(!$this->model->where([ ['mobile', '=', $data['mobile']]])->findOrEmpty()->isEmpty())
+            if(!$this->model->where([['mobile', '=', $data['mobile']]])->findOrEmpty()->isEmpty())
             throw new AdminException('MOBILE_IS_EXIST');
         }
         if($data['init_member_no'] != $data['member_no']){
-            if(!$this->model->where([ ['member_no', '=', $data['member_no']]])->findOrEmpty()->isEmpty())
+            if(!$this->model->where([['member_no', '=', $data['member_no']]])->findOrEmpty()->isEmpty())
                 throw new AdminException('MEMBER_NO_IS_EXIST');
         }else{
-            if(!$this->model->where([ ['member_no', '=', $data['member_no']]])->findOrEmpty()->isEmpty()){
+            if(!$this->model->where([['member_no', '=', $data['member_no']]])->findOrEmpty()->isEmpty()){
                 $data['member_no'] = $this->getMemberNo();
             }
         }
 
-        $data['username'] = $data['member_no'];
+        $data['username'] = $data['mobile'];
         if(!empty($data['username'])){
             if(!$this->model->where([['username', '=', $data['username']]])->findOrEmpty()->isEmpty())
                 throw new AdminException('MEMBER_IS_EXIST');
         }
+
+        if (empty($data[ 'nickname' ]) && !empty($data['mobile'])) {
+            $data[ 'nickname' ] = substr_replace($data['mobile'], '****', 3, 4);
+        }
+
         $password_hash = create_password($data['password']);
         $data['password'] = $password_hash;
         $data['register_type'] = MemberRegisterTypeDict::MANUAL;
@@ -130,7 +125,6 @@ class MemberService extends BaseAdminService
     public function edit(int $member_id, array $data)
     {
         $where = array(
-
             ['member_id', '=', $member_id],
         );
         if(!empty($data['password'])){
@@ -145,7 +139,6 @@ class MemberService extends BaseAdminService
      * @param int $member_id
      * @param string $field
      * @param $data
-     * @return null
      */
     public function modify(int $member_id, string $field, $data)
     {
@@ -155,7 +148,6 @@ class MemberService extends BaseAdminService
     /**
      * 组合整理数据
      * @param $data
-     * @return void
      */
     public function makeUp($data){
         //会员标签

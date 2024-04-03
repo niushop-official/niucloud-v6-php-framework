@@ -42,7 +42,7 @@ import { t } from '@/lang'
 import type { FormInstance } from 'element-plus'
 import { getStorageInfo, editStorage } from '@/app/api/sys'
 
-let showDialog = ref(false)
+const showDialog = ref(false)
 const loading = ref(true)
 
 /**
@@ -77,7 +77,8 @@ const formRules = computed(() => {
         ],
         domain: [
             { required: true, message: t('domainPlaceholder'), trigger: 'blur' }
-        ],
+        ]
+
     }
 })
 
@@ -94,13 +95,13 @@ const confirm = async (formEl: FormInstance | undefined) => {
         if (valid) {
             loading.value = true
 
-            let data = formData
+            const data = formData
 
             editStorage(data).then(res => {
                 loading.value = false
                 showDialog.value = false
                 emit('complete')
-            }).catch(err => {
+            }).catch(() => {
                 loading.value = false
                 // showDialog.value = false
             })
@@ -117,10 +118,8 @@ const setFormData = async (row: any = null) => {
             if (data[key] != undefined) formData[key] = data[key]
             if (data.params[key] != undefined) formData[key] = data.params[key].value
         })
-
     }
     loading.value = false
-
 }
 
 defineExpose({

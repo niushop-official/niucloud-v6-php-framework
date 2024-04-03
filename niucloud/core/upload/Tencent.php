@@ -63,7 +63,7 @@ class Tencent extends BaseUpload
         try {
             $result = $this->client()->putObject(array(
                 'Bucket' => $bucket, //存储桶名称，由BucketName-Appid 组成，可以在COS控制台查看 https://console.tencentcloud.com/cos5/bucket
-                'Key' => $this->getFullPath(),
+                'Key' => $this->getFullPath($dir),
                 'Body' => fopen($this->getRealPath(), 'rb'),
             ));
             // 请求成功
@@ -142,7 +142,7 @@ class Tencent extends BaseUpload
     {
         //腾讯云缩略图地址
 
-        $thumb_config = config('upload.thumb_type');
+        $thumb_config = config('upload.thumb.thumb_type');
         $thumb_data = [];
         foreach ($thumb_config as $k => $v) {
             if ($thumb_type == 'all' || $thumb_type == $k || (is_array($thumb_type) && in_array($k, $thumb_type))) {

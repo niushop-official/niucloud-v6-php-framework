@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的多应用管理平台
+// | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud.com
+// | 官方网址：https://www.niucloud-admin.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -69,8 +69,8 @@ class CoreTransferService extends BaseCoreService
      * @param array $data
      * @return true
      */
-    public function transfer( string $transfer_no, string $transfer_type, array $data){
-        $transfer = $this->findTransferByTransferNo( $transfer_no);
+    public function transfer(string $transfer_no, string $transfer_type, array $data){
+        $transfer = $this->findTransferByTransferNo($transfer_no);
 
         if($transfer->isEmpty()) throw new PayException('TRANSFER_ORDER_INVALID');
         if(!in_array($transfer['transfer_status'], [TransferDict::WAIT, TransferDict::FAIL]))  throw new PayException('TRANFER_STATUS_NOT_IN_WAIT_TANSFER');
@@ -100,14 +100,14 @@ class CoreTransferService extends BaseCoreService
 //                $params['batch_id'] = $result['batch_id'];
 //                $params['out_batch_no'] = $result['out_batch_no'];
                 //将返回的数据交给转账通知
-                $this->transferNotify( $transfer_no, $result);
+                $this->transferNotify($transfer_no, $result);
                 return true;
             }catch( Throwable $e){
-                $this->fail( $transfer_no, $transfer_type, ['reason' => get_lang($e->getMessage())]);
+                $this->fail($transfer_no, $transfer_type, ['reason' => get_lang($e->getMessage())]);
                 throw new PayException($e->getMessage());
             }
         }
-        $this->success( $transfer_no, $transfer_type, $params);
+        $this->success($transfer_no, $transfer_type, $params);
         return true;
     }
     /**
@@ -115,14 +115,14 @@ class CoreTransferService extends BaseCoreService
      * @param string $transfer_no
      * @return Pay|array|mixed|Model
      */
-    public function findTransferByTransferNo( string $transfer_no){
+    public function findTransferByTransferNo(string $transfer_no){
         $where = array(
             ['transfer_no', '=', $transfer_no]
         );
         return $this->model->where($where)->findOrEmpty();
     }
 
-    public function transferNotify( string $transfer_no, $params){
+    public function transferNotify(string $transfer_no, $params){
         $transfer = $this->findTransferByTransferNo($transfer_no);
 
         if($transfer->isEmpty()) throw new PayException('TRANSFER_ORDER_INVALID');
@@ -133,10 +133,10 @@ class CoreTransferService extends BaseCoreService
                 $this->success($transfer_no, $transfer->type);
                 break;
             case TransferDict::DEALING:
-                $this->dealing( $transfer_no, $transfer->type);
+                $this->dealing($transfer_no, $transfer->type);
                 break;
             case TransferDict::FAIL:
-                $this->fail( $transfer_no, $transfer->type);
+                $this->fail($transfer_no, $transfer->type);
                 break;
         }
         return true;
@@ -148,8 +148,8 @@ class CoreTransferService extends BaseCoreService
      * @param array $params
      * @return bool
      */
-    public function success( string $transfer_no, string $transfer_type, array $params = []){
-        $transfer = $this->findTransferByTransferNo( $transfer_no);
+    public function success(string $transfer_no, string $transfer_type, array $params = []){
+        $transfer = $this->findTransferByTransferNo($transfer_no);
 
         if($transfer->isEmpty()) throw new PayException('TRANSFER_ORDER_INVALID');
         if(!in_array($transfer['transfer_status'], [TransferDict::WAIT, TransferDict::DEALING]))  throw new PayException('TRANFER_STATUS_NOT_IN_WAIT_TANSFER');
@@ -188,7 +188,7 @@ class CoreTransferService extends BaseCoreService
      * @param array $params
      * @return true
      */
-    public function fail( string $transfer_no, string $transfer_type, array $params = []){
+    public function fail(string $transfer_no, string $transfer_type, array $params = []){
         $transfer = $this->findTransferByTransferNo($transfer_no);
 
         if($transfer->isEmpty()) throw new PayException('TRANSFER_ORDER_INVALID');
@@ -206,19 +206,19 @@ class CoreTransferService extends BaseCoreService
     }
 
 
-    public function check( array $data){
+    public function check(array $data){
         $transfer_no = $data['transfer_no'];
-        $transfer = $this->findTransferByTransferNo( $transfer_no);
+        $transfer = $this->findTransferByTransferNo($transfer_no);
         if($transfer->isEmpty()) throw new PayException('TRANSFER_ORDER_INVALID');
         if(!in_array($transfer['status'], [TransferDict::DEALING, TransferDict::WAIT]) )  throw new PayException('TRANFER_IS_CHANGE');//只有待转账和转账中的订单可以校验
 
         //查询第三方支付单据
-        $transfer_info = $this->pay_event->init( $transfer->channel, $transfer->type)->getTransfer($transfer_no);
+        $transfer_info = $this->pay_event->init($transfer->channel, $transfer->type)->getTransfer($transfer_no);
         if(empty($transfer_info)) throw new PayException('TRANSFER_ORDER_INVALID');//查询不到转账信息
         $status = $transfer_info['status'];
         switch($status){
             case TransferDict::SUCCESS:
-                $this->success( $transfer_no, $transfer->type);
+                $this->success($transfer_no, $transfer->type);
                 break;
             case TransferDict::DEALING:
                 $this->dealing($transfer_no, $transfer->type);
@@ -236,7 +236,7 @@ class CoreTransferService extends BaseCoreService
      * @param $type
      * @return true
      */
-    public function dealing( $transfer_no, $type){
+    public function dealing($transfer_no, $type){
         $this->model->where([
             ['transfer_no', '=', $transfer_no]
         ])->update(

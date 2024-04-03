@@ -1,18 +1,20 @@
 <template>
     <div class="main-container p-5">
         <div class="flex justify-between items-center mb-[20px]">
-            <span class="text-[20px]">{{ pageName }}</span>
+            <span class="text-page-title">{{ pageName }}</span>
         </div>
         <el-tabs v-model="activeName" class="demo-tabs" @tab-change="handleClick">
-            <el-tab-pane :label="t('weappAccessFlow')" name="/website/channel/weapp" />
-            <el-tab-pane :label="t('subscribeMessage')" name="/website/channel/weapp/message" />
-            <el-tab-pane :label="t('weappRelease')" name="/website/channel/weapp/code" />
+            <el-tab-pane :label="t('weappAccessFlow')" name="/channel/weapp" />
+            <el-tab-pane :label="t('subscribeMessage')" name="/channel/weapp/message" />
+            <el-tab-pane :label="t('weappRelease')" name="/channel/weapp/code" />
         </el-tabs>
         <el-card class="box-card !border-none" shadow="never">
             <el-alert class="warm-prompt !my-[20px]" type="info">
                 <template #default>
-                     <div class="flex">
-                        <el-icon class="mr-2 mt-[2px]" size="18"><Warning /></el-icon>
+                    <div class="flex">
+                        <el-icon class="mr-2 mt-[2px]" size="18">
+                            <Warning />
+                        </el-icon>
                         <div>
                             <p class="text-base">{{ t('operationTip') }} 1、{{ t('operationTipOne') }}</p>
                             <p class="text-base">2、{{ t('operationTipTwo') }}</p>
@@ -32,7 +34,8 @@
 
                     <el-table-column :label="t('response')" min-width="180">
                         <template #default="{ row }">
-                            <div v-for="(item, index) in row.weapp.content" :key="'a' + index" class="text-left">{{item.join(":") }}</div>
+                            <div v-for="(item, index) in row.weapp.content" :key="'a' + index" class="text-left">
+                                {{ item.join(":") }}</div>
                         </template>
                     </el-table-column>
 
@@ -44,9 +47,10 @@
 
                     <el-table-column prop="weapp_template_id" :label="t('serialNumber')" min-width="180" />
 
-                    <el-table-column :label="t('operation')" fixed="right"  align="right" width="200">
+                    <el-table-column :label="t('operation')" fixed="right" align="right" width="200">
                         <template #default="{ row }">
-                            <el-button type="primary" link @click="infoSwitch(row)">{{ row.is_weapp == 1 ? t('close') : t('open') }}</el-button>
+                            <el-button type="primary" link @click="infoSwitch(row)">{{ row.is_weapp == 1 ? t('close') :
+                                t('open') }}</el-button>
                             <el-button type="primary" link @click="batchAcquisitionFn(row)">{{ t('regain') }}</el-button>
                         </template>
                     </el-table-column>
@@ -63,15 +67,16 @@ import { t } from '@/lang'
 import { getTemplateList, getBatchAcquisition } from '@/app/api/weapp'
 import { editNoticeStatus } from '@/app/api/notice'
 import { ElLoading } from 'element-plus'
-import { useRoute,useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
+import { AnyObject } from '@/types/global'
 
 const route = useRoute()
 const router = useRouter()
 const pageName = route.meta.title
-let activeName = ref("/website/channel/weapp/message");
+const activeName = ref('/channel/weapp/message')
 const handleClick = (val: any) => {
-    router.push({ path: activeName.value });
-};
+    router.push({ path: activeName.value })
+}
 const cronTableData = reactive({
     loading: true,
     data: []
@@ -113,7 +118,7 @@ interface Switch {
     type: string;
     status: number
 }
-const infoSwitch = (res) => {
+const infoSwitch = (res:any) => {
     const data = ref<Switch>({
         key: '',
         type: '',
@@ -133,29 +138,31 @@ const infoSwitch = (res) => {
 </script>
 
 <style lang="scss" scoped>
-:deep(.el-tabs__item:hover){
+:deep(.el-tabs__item:hover) {
     border-bottom: 2px solid var(--el-color-primary);
 }
-:deep(.el-tabs__item){
+
+:deep(.el-tabs__item) {
     padding: 0;
 }
-:deep(.el-tabs__item+.el-tabs__item){
+
+:deep(.el-tabs__item+.el-tabs__item) {
     margin-right: 20px;
     margin-left: 20px;
     // border-bottom: 2px solid var(--el-color-primary);
 }
+
 :deep(.el-tabs--top) {
-	.el-tabs__active-bar {
-		display: none;
-	}
+    .el-tabs__active-bar {
+        display: none;
+    }
 
-	.el-tabs__item.is-active {
-		border-bottom: 2px solid var(--el-color-primary);
-	}
+    .el-tabs__item.is-active {
+        border-bottom: 2px solid var(--el-color-primary);
+    }
 
-	.el-tabs__item.is-top:nth-child(2) {
-		margin-right: 20px;
-	}
+    .el-tabs__item.is-top:nth-child(2) {
+        margin-right: 20px;
+    }
 
-}
-</style>
+}</style>

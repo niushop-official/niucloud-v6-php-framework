@@ -1,12 +1,14 @@
 import type { RouterConfig } from '@nuxt/schema'
+import routes from '@/app/pages/routes'
 
-const routeFiles = import.meta.glob('../**/routes.ts')
-const routes = []
+const addonRoutes = import.meta.globEager('@/addon/**/pages/routes.ts')
 
-for (const key of Object.keys(routeFiles)) {
-    await routeFiles[key]().then(res => {
-        routes.push(...res.default)
-    })
+for (const key in addonRoutes) {
+    const addon = key.split('/')[2]
+    routes.push(...addonRoutes[key].default.map((item) => {
+        item.meta = item.meta ? Object.assign(item.meta, { addon }) : { addon }
+        return item
+    }))
 }
 
 // https://router.vuejs.org/api/interfaces/routeroptions.html

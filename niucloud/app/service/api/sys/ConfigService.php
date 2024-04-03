@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的多应用管理平台
+// | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud.com
+// | 官方网址：https://www.niucloud-admin.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -11,6 +11,8 @@
 
 namespace app\service\api\sys;
 
+use app\service\core\addon\CoreAddonService;
+use app\service\core\sys\CoreConfigService;
 use app\service\core\sys\CoreSysConfigService;
 use core\base\BaseApiService;
 
@@ -36,16 +38,15 @@ class ConfigService extends BaseApiService
      */
     public function getCopyright()
     {
-        return ( new CoreSysConfigService() )->getCopyright();
+       return (new CoreSysConfigService())->getCopyright();
     }
 
     /**
      * 获取前端域名
      * @return array|string[]
      */
-    public function getSceneDomain()
-    {
-        return ( new CoreSysConfigService() )->getSceneDomain();
+    public function getSceneDomain(){
+        return (new CoreSysConfigService())->getSceneDomain();
     }
 
     /**
@@ -53,10 +54,34 @@ class ConfigService extends BaseApiService
      * @param $data
      * @return array
      */
-    public function getWapIndexList($data)
+    public function getWapIndexList($data = [])
     {
         return ( new CoreSysConfigService() )->getWapIndexList($data);
     }
 
-
+    public function getWebSite()
+    {
+        $info = ( new CoreConfigService() )->getConfigValue('WEB_SITE_INFO');
+        if (empty($info)) {
+            $info = [
+                'site_name' => '',
+                'logo' => '',
+                'desc' => '',
+                'latitude' => '',
+                'longitude' => '',
+                'province_id' => 0,
+                'city_id' => 0,
+                'district_id' => 0,
+                'address' => '',
+                'full_address' => '',
+                'phone' => '',
+                'business_hours' => '',
+                'front_end_name' => '',
+                'front_end_logo' => '',
+                'icon' => '',
+            ];
+        }
+        $info['site_addons'] = (new CoreAddonService())->getInstallAddonList();
+        return $info;
+    }
 }

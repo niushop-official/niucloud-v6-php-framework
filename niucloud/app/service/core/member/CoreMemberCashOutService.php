@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的多应用管理平台
+// | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud.com
+// | 官方网址：https://www.niucloud-admin.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -75,6 +75,7 @@ class CoreMemberCashOutService extends BaseCoreService
 
     /**
      * 审核通过
+
      * @param MemberCashOut $cash_out
      * @param array $data
      * @return true
@@ -97,6 +98,7 @@ class CoreMemberCashOutService extends BaseCoreService
 
     /**
      * 拒绝
+
      * @param MemberCashOut $cash_out
      * @param array $data
      * @return true
@@ -180,6 +182,7 @@ class CoreMemberCashOutService extends BaseCoreService
 
     /**
      * 申请提现
+
      * @param int $member_id
      * @param array $data
      * @return true
@@ -261,6 +264,7 @@ class CoreMemberCashOutService extends BaseCoreService
 
     /**
      * 返还用户的对应账户
+
      * @param MemberCashOut $cash_out
      * @return true
      */
@@ -309,7 +313,7 @@ class CoreMemberCashOutService extends BaseCoreService
         } else {
             ++$max_no;
         }
-        $cash_out_no = $time_str  . sprintf('%03d', $max_no);
+        $cash_out_no = $time_str . sprintf('%03d', $max_no);
         Cache::set("cash_out_no_" . $time_str, $max_no);
         return $cash_out_no;
     }

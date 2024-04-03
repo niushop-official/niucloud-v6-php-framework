@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的多应用管理平台
+// | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud.com
+// | 官方网址：https://www.niucloud-admin.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -28,10 +28,10 @@ class Dispatch
      * @param bool $is_async
      * @return mixed
      */
-    public static function invoke($action, array $data = [], int $secs = 0, string $queue_name = null, bool $is_async = true)
+    public static function dispatch($action, array $data = [], int $secs = 0, string $queue_name = null, bool $is_async = true)
     {
         $class = static::class;//调用主调类
-        if ($is_async) {
+        if (env('queue.state', false) && $is_async) {
             $queue = Queue::instance()->job($class)->secs($secs);
             if (is_array($action)) {
                 $queue->data(...$action);
@@ -43,14 +43,15 @@ class Dispatch
             }
             return $queue->push();
         } else {
-            $class_name = '\\' . $class;
-            $res = new $class_name();
-            if (is_array($action)) {
-                return $res->doJob(...$action);
-            } else {
-                return $res->$action(...$data);
+            if($secs == 0){
+                $class_name = '\\' . $class;
+                $res = new $class_name();
+                if (is_array($action)) {
+                    return $res->doJob(...$action);
+                } else {
+                    return $res->$action(...$data);
+                }
             }
-
         }
     }
 }

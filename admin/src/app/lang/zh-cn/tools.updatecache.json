@@ -1,8 +1,7 @@
 {
       "refresh":"刷新",
-	  "resetting": "重置",
-      "refreshMenu":"重置菜单",
-      "refreshMenuDesc":"重置菜单会按照菜单的配置文件进行重置，针对用户自己添加的菜单不处理",
+      "refreshMenu":"刷新菜单",
+      "refreshMenuDesc":"新增/修改插件菜单后，需要刷新插件菜单",
       "dataCache":"数据缓存",
       "dataCacheDesc":"新增/修改数据表后，需要清除数据表缓存"
 }

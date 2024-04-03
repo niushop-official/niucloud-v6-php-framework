@@ -1,12 +1,13 @@
 {
+    "addRole": "新增角色",
+    "updateRole": "编辑角色",
     "roleName": "角色名称",
+    "roleDeleteTips": "确定要删除该角色吗？",
     "roleNamePlaceholder": "请输入角色名称",
-    "system":"系统权限",
-    "application":"应用权限",
     "rulesPlaceholder": "请选择权限",
     "checkStrictly": "父子级不关联",
     "permission": "权限",
     "foldText":"展开/折叠",
-    "systemErr":"您还没有分配系统权限，请分配！",
-    "applicationErr":"您还没有分配应用权限，请分配！"
+    "system": "系统菜单",
+    "application": "应用菜单"
 }

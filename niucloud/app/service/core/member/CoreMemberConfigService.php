@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的多应用管理平台
+// | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud.com
+// | 官方网址：https://www.niucloud-admin.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -67,7 +67,6 @@ class CoreMemberConfigService extends BaseCoreService
         return [
             'prefix' => $info['prefix'] ?? '',// 会员编码前缀
             'length' => $info['length'] ?? 4, // 会员编码长度
-            'member_no' => $info['member_no'] ?? 0
         ];
     }
 
@@ -77,10 +76,10 @@ class CoreMemberConfigService extends BaseCoreService
      * @return true
      */
     public function setMemberConfig(array $data){
-        $config = $this->getMemberConfig();
-        if (isset($data['prefix'])) $config['prefix'] = $data['prefix']; // 会员编码前缀
-        if (isset($data['length'])) $config['length'] = $data['length']; // 会员编码长度
-        if (isset($data['member_no'])) $config['member_no'] = $data['member_no'];
+        $config = [
+            'prefix' => $data['prefix'] ?? '',// 会员编码前缀
+            'length' => $data['length'] ?? 4,// 会员编码长度
+        ];
         (new CoreConfigService())->setConfig('MEMBER', $config);
         return true;
     }
@@ -124,7 +123,6 @@ class CoreMemberConfigService extends BaseCoreService
         (new CoreConfigService())->setConfig(ConfigKeyDict::MEMBER_CASH_OUT, $config);
         return true;
     }
-
 
 
 }

@@ -43,13 +43,6 @@
 	"transferTime": "转账时间",
 	"memberInfoPlaceholder":"请输入会员名称/会员昵称/手机号",
 	"cashOutNumber": "提现单号",
-	"cashOutNumberPlaceholder": "请输入提现单号",
-      "cashOutMethodType": "账户类型",
-      "money": "提现金额",
-      "transferAccount": "收款账号",
-      "refuseReason": "拒绝理由",
-      "transferTypeName": "转账方式名称",
-      "transferVoucher": "支付凭证",
-      "close": "关闭"
+	"cashOutNumberPlaceholder": "请输入提现单号"
       
 }

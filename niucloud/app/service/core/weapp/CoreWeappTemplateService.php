@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的多应用管理平台
+// | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud.com
+// | 官方网址：https://www.niucloud-admin.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -25,12 +25,6 @@ use Psr\Http\Message\ResponseInterface;
  */
 class CoreWeappTemplateService extends BaseCoreService
 {
-
-    public function template(){
-        return CoreWeappService::app()->subscribe_message;
-    }
-
-
     /**
      * 订阅消息发送
      * @param string $template_id
@@ -43,8 +37,8 @@ class CoreWeappTemplateService extends BaseCoreService
      * @throws InvalidConfigException
      */
     public function send(string $template_id, string $touser, array $data, string $page = ''){
-
-        return $this->template()->send([
+        $api = CoreWeappService::appApiClient();
+        $api->postJson('cgi-bin/message/subscribe/send', [
             'template_id' => $template_id, // 所需下发的订阅模板id
             'touser' => $touser,     // 接收者（用户）的 openid
             'page' => $page,       // 点击模板卡片后的跳转页面，仅限本小程序内的页面。支持带参数,（示例index?foo=bar）。该字段不填则模板无跳转。
@@ -65,8 +59,12 @@ class CoreWeappTemplateService extends BaseCoreService
 //        $tid = 563;     // 模板标题 id，可通过接口获取，也可登录小程序后台查看获取
 //        $kidList = [1, 2];      // 开发者自行组合好的模板关键词列表，可以通过 `getTemplateKeywords` 方法获取
 //        $sceneDesc = '提示用户图书到期';    // 服务场景描述，非必填
-
-        return $this->template()->addTemplate($tid, $kidList, $sceneDesc);
+        $api = CoreWeappService::appApiClient();
+        return $api->postJson('wxaapi/newtmpl/addtemplate', [
+            'tid' => $tid,
+            'kidList' => $kidList,
+            'sceneDesc' => $sceneDesc,
+        ]);
     }
 
     /**
@@ -77,7 +75,10 @@ class CoreWeappTemplateService extends BaseCoreService
      * @throws GuzzleException
      */
     public function deleteTemplate($template_id){
-        return $this->template()->deleteTemplate($template_id);
+        $api = CoreWeappService::appApiClient();
+        return $api->postJson('wxaapi/newtmpl/deltemplate', [
+            'priTmplId' => $template_id,
+        ]);
     }
 
 }

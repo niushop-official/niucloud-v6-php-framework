@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的多应用管理平台
+// | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud.com
+// | 官方网址：https://www.niucloud-admin.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -27,8 +27,10 @@ Route::group('pay',function () {
     Route::post('', 'pay.Pay/pay');
     //支付信息
     Route::get('info/:trade_type/:trade_id', 'pay.Pay/info');
-    //
+    //获取支付类型
     Route::get('type/:trade_type', 'pay.Pay/getPayType');
+    //支付关闭
+    Route::post('close', 'pay.Pay/close');
 
 })->middleware(ApiChannel::class)
     ->middleware(ApiCheckToken::class)

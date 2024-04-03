@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的多应用管理平台
+// | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud.com
+// | 官方网址：https://www.niucloud-admin.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -11,6 +11,8 @@
 
 namespace core\dict;
 
+use app\service\core\addon\CoreAddonBaseService;
+use app\service\core\site\CoreSiteService;
 use core\loader\Storage;
 use think\facade\Cache;
 use think\facade\Db;
@@ -42,17 +44,13 @@ abstract class BaseDict extends Storage
             //尚未安装不加载插件
             return [];
         }
+
         $addons = Cache::get("local_install_addons");
-        if (empty($addons)) {
-            $addons = Db::name("addon")->column("key");
-            if (empty($addons)) {
-                Cache::set("local_install_addons", -1);
-            } else
-                Cache::set("local_install_addons", $addons);
-        }
-        if ($addons == -1) {
-            $addons = [];
-        }
+        if (!is_null($addons)) return $addons;
+
+        $addons = Db::name("addon")->column("key");
+        Cache::tag(CoreAddonBaseService::$cache_tag_name)->set("local_install_addons", $addons);
+
         return $addons;
     }
 

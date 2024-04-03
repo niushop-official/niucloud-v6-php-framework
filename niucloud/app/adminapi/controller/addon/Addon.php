@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的多应用管理平台
+// | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud.com
+// | 官方网址：https://www.niucloud-admin.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -15,8 +15,6 @@ use app\dict\addon\AddonDict;
 use app\service\admin\addon\AddonService;
 use app\service\core\addon\CoreAddonService;
 use core\base\BaseAdminController;
-use think\App;
-use think\facade\Cache;
 use think\Response;
 
 
@@ -154,32 +152,37 @@ class Addon extends BaseAdminController
     }
 
     /**
-     * 更新插件
-     * @param $app_key
+     * 查询已安装插件
      * @return Response
      */
-    public function upgrade($addon){
-        (new AddonService())->upgrade($addon);
-        return success('DOWNLOAD_SUCCESS');
+    public function getInstallList(){
+        return success(data:(new AddonService())->getInstallList());
     }
-
     /**
      * 查询已安装有效应用
      */
     public function getAddonList()
     {
-        return success((new CoreAddonService())->getInstallAddonList());
+        return success((new CoreAddonService())->getAddonMemuList());
     }
 
     public function getAddonByKey($key){
         return success((new AddonService())->getInfoByKey($key));
     }
-
     /**
      * 插件类型
      * @return Response
      */
     public function getType(){
         return success(AddonDict::getType());
+    }
+
+    /**
+     * 更新插件
+     * @param $app_key
+     * @return Response
+     */
+    public function upgrade($addon = ''){
+        return success('DOWNLOAD_SUCCESS', (new AddonService())->upgrade($addon));
     }
 }

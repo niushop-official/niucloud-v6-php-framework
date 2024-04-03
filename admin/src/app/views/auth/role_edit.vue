@@ -1,7 +1,7 @@
 <template>
     <div class="main-container" v-loading="loading">
         <div class="detail-head">
-            <div class="left" @click="router.push({ path: '/setting/auth/role' })">
+            <div class="left" @click="router.push({ path: '/auth/role' })">
                 <span class="iconfont iconxiangzuojiantou !text-xs"></span>
                 <span class="ml-[1px]">{{ t('returnToPreviousPage') }}</span>
             </div>
@@ -47,7 +47,7 @@
         <div class="fixed-footer-wrap" v-if="!loading">
             <div class="fixed-footer">
                 <el-button type="primary" @click="onSave(formRef)">{{ t('save') }}</el-button>
-                <el-button @click="router.push({ path: '/setting/auth/role' })">{{ t('cancel') }}</el-button>
+                <el-button @click="router.push({ path: '/auth/role' })">{{ t('cancel') }}</el-button>
             </div>
         </div>
     </div>
@@ -97,7 +97,7 @@ let { loading, formData, activeName, checkAll, menusData, addonList, } = toRefs(
 onMounted(async () => {
     // 获取全部系统权限
     loading.value = true
-    let menusData = await getSystem()
+    let menusData = await getSystem({status: 1})
     if (menusData.data) state.menusData = menusData.data
     //获取应用列表
     let addonList = await getAddonList()
@@ -184,7 +184,7 @@ const onSave = async (formEl: FormInstance | undefined) => {
                 addon: data.addon
             }
             save(data).then(res => {
-                router.push({ path: "/setting/auth/role" })
+                router.push({ path: "/auth/role" })
             }).catch(() => {
                 loading.value = false
                 // showDialog.value = false

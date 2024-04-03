@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的多应用管理平台
+// | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud.com
+// | 官方网址：https://www.niucloud-admin.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -53,7 +53,7 @@ class CorePayEventService extends BaseCoreService
     {
         $this->channel = $channel;
         $this->type = $type;
-        $this->config = (new CorePayChannelService())->getConfigByChannelAndType( $this->channel, $this->type);
+        $this->config = (new CorePayChannelService())->getConfigByChannelAndType($this->channel, $this->type);
         return $this;
     }
 
@@ -90,7 +90,7 @@ class CorePayEventService extends BaseCoreService
         $params = array(
             'out_trade_no' => $out_trade_no,
             'money' => $money,
-            'boby' => $boby,
+            'boby' => mb_substr($boby,0,15,'utf-8').'...',
             'channel' => $this->channel,
             'refund_url' => $refund_url,
             'quit_url' => $quit_url,
@@ -100,7 +100,7 @@ class CorePayEventService extends BaseCoreService
         );
         switch ($this->type) {
             case PayDict::WECHATPAY:
-                $params['money'] *= 100;
+                $params['money'] = (int)bcmul($params['money'], 100);
 
                 switch ($this->channel) {
                     case ChannelDict::H5://h5
@@ -129,7 +129,7 @@ class CorePayEventService extends BaseCoreService
                         $pay_fun = 'wap';
                         break;
                     case ChannelDict::PC://pc
-                        $pay_fun = 'web';
+                        $pay_fun = 'scan';
                         break;
                     case ChannelDict::APP://app
                         $pay_fun = 'app';

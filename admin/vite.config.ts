@@ -7,7 +7,7 @@ import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: '/admin/',
+  base: '',
   server: {
     host: '0.0.0.0'
   },
@@ -21,11 +21,9 @@ export default defineConfig({
     })
   ],
   resolve: {
-    alias: [
-      {
-        find: '@',
-        replacement: fileURLToPath(new URL('./src', import.meta.url))
-      }
-    ]
+    alias: {
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
+      'assets': fileURLToPath(new URL('./src/assets', import.meta.url))
+    }
   }
 })

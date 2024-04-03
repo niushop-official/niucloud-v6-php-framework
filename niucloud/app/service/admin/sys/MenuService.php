@@ -422,13 +422,6 @@ class MenuService extends BaseAdminService
     public function getSystemMenu($status = 'all', $is_tree = 0, $is_button = 0)
     {
 
-        if($is_button == 0)
-        {
-            $where = [
-                ['menu_type', 'in', [0,1]]
-            ];
-        }
-
         if ($status != 'all') {
             $where[] = ['status', '=', $status];
         }

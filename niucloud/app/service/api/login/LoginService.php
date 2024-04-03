@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的多应用管理平台
+// | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud.com
+// | 官方网址：https://www.niucloud-admin.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -22,7 +22,6 @@ use app\service\api\notice\NoticeService;
 use core\base\BaseApiService;
 use core\exception\ApiException;
 use core\exception\AuthException;
-use core\exception\CommonException;
 use core\util\TokenAuth;
 use Exception;
 use think\facade\Cache;
@@ -40,6 +39,7 @@ class LoginService extends BaseApiService
     public function __construct()
     {
         parent::__construct();
+        $this->model = new Member();
     }
 
     /**
@@ -90,7 +90,7 @@ class LoginService extends BaseApiService
     {
         $member_service = new MemberService();
         $member_info = $member_service->findMemberInfo(['username|mobile' => $username]);
-        if ($member_info->isEmpty()) throw new CommonException('MEMBER_NOT_EXIST');//账号不存在
+        if ($member_info->isEmpty()) throw new AuthException('MEMBER_NOT_EXIST');//账号不存在
         if (!check_password($password, $member_info->password)) return false;//密码与账号不匹配
         return $this->login($member_info, MemberLoginTypeDict::USERNAME);
     }
@@ -107,10 +107,10 @@ class LoginService extends BaseApiService
         //登录注册配置
         $config = (new MemberConfigService())->getLoginConfig();
         $is_mobile = $config['is_mobile'];
-        if($is_mobile != 1) throw new CommonException('MOBILE_LOGIN_UNOPENED');
+        if($is_mobile != 1) throw new AuthException('MOBILE_LOGIN_UNOPENED');
         $member_service = new MemberService();
         $member_info = $member_service->findMemberInfo(['mobile' => $mobile]);
-        if ($member_info->isEmpty()) throw new CommonException('MEMBER_NOT_EXIST');//账号不存在
+        if ($member_info->isEmpty()) throw new AuthException('MEMBER_NOT_EXIST');//账号不存在
 
         return $this->login($member_info, MemberLoginTypeDict::MOBILE);
     }
@@ -186,9 +186,9 @@ class LoginService extends BaseApiService
      */
     public function sendMobileCode($mobile, string $type = ''){
         (new CaptchaService())->check();
-        if(empty($mobile)) throw new CommonException('MOBILE_NEEDED');
+        if(empty($mobile)) throw new AuthException('MOBILE_NEEDED');
         //发送
-        if(!in_array($type, SmsDict::SCENE_TYPE)) throw new CommonException('MEMBER_MOBILE_CAPTCHA_ERROR');
+        if(!in_array($type, SmsDict::SCENE_TYPE)) throw new AuthException('MEMBER_MOBILE_CAPTCHA_ERROR');
         $code = str_pad(random_int(1, 9999), 4, 0, STR_PAD_LEFT);// 生成4位随机数，左侧补0
         (new NoticeService())->send('member_verify_code', ['code' => $code, 'mobile' => $mobile]);
         //将验证码存入缓存
@@ -214,16 +214,16 @@ class LoginService extends BaseApiService
      * @return true
      */
     public function checkMobileCode(string $mobile){
-        if(empty($mobile)) throw new CommonException('MOBILE_NEEDED');
+        if(empty($mobile)) throw new AuthException('MOBILE_NEEDED');
         $mobile_key = request()->param('mobile_key', '');
         $mobile_code = request()->param('mobile_code', '');
-        if(empty($mobile_key) || empty($mobile_code)) throw new CommonException('MOBILE_CAPTCHA_ERROR');
+        if(empty($mobile_key) || empty($mobile_code)) throw new AuthException('MOBILE_CAPTCHA_ERROR');
         $cache = Cache::get($mobile_key);
-        if(empty($cache)) throw new CommonException('MOBILE_CAPTCHA_ERROR');
+        if(empty($cache)) throw new AuthException('MOBILE_CAPTCHA_ERROR');
         $temp_mobile = $cache['mobile'];
         $temp_code = $cache['code'];
         $temp_type = $cache['type'];
-        if($temp_mobile != $mobile || $temp_code != $mobile_code) throw new CommonException('MOBILE_CAPTCHA_ERROR');
+        if($temp_mobile != $mobile || $temp_code != $mobile_code) throw new AuthException('MOBILE_CAPTCHA_ERROR');
         $this->clearMobileCode($temp_mobile, $temp_type);
         return true;
 
@@ -257,7 +257,7 @@ class LoginService extends BaseApiService
                             $member->save();
                         }else{
                             if( $member->$openid_field != $open_id){
-                                throw new CommonException('MEMBER_IS_BIND_AUTH');
+                                throw new AuthException('MEMBER_IS_BIND_AUTH');
                             }
                         }
                     }
@@ -271,14 +271,13 @@ class LoginService extends BaseApiService
      * 重置密码
      * @param string $mobile
      * @param string $password
-     * @return null
      */
     public function resetPassword(string $mobile, string $password){
         $member_service = new MemberService();
         //校验手机验证码
         $this->checkMobileCode($mobile);
         $member_info = $member_service->findMemberInfo(['mobile' => $mobile]);
-        if ($member_info->isEmpty()) throw new CommonException('MOBILE_NOT_EXIST_MEMBER');//账号不存在
+        if ($member_info->isEmpty()) throw new AuthException('MOBILE_NOT_EXIST_MEMBER');//账号不存在
         //todo  需要考虑一下,新的密码和原密码一样能否通过验证
         $password_hash = create_password($password);
         $data = array(

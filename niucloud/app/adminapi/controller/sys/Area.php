@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的多应用管理平台
+// | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud.com
+// | 官方网址：https://www.niucloud-admin.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -38,14 +38,6 @@ class Area extends BaseAdminController
     }
 
     /**
-     *
-     * @return void
-     */
-    public function areaByAreaCode(string $code) {
-        return success((new AreaService())->getAreaByAreaCode($code));
-    }
-
-    /**
      * @return Response
      */
     public function addressInfo()
@@ -65,5 +57,13 @@ class Area extends BaseAdminController
             ['location', ''],
         ]);
         return success((new AreaService())->getAddressInfo($data['location']));
+    }
+
+    /**
+     *
+     * @return void
+     */
+    public function areaByAreaCode(string $code) {
+        return success((new AreaService())->getAreaByAreaCode($code));
     }
 }

@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的多应用管理平台
+// | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud.com
+// | 官方网址：https://www.niucloud-admin.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -67,7 +67,7 @@ class PayService extends BaseApiService
      * @return null
      */
     public function close(string $type, string $out_trade_no){
-        return $this->core_pay_service->close($type);
+        return $this->core_pay_service->close($out_trade_no);
     }
 
     /**
@@ -90,16 +90,7 @@ class PayService extends BaseApiService
         return $this->core_pay_service->getInfoByOutTradeNo($out_trade_no, $this->channel);
     }
 
-    /**
-     * 支付信息
-     * @param string $trade_type
-     * @param int $trade_id
-     * @return array
-     * @throws DataNotFoundException
-     * @throws DbException
-     * @throws ModelNotFoundException
-     */
-    public function getInfoByTrade(string $trade_type, $trade_id){
+    public function getInfoByTrade(string $trade_type, int $trade_id){
         return $this->core_pay_service->getInfoByTrade($trade_type, $trade_id, $this->channel);
     }
 

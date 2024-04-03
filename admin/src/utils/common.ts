@@ -54,8 +54,7 @@ export function getAppType() {
     if (!path.length) {
         return 'admin'
     } else {
-        const app = path[0]
-        return app
+        return path[0]
     }
 }
 
@@ -149,7 +148,7 @@ export function strByteLength(str: string = ''): number {
 
 /**
  * url 转 route
- * @param url 
+ * @param url
  */
 export function urlToRouteRaw(url: string) {
     const query = {}
@@ -163,11 +162,39 @@ export function urlToRouteRaw(url: string) {
     return { path, query }
 }
 
+const isArray = (value: any) => {
+    if (typeof Array.isArray === 'function') {
+        return Array.isArray(value)
+    }
+    return Object.prototype.toString.call(value) === '[object Array]'
+}
+
+/**
+ * @description 深度克隆
+ * @param {object} obj 需要深度克隆的对象
+ * @returns {*} 克隆后的对象或者原值（不是对象）
+ */
+export function deepClone(obj: object) {
+    // 对常见的“非”值，直接返回原来值
+    if ([null, undefined, NaN, false].includes(obj)) return obj
+    if (typeof obj !== 'object' && typeof obj !== 'function') {
+        // 原始类型直接返回
+        return obj
+    }
+    const o = isArray(obj) ? [] : {}
+    for (const i in obj) {
+        if (obj.hasOwnProperty(i)) {
+            o[i] = typeof obj[i] === 'object' ? deepClone(obj[i]) : obj[i]
+        }
+    }
+    return o
+}
+
 /**
  * 生成唯一字符
  * @param {Number} len
- * @param {Boolean} firstU 
- * @param {Nubmer} radix 
+ * @param {Boolean} firstU
+ * @param {Nubmer} radix
  */
 export function guid(len = 10, firstU = true, radix = null) {
     const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('')
@@ -196,4 +223,72 @@ export function guid(len = 10, firstU = true, radix = null) {
         return `u${uuid.join('')}`
     }
     return uuid.join('')
+}
+
+/**
+* 金额格式化
+*/
+export function moneyFormat(money : string) : string {
+	return isNaN(parseFloat(money)) ? money : parseFloat(money).toFixed(2)
+}
+
+
+/**
+ * 时间戳转日期格式
+ * @param {Object} timeStamp
+ */
+export function timeStampTurnTime(timeStamp, type = "") {
+	if (timeStamp != undefined && timeStamp != "" && timeStamp > 0) {
+		var date = new Date();
+		date.setTime(timeStamp * 1000);
+		var y = date.getFullYear();
+		var m = date.getMonth() + 1;
+		m = m < 10 ? ('0' + m) : m;
+		var d = date.getDate();
+		d = d < 10 ? ('0' + d) : d;
+		var h = date.getHours();
+		h = h < 10 ? ('0' + h) : h;
+		var minute = date.getMinutes();
+		var second = date.getSeconds();
+		minute = minute < 10 ? ('0' + minute) : minute;
+		second = second < 10 ? ('0' + second) : second;
+		if (type) {
+			if (type == 'yearMonthDay') {
+				return y + '年' + m + '月' + d + '日';
+			}
+			return y + '-' + m + '-' + d;
+		} else {
+			return y + '-' + m + '-' + d + ' ' + h + ':' + minute + ':' + second;
+		}
+
+	} else {
+		return "";
+	}
+}
+
+/**
+ * 过滤小数点
+ * @param event
+ */
+export function filterDigit(event:any){
+    event.target.value = event.target.value.replace(/[^\d\.]/g,'');
+    event.target.value = event.target.value.replace(/^\./g,'');
+    event.target.value = event.target.value.replace(/\.{2,}/g,'.');
+    event.target.value = event.target.value.replace('.','$#$').replace(/\./g,'').replace('$#$','.');
+}
+
+/**
+ * 过滤整数
+  * @param event
+ */
+export function filterNumber(event:any){
+    event.target.value = event.target.value.replace(/[^\d]/g,'');
+}
+/**
+ * 过滤特殊字符
+  * @param event
+ */
+export function filterSpecial(event:any){
+    event.target.value = event.target.value.replace(/[^\u4e00-\u9fa5a-zA-Z0-9]/g, '')
+    event.target.value = event.target.value.replace(/[`~!@#$%^&*()_\-+=<>?:"{}|,.\/;'\\[\]·~！@#￥%……&*（）——\-+={}|《》？：“”【】、；‘’，。、]/g,'')
 }

@@ -16,6 +16,8 @@ use app\service\core\addon\CoreAddonDevelopBuildService;
 use app\service\core\addon\CoreAddonDevelopDownloadService;
 use app\service\core\addon\CoreAddonDevelopService;
 use app\service\core\addon\CoreAddonService;
+use app\service\core\niucloud\CoreAppService;
+use app\service\core\niucloud\CoreModuleService;
 use core\base\BaseAdminService;
 
 
@@ -86,7 +88,7 @@ class AddonDevelopService extends BaseAdminService
      * @return array
      */
     public function build(string $key){
-        return (new CoreAddonDevelopBuildService($key))->build();
+        return (new CoreAddonDevelopBuildService())->build($key);
     }
 
 
@@ -96,6 +98,17 @@ class AddonDevelopService extends BaseAdminService
      * @return true
      */
     public function download(string $key){
-        return (new CoreAddonDevelopDownloadService($key))->download();
+        return (new CoreAddonDevelopBuildService())->download($key);
+    }
+
+    /**
+     * 校验key是否被占用
+     * @param $key
+     * @return array|\core\util\niucloud\http\Response|false|object|\Psr\Http\Message\ResponseInterface
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function checkKey($key)
+    {
+        return ( new CoreModuleService() )->checkKey($key);
     }
 }

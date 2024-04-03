@@ -46,9 +46,10 @@ class WebEditPageGenerator extends BaseGenerator
             '{MODULE_NAME}',
             '{API_PATH}',
             '{DICT_DATA}',
-            '{DICT_LIST}'
+            '{DICT_LIST}',
+            '{MODEL_DATA}',
+            '{WITH_API_PATH}'
         ];
-
         $new = [
             $this->getFormView(),
             $this->getUCaseClassName(),
@@ -62,6 +63,8 @@ class WebEditPageGenerator extends BaseGenerator
             $this->getApiPath(),
             $this->getDictDataContent(),
             $this->getDictList(),
+            $this->getModelData(),
+            $this->getEditWithApiPath()
         ];
         $vmPath = $this->getvmPath('web_edit_page');
 
@@ -98,7 +101,6 @@ class WebEditPageGenerator extends BaseGenerator
 
     /**
      * 调用字典方法
-     * @return void
      */
     public function getDictList()
     {
@@ -154,33 +156,63 @@ class WebEditPageGenerator extends BaseGenerator
     public function getFormView()
     {
         $content = '';
+
         foreach ($this->tableColumn as $column) {
             if (!$column['is_insert'] || !$column['is_update'] || $column['is_pk']) {
                 continue;
             }
+
             $old = [
                 '{COLUMN_COMMENT}',
                 '{COLUMN_NAME}',
                 '{LCASE_COLUMN_NAME}',
                 '{PROP}',
                 '{DICT_TYPE}',
+                '{ITEM_LABEL}',
+                '{ITEM_VALUE}'
             ];
             if(empty($column['dict_type']))
             {
-                $new = [
-                    $column['column_comment'],
-                    $column['column_name'],
-                    Str::camel($column['column_name']),
-                    $column['is_required'] ? 'prop="'.$column['column_name'].'"' : '',
-                    ''
-                ];
+
                 if($column['view_type'] == 'select' || $column['view_type'] == 'radio' || $column['view_type'] == 'checkbox')
                 {
-                    $vmName = $column['view_type'].'2';
-                }else{
-                    $vmName = $column['view_type'];
-                }
+                    if(empty($column['model']))
+                    {
+                        $new = [
+                            $column['column_comment'],
+                            $column['column_name'],
+                            Str::camel($column['column_name']),
+                            $column['is_required'] ? 'prop="'.$column['column_name'].'"' : '',
+                            ''
+                        ];
 
+                        $vmName = $column['view_type'].'3';
+                    }else{
+                        $new = [
+                            $column['column_comment'],
+                            $column['column_name'],
+                            Str::camel($column['column_name']),
+                            $column['is_required'] ? 'prop="'.$column['column_name'].'"' : '',
+                            Str::camel($column['column_name']).'List',
+                            $column['label_key'],
+                            $column['value_key']
+                        ];
+                        $vmName = $column['view_type'];
+                    }
+
+                }else{
+                    $new = [
+                        $column['column_comment'],
+                        $column['column_name'],
+                        Str::camel($column['column_name']),
+                        $column['is_required'] ? 'prop="'.$column['column_name'].'"' : '',
+                        $column['column_name'].'List',
+                    ];
+                    $vmName = $column['view_type'];
+
+
+
+                }
             }else{
                 $new = [
                     $column['column_comment'],
@@ -188,8 +220,14 @@ class WebEditPageGenerator extends BaseGenerator
                     Str::camel($column['column_name']),
                     $column['is_required'] ? 'prop="'.$column['column_name'].'"' : '',
                     $column['column_name'].'List',
+                    ''
                 ];
-                $vmName = $column['view_type'];
+                if(empty($column['model']))
+                {
+                    $vmName = $column['view_type'].'3';
+                }else{
+                    $vmName = $column['view_type'];
+                }
             }
 
             $vmPath = $this->getvmPath('form/' . $vmName);
@@ -206,6 +244,8 @@ class WebEditPageGenerator extends BaseGenerator
                 }
                 $old[] = '{ITEM_VALUE}';
                 $new[] = $vmItemValue;
+//                $old[] = '{ITEM_VALUE}';
+//                $new[] = 'item.name';
             }
             // 数字框处理
             if ($column['view_type'] == 'number') {
@@ -261,7 +301,13 @@ class WebEditPageGenerator extends BaseGenerator
             }
 
             if ($column['column_type'] == 'int') {
-                $content .= $column['column_name'] . ': ' . "0," . PHP_EOL;
+                if(empty($column['model']))
+                {
+                    $content .= $column['column_name'] . ': ' . "0," . PHP_EOL;
+                }else{
+                    $content .= $column['column_name'] . ': ' . "''," . PHP_EOL;
+                }
+
             } else if($column['view_type'] == 'checkbox'){
                 $content .= $column['column_name'] . ': ' . "''," . PHP_EOL;
             }else {
@@ -289,7 +335,7 @@ class WebEditPageGenerator extends BaseGenerator
         $specDictType = ['input', 'textarea', 'editor'];
 
         foreach ($this->tableColumn as $column) {
-            if (!$column['is_insert'] || !$column['is_update'] || $column['is_pk']) {
+            if (!$column['is_insert'] || !$column['is_update'] || $column['is_pk'] ) {
                 continue;
             }
 
@@ -378,9 +424,9 @@ class WebEditPageGenerator extends BaseGenerator
         }
         if(!empty($this->addonName))
         {
-            $dir = dirname(app()->getRootPath()) . '/admin/src/'. $this->moduleName .'/views/' . $this->moduleName . '/';
+            $dir = dirname(app()->getRootPath()) . DIRECTORY_SEPARATOR.'admin'.DIRECTORY_SEPARATOR.'src'.DIRECTORY_SEPARATOR. $this->moduleName .DIRECTORY_SEPARATOR.'views'.DIRECTORY_SEPARATOR . $this->moduleName . DIRECTORY_SEPARATOR;
         } else {
-            $dir = dirname(app()->getRootPath()) . '/admin/src/app/views/' . $this->moduleName . '/';
+            $dir = dirname(app()->getRootPath()) . DIRECTORY_SEPARATOR.'admin'.DIRECTORY_SEPARATOR.'src'.DIRECTORY_SEPARATOR.'app'.DIRECTORY_SEPARATOR.'views'.DIRECTORY_SEPARATOR . $this->moduleName . DIRECTORY_SEPARATOR;
         }
         $this->checkDir($dir);
         return $dir;
@@ -398,9 +444,9 @@ class WebEditPageGenerator extends BaseGenerator
         }
         if(!empty($this->addonName))
         {
-            $dir = $this->outDir . '/addon/'.$this->addonName.'/admin/views/' . $this->moduleName . '/';
+            $dir = $this->outDir . DIRECTORY_SEPARATOR.'addon'.DIRECTORY_SEPARATOR.$this->addonName.DIRECTORY_SEPARATOR.'admin'.DIRECTORY_SEPARATOR.'views'.DIRECTORY_SEPARATOR . $this->moduleName . DIRECTORY_SEPARATOR;
         }else{
-            $dir = $this->outDir . 'admin/src/app/views/' . $this->moduleName . '/';
+            $dir = $this->outDir . 'admin'.DIRECTORY_SEPARATOR.'src'.DIRECTORY_SEPARATOR.'app'.DIRECTORY_SEPARATOR.'views'.DIRECTORY_SEPARATOR . $this->moduleName . DIRECTORY_SEPARATOR;
         }
 
         $this->checkDir($dir);
@@ -420,9 +466,9 @@ class WebEditPageGenerator extends BaseGenerator
 
         if(!empty($this->addonName))
         {
-            $dir = $this->rootDir . '/admin/src/'.$this->addonName.'/views/'. $this->moduleName . '/';
+            $dir = $this->rootDir . DIRECTORY_SEPARATOR.'admin'.DIRECTORY_SEPARATOR.'src'.DIRECTORY_SEPARATOR.'addon'.DIRECTORY_SEPARATOR.$this->addonName.DIRECTORY_SEPARATOR.'views'.DIRECTORY_SEPARATOR. $this->moduleName . DIRECTORY_SEPARATOR;
         }else{
-            $dir = $this->rootDir . '/admin/src/app/views/'. $this->moduleName . '/';
+            $dir = $this->rootDir . DIRECTORY_SEPARATOR.'admin'.DIRECTORY_SEPARATOR.'src'.DIRECTORY_SEPARATOR.'app'.DIRECTORY_SEPARATOR.'views'.DIRECTORY_SEPARATOR. $this->moduleName . DIRECTORY_SEPARATOR;
         }
 
         $this->checkDir($dir);
@@ -431,10 +477,9 @@ class WebEditPageGenerator extends BaseGenerator
 
     /**
      * 获取文件生成到插件中
-     * @return void
      */
     public function getAddonObjectOutDir() {
-        $dir = $this->rootDir . '/niucloud/addon/'.$this->addonName.'/admin/views/'. $this->moduleName . '/';
+        $dir = $this->rootDir . DIRECTORY_SEPARATOR.'niucloud'.DIRECTORY_SEPARATOR.'addon'.DIRECTORY_SEPARATOR.$this->addonName.DIRECTORY_SEPARATOR.'admin'.DIRECTORY_SEPARATOR.'views'.DIRECTORY_SEPARATOR. $this->moduleName . DIRECTORY_SEPARATOR;
         $this->checkDir($dir);
         return $dir;
     }
@@ -447,7 +492,7 @@ class WebEditPageGenerator extends BaseGenerator
 
         if(!empty($this->addonName))
         {
-            $dir = 'addon/'.$this->addonName.'/admin/'.$this->addonName.'/views/' . $this->moduleName . '/';
+            $dir = 'addon/'.$this->addonName.'/admin/views/' . $this->moduleName . '/';
         }else{
             $dir = 'admin/app/views/' . $this->moduleName . '/';
         }
@@ -476,12 +521,58 @@ class WebEditPageGenerator extends BaseGenerator
      */
     public function getApiPath()
     {
+
         if(!empty($this->addonName))
         {
-            return $this->addonName.'/api/'.$this->moduleName;
+            return 'addon/'.$this->addonName.'/api/'.$this->moduleName;
         }else{
-            return '/app/api/'.$this->moduleName;
+            return 'app/api/'.$this->moduleName;
         }
 
+    }
+
+    /**
+     * 调用远程下拉方法
+     * @return void
+     */
+    public function getModelData()
+    {
+        $content = '';
+        foreach ($this->tableColumn as $column)
+        {
+            if(empty($column['model']))
+            {
+                continue;
+            }
+            $str = strripos($column['model'],'\\');
+            $with = Str::camel(substr($column['model'],$str+1));
+            $content.= PHP_EOL.'const '. Str::camel($column['column_name']).'List = ref([] as any[])'.PHP_EOL;
+            $content.= 'const set'.Str::studly($column['column_name']).'List = async () => {'.PHP_EOL.Str::camel($column['column_name']).'List.value = await (await getWith'.Str::studly($with).'List({})).data' .PHP_EOL.'}'
+                .PHP_EOL.'set'.Str::studly($column['column_name']).'List())';
+        }
+
+        if(!empty($content))
+        {
+            $content = substr($content, 0, -1);
+        }
+        return $this->setBlankSpace($content, '    ');
+
+    }
+
+    /**
+     * 编辑远程下拉方法
+     * @return void
+     */
+    public function getEditWithApiPath()
+    {
+        $content = '';
+        foreach ($this->tableColumn as $column) {
+            if (!empty($column['model'])) {
+                $str = strripos($column['model'],'\\');
+                $with = Str::camel(substr($column['model'],$str+1));
+                $content.= ' getWith'.Str::studly($with).'List,';
+            }
+        }
+        return $content;
     }
 }

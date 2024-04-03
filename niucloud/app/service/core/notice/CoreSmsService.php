@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的多应用管理平台
+// | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud.com
+// | 官方网址：https://www.niucloud-admin.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -49,14 +49,14 @@ class CoreSmsService extends BaseCoreService
 
         $sms_driver  = new SmsLoader($sms_type, $config);
         $params = $this->makeUp($params, $content, $sms_type);
-        try {
-            $result = $sms_driver->send($mobile, $template_id, $params);
-        }catch(NoticeException $e){
+        $result = $sms_driver->send($mobile, $template_id, $params);
+
+        if (!$result) {
             //失败修改短信记录
-            $error = $e->getMessage();
+            $error = $sms_driver->getError();
             $core_notice_sms_log_service->edit($log_id, [
                 'status' => SmsDict::FAIL,
-                'result' => $error
+                'result' => $sms_driver->getError()
             ]);
             throw new NoticeException($error);
         }

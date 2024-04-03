@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的多应用管理平台
+// | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud.com
+// | 官方网址：https://www.niucloud-admin.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -47,6 +47,6 @@ class CoreNoticeLogService extends BaseCoreService
 
     public function getInfo(int $id){
         $field = 'id, key, notice_type, uid, member_id, nickname, receiver, is_click, is_visit, visit_time, create_time, params, content';
-        return $this->model->where([['id', '=', $id]])->field($field)->append(['name', 'notice_type_name'])->findOrEmpty()->toArray();
+        return $this->model->where([ ['id', '=', $id]])->field($field)->append(['name', 'notice_type_name'])->findOrEmpty()->toArray();
     }
 }

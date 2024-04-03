@@ -12,42 +12,46 @@ use think\facade\Route;
 use think\facade\Request;
 
 Route::domain('install.php', ':\app\install\controller');
-
 // 访问首页自动跳转到admin
-Route::rule('/', function() {
+Route::rule('/', function () {
     if (Request::isMobile()) {
         return redirect('/wap');
     } else {
         return redirect('/admin');
     }
 });
-
 // 管理后台
-Route::rule('admin/:any', function() {
+Route::rule('admin', function () {
     return view(app()->getRootPath() . 'public/admin/index.html');
-})->pattern([ 'any' => '\w+' ]);
-
+})->pattern(['any' => '\w+']);
 // 站点端
-Route::rule('site/:any', function() {
+Route::rule('site', function () {
     return view(app()->getRootPath() . 'public/admin/index.html');
-})->pattern([ 'any' => '\w+' ]);
-
+})->pattern(['any' => '\w+']);
+// 站点管理端
+Route::rule('home', function () {
+    return view(app()->getRootPath() . 'public/admin/index.html');
+})->pattern(['any' => '\w+']);
 // 装修端
-Route::rule('decorate/:any', function() {
+Route::rule('decorate/:any', function () {
     return view(app()->getRootPath() . 'public/admin/index.html');
-})->pattern([ 'any' => '\w+' ]);
-
-// 手机端
-Route::rule('wap/:any', function() {
-    return view(app()->getRootPath() . 'public/wap/index.html');
-})->pattern([ 'any' => '\w+' ]);
-
-// 电脑端
-Route::rule('web/:any', function() {
-    return view(app()->getRootPath() . 'public/web/index.html');
-})->pattern([ 'any' => '\w+' ]);
+})->pattern(['any' => '\w+']);
 
 //用于公众号授权证书
-Route::any('MP_verify_<name>.txt', function($name) {
-    echo $name;
+Route::any('MP_verify_<name>.txt',  function ($name) {
+    header('Content-Type:text/plain; charset=utf-8');
+    echo $name;exit();
 });
+Route::any('wap/<id>/MP_verify_<name>.txt',  function ($name) {
+    header('Content-Type:text/plain; charset=utf-8');
+    echo $name;exit();
+});
+
+// 手机端
+Route::rule('wap', function () {
+    return view(app()->getRootPath() . 'public/wap/index.html');
+})->pattern(['any' => '\w+']);
+// 电脑端
+Route::rule('web', function () {
+    return view(app()->getRootPath() . 'public/web/index.html');
+})->pattern(['any' => '\w+']);

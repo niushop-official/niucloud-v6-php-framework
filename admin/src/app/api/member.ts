@@ -310,7 +310,7 @@ export function getCashOutList(params: Record<string, any>) {
  * @param id
  */
 export function getCashOutDetail(id: number) {
-    return request.get(`member/cash_out/${id}`)
+    return request.get(`member/cash_out/${id}`, {})
 }
 
 /**

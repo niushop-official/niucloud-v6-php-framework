@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的多应用管理平台
+// | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud.com
+// | 官方网址：https://www.niucloud-admin.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -77,7 +77,6 @@ class Refund extends BaseModel
         return RefundDict::getType()[$data['refund_type']] ?? '';
     }
 
-
     /**
      * 创建时间搜索器
      * @param $query
@@ -98,39 +97,41 @@ class Refund extends BaseModel
     }
 
     /**
-     * 查询交易流水号
+     * 状态
      * @param $query
      * @param $value
-     * @return void
+     * @param $data
      */
-    public function searchOutTradeNoAttr($query, $value) {
-        if (!empty($value)) {
-            $query->whereLike([['out_trade_no', '%'.$value.'%']]);
-        }
-    }
-
-    /**
-     * 退款号查询
-     * @param $query
-     * @param $value
-     * @return void
-     */
-    public function searchRefundNoAttr($query, $value) {
-        if (!empty($value)) {
-            $query->whereLike([['refund_no', '%'.$value.'%']]);
-        }
-    }
-    /**
-     * 查询交易状态
-     * @param $query
-     * @param $value
-     * @return void
-     */
-    public function searchStatusAttr($query, $value) {
+    public function searchStatusAttr($query, $value, $data)
+    {
         if ($value != '') {
-            $query->where([['status', '=', $value]]);
+            $query->where('status', '=', $value);
         }
     }
 
+    /**
+     * 状态
+     * @param $query
+     * @param $value
+     * @param $data
+     */
+    public function searchOutTradeNoAttr($query, $value, $data)
+    {
+        if ($value != '') {
+            $query->where('out_trade_no', 'like', "%$value%");
+        }
+    }
 
+    /**
+     * 状态
+     * @param $query
+     * @param $value
+     * @param $data
+     */
+    public function searchRefundNoAttr($query, $value, $data)
+    {
+        if ($value != '') {
+            $query->where('refund_no', 'like', "%$value%");
+        }
+    }
 }

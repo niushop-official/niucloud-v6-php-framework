@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的多应用管理平台
+// | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud.com
+// | 官方网址：https://www.niucloud-admin.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -41,9 +41,8 @@ class MemberCashOutService extends BaseAdminService
         {
             $member_where = [['member.member_no|member.nickname|member.mobile', '=', $where['keywords']]];
         }
-        $search_model = $this->model->withSearch(['member_id','status', 'join_create_time' => 'create_time', 'audit_time', 'transfer_time', 'transfer_type', 'cash_out_no'],$where)->with(['transfer'])->withJoin(["member" => function($query){
-                $query->field("member.nickname, member.headimg, member.mobile, member.member_id, member.member_no");
-            }])->where($member_where)->field($field)->order('create_time desc')->append(['status_name', 'transfer_status_name', 'transfer_type_name', 'account_type_name']);
+        $search_model = $this->model->withSearch(['member_id','status', 'join_create_time' => 'create_time', 'audit_time', 'transfer_time', 'transfer_type', 'cash_out_no'],$where)->with(['transfer'])->withJoin(
+            ["member" => ['nickname', 'headimg', 'mobile', 'member_id', 'member_no']])->where($member_where)->field($field)->order('create_time desc')->append(['status_name', 'transfer_status_name', 'transfer_type_name', 'account_type_name']);
         return $this->pageQuery($search_model);
     }
 
@@ -66,7 +65,7 @@ class MemberCashOutService extends BaseAdminService
      */
     public function audit(int $id, string $action, $data){
         $core_member_cash_out_service = new CoreMemberCashOutService();
-        return $core_member_cash_out_service->audit( $id, $action, $data);
+        return $core_member_cash_out_service->audit($id, $action, $data);
     }
 
 

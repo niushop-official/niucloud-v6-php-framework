@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的多应用管理平台
+// | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud.com
+// | 官方网址：https://www.niucloud-admin.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -86,7 +86,7 @@ class CoreAppletSiteVersionService extends BaseCoreService
      */
     public function getLastVersion(string $type, string $action = '')
     {
-        $where = [['type', '=', $type]];
+        $where = [ ['type', '=', $type]];
         $list = $this->model->where($where)->with(['appletVersion'])->select()->toArray();
         $list = array_column($list, null, 'version_num');
         ksort($list);

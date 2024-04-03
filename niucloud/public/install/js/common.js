@@ -60,6 +60,10 @@ ns.url = function(url, vars, suffix){
     path = [path.pop(), path.pop(), path.pop()].reverse();
     path[1] = path[1] || this.route[1];
     path[0] = path[0] || this.route[0];
+//  param[this.route[0]] = path[0];
+//  param[this.route[1]] = path[1];
+//  param[this.route[2]] = path[2].toLowerCase();
+//	url = param[this.route[0]] + '/' + param[this.route[1]] + '/' + param[this.route[2]];
     param[this.route[2]] = path[0];
     param[this.route[3]] = path[1];
     param[this.route[4]] = path[2].toLowerCase();
@@ -79,7 +83,21 @@ url += "." + suffix;
     }
     /* 解析URL自带的参数 */
     info.query && $.extend(vars, this.parse_str(info.query));
-
+    /* 判断站点id是否存在 */
+    var site = '';
+    if(vars.site_id){
+    	var site_id = vars.site_id;
+    	delete vars.site_id;
+    	site = 's'+parseInt(site_id) + '/';
+    }else{
+    	var site_id = this.route[0];
+    	site = site_id > 0 ? 's' + parseInt(site_id) + '/' : '';
+    }
+    var addon = '';
+    if(info.scheme != '' && info.scheme != undefined){
+    	addon = info.scheme + '/';
+    }
+    url = site + addon + url;
     if(vars){
   var param_str = $.param(vars);
   if('' !== param_str) {

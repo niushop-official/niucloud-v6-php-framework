@@ -11,11 +11,12 @@
 
 namespace app\dict\diy;
 
+use app\service\admin\sys\ConfigService;
 use core\dict\DictLoader;
 
 /**
  * 页面数据
- * Class TemplateDict
+ * Class PagesDict
  * @package app\dict\diy
  */
 class PagesDict
@@ -23,6 +24,90 @@ class PagesDict
 
     public static function getPages($params = [])
     {
+        $default_index_value = [
+            "path" => "edit-graphic-nav",
+            "id" => unique_random(10),
+            "componentName" => "GraphicNav",
+            "componentTitle" => "图文导航",
+            "uses" => 0,
+            "layout" => "horizontal",
+            "mode" => "graphic",
+            "showStyle" => "fixed",
+            "rowCount" => 4,
+            "pageCount" => 2,
+            "carousel" => [
+                "type" => "circle",
+                "color" => "#FFFFFF"
+            ],
+            "imageSize" => 30,
+            "aroundRadius" => 25,
+            "font" => [
+                "size" => 14,
+                "weight" => "normal",
+                "color" => "#303133"
+            ],
+            'pageStartBgColor' => '', // 底部背景颜色（开始）
+            'pageEndBgColor' => '', // 底部背景颜色（结束）
+            'pageGradientAngle' => 'to bottom', // 渐变角度，从上到下（to bottom）、从左到右（to right）
+            'componentBgUrl' => '',
+            'componentBgAlpha' => 2,
+            "componentStartBgColor" => "rgba(255, 255, 255, 1)",
+            "componentEndBgColor" => "",
+            "componentGradientAngle" => "to bottom",
+            "topRounded" => 9,
+            "bottomRounded" => 9,
+            "elementBgColor" => "",
+            "topElementRounded" => 0,
+            "bottomElementRounded" => 0,
+            "margin" => [
+                "top" => 10,
+                "bottom" => 10,
+                "both" => 16
+            ],
+            "ignore" => [],
+            "list" => []
+        ];
+
+        $wap_index_list = ( new ConfigService() )->getWapIndexList();
+
+        if (!empty($wap_index_list)) {
+            foreach ($wap_index_list as $k => $v) {
+
+                $link_list = LinkDict::getLink([ 'addon' => $v[ 'key' ] ]);
+                $link = [];
+                foreach ($link_list as $ck => $cv) {
+                    if ($cv[ 'addon_info' ][ 'key' ] == $v[ 'key' ]) {
+                        foreach ($cv[ 'child_list' ] as $tk => $tv) {
+                            if ($tv[ 'url' ] == $v[ 'url' ]) {
+                                $link = [
+                                    "parent" => $ck,
+                                    "name" => $tv[ 'name' ],
+                                    "title" => $tv[ 'title' ],
+                                    "url" => $tv[ 'url' ]
+                                ];
+                                break;
+                            }
+                        }
+                    }
+                }
+                $default_index_value[ 'list' ][] = [
+                    "title" => $v[ 'title' ],
+                    "link" => $link,
+                    "imageUrl" => $v[ 'icon' ],
+                    "label" => [
+                        "control" => false,
+                        "text" => "热门",
+                        "textColor" => "#FFFFFF",
+                        "bgColorStart" => "#F83287",
+                        "bgColorEnd" => "#FE3423"
+                    ],
+                    "id" => unique_random(10 + $k),
+                    "imgWidth" => 100,
+                    "imgHeight" => 100
+                ];
+            }
+        }
+
         $system_pages = [
             'DIY_INDEX' => [
                 'default_index' => [ // 页面标识
@@ -35,15 +120,24 @@ class PagesDict
                     "data" => [
                         "global" => [
                             "title" => "首页",
-                            "pageBgColor" => "#F8F8F8",
+                            'pageStartBgColor' => '#F8F8F8',
+                            'pageEndBgColor' => '',
+                            'pageGradientAngle' => 'to bottom',
                             'bgUrl' => '',
+                            'bgHeightScale' => 0,
                             'imgWidth' => '',
                             'imgHeight' => '',
                             "bottomTabBarSwitch" => true,
                             "template" => [
                                 'textColor' => "#303133",
-                                "pageBgColor" => "",
-                                "componentBgColor" => "",
+                                'pageStartBgColor' => '',
+                                'pageEndBgColor' => '',
+                                'pageGradientAngle' => 'to bottom',
+                                'componentBgUrl' => '',
+                                'componentBgAlpha' => 2,
+                                "componentStartBgColor" => "",
+                                "componentEndBgColor" => "",
+                                "componentGradientAngle" => "to bottom",
                                 "topRounded" => 0,
                                 "bottomRounded" => 0,
                                 "elementBgColor" => "",
@@ -75,83 +169,10 @@ class PagesDict
                             ]
                         ],
                         "value" => [
-                            [
-                                "path" => "edit-addon-list",
-                                "uses" => 0,
-                                "id" => "2zcflqtzwn80",
-                                "componentName" => "AddonList",
-                                "componentTitle" => "应用",
-                                "ignore" => [],
-                                "list" => [],
-                                "textColor" => "#303133",
-                                "pageBgColor" => "",
-                                "componentBgColor" => "",
-                                "topRounded" => 0,
-                                "bottomRounded" => 0,
-                                "elementBgColor" => "",
-                                "topElementRounded" => 0,
-                                "bottomElementRounded" => 0,
-                                "margin" => [
-                                    "top" => 0,
-                                    "bottom" => 0,
-                                    "both" => 0
-                                ],
-                            ]
+                            $default_index_value
                         ]
                     ]
                 ],
-//                'recharge' => [
-//                    "title" => "固定模板示例", // 页面名称
-//                    'cover' => 'static/resource/images/diy/template/tourism_cover.png', // 页面封面图
-//                    'preview' => '', // 页面预览图
-//                    'desc' => '描述固定模板', // 页面描述
-//                    'mode' => 'fixed', // 页面模式：diy：自定义，fixed：固定
-//                    'data' => [
-//                        "global" => [
-//                            'component' => 'demo-index', // 模板组件名称 DemoIndex
-//                            "title" => "固定模板示例",
-//                            "pageBgColor" => "#F8F8F8",
-//                            'bgUrl' => '',
-//                            'imgWidth' => '',
-//                            'imgHeight' => '',
-//                            "bottomTabBarSwitch" => true,
-//                            "template" => [
-//                                'textColor' => "#303133",
-//                                "pageBgColor" => "",
-//                                "componentBgColor" => "",
-//                                "topRounded" => 0,
-//                                "bottomRounded" => 0,
-//                                "elementBgColor" => "",
-//                                "topElementRounded" => 0,
-//                                "bottomElementRounded" => 0,
-//                                "margin" => [
-//                                    "top" => 0,
-//                                    "bottom" => 0,
-//                                    "both" => 0
-//                                ]
-//                            ],
-//                            'topStatusBar' => [
-//                                'bgColor' => "#ffffff",
-//                                'isTransparent' => false,
-//                                'isShow' => true,
-//                                'style' => 'style-1',
-//                                'textColor' => "#333333",
-//                                'textAlign' => 'center',
-//                            ],
-//                            'popWindow' => [
-//                                'imgUrl' => "",
-//                                'imgWidth' => '',
-//                                'imgHeight' => '',
-//                                'count' => -1,
-//                                'show' => 0,
-//                                'link' => [
-//                                    'name' => ""
-//                                ],
-//                            ]
-//                        ],
-//                        "value" => []
-//                    ]
-//                ]
             ],
             'DIY_MEMBER_INDEX' => [
                 'default_member_index_one' => [
@@ -164,15 +185,24 @@ class PagesDict
                     "data" => [
                         "global" => [
                             "title" => "个人中心（风格一）",
-                            "pageBgColor" => "#F8F8F8",
+                            'pageStartBgColor' => '#F8F8F8',
+                            'pageEndBgColor' => '',
+                            'pageGradientAngle' => 'to bottom',
                             'bgUrl' => '',
+                            'bgHeightScale' => 0,
                             'imgWidth' => '',
                             'imgHeight' => '',
                             "bottomTabBarSwitch" => true,
                             "template" => [
                                 'textColor' => "#303133",
-                                "pageBgColor" => "",
-                                "componentBgColor" => "",
+                                'pageStartBgColor' => '',
+                                'pageEndBgColor' => '',
+                                'pageGradientAngle' => 'to bottom',
+                                'componentBgUrl' => '',
+                                'componentBgAlpha' => 2,
+                                "componentStartBgColor" => "",
+                                "componentEndBgColor" => "",
+                                "componentGradientAngle" => "to bottom",
                                 "topRounded" => 0,
                                 "bottomRounded" => 0,
                                 "elementBgColor" => "",
@@ -211,8 +241,14 @@ class PagesDict
                                 "componentTitle" => "会员信息",
                                 "uses" => 0,
                                 "ignore" => [],
-                                "pageBgColor" => "",
-                                "componentBgColor" => "",
+                                'pageStartBgColor' => '',
+                                'pageEndBgColor' => '',
+                                'pageGradientAngle' => 'to bottom',
+                                'componentBgUrl' => '',
+                                'componentBgAlpha' => 2,
+                                "componentStartBgColor" => "",
+                                "componentEndBgColor" => "",
+                                "componentGradientAngle" => "to bottom",
                                 "topRounded" => 9,
                                 "bottomRounded" => 9,
                                 "elementBgColor" => "",
@@ -231,18 +267,96 @@ class PagesDict
                                 "bgColorEnd" => ""
                             ],
                             [
+                                "path" => "edit-horz-blank",
+                                "uses" => 0,
+                                "id" => "2da0xqyo8zms",
+                                "componentName" => "HorzBlank",
+                                "componentTitle" => "辅助空白",
+                                "ignore" => [
+                                    "pageBgColor",
+                                    "componentBgUrl"
+                                ],
+                                "height" => 10,
+                                "textColor" => "#303133",
+                                "pageStartBgColor" => "",
+                                "pageEndBgColor" => "",
+                                "pageGradientAngle" => "to bottom",
+                                "componentBgUrl" => "",
+                                "componentBgAlpha" => 2,
+                                "componentStartBgColor" => "rgba(255, 255, 255, 1)",
+                                "componentEndBgColor" => "",
+                                "componentGradientAngle" => "to bottom",
+                                "topRounded" => 9,
+                                "bottomRounded" => 0,
+                                "elementBgColor" => "",
+                                "topElementRounded" => 0,
+                                "bottomElementRounded" => 0,
+                                "margin" => [
+                                    "top" => 6,
+                                    "bottom" => 0,
+                                    "both" => 16
+                                ]
+                            ],
+                            [
+                                "path" => "edit-text",
+                                "uses" => 0,
+                                "position" => "",
+                                "id" => "1puhgfus8www",
+                                "componentName" => "Text",
+                                "componentTitle" => "标题",
+                                "ignore" => [],
+                                "style" => "style-2",
+                                "styleName" => "风格2",
+                                "text" => "我的服务",
+                                "link" => [
+                                    "name" => "",
+                                ],
+                                "textColor" => "#303133",
+                                "fontSize" => 16,
+                                "fontWeight" => "normal",
+                                "textAlign" => "center",
+                                "subTitle" => [
+                                    "text" => "",
+                                    "color" => "#999999",
+                                    "fontSize" => 14,
+                                    "control" => true,
+                                    "fontWeight" => "normal"
+                                ],
+                                "more" => [
+                                    "text" => "全部",
+                                    "control" => true,
+                                    "isShow" => true,
+                                    "link" => [
+                                        "name" => ""
+                                    ],
+                                    "color" => "#999999"
+                                ],
+                                'pageStartBgColor' => '',
+                                'pageEndBgColor' => '',
+                                'pageGradientAngle' => 'to bottom',
+                                'componentBgUrl' => '',
+                                'componentBgAlpha' => 2,
+                                "componentStartBgColor" => "rgba(255, 255, 255, 1)",
+                                "componentEndBgColor" => "",
+                                "componentGradientAngle" => "to bottom",
+                                "topRounded" => 0,
+                                "bottomRounded" => 0,
+                                "elementBgColor" => "",
+                                "topElementRounded" => 0,
+                                "bottomElementRounded" => 0,
+                                "margin" => [
+                                    "top" => 0,
+                                    "bottom" => 0,
+                                    "both" => 16
+                                ]
+                            ],
+                            [
                                 "path" => "edit-graphic-nav",
                                 "id" => "62b7d7hl4ok",
                                 "componentName" => "GraphicNav",
                                 "componentTitle" => "图文导航",
                                 "uses" => 0,
                                 "layout" => "horizontal",
-                                "navTitle" => "我的服务",
-                                "subNavTitle" => "",
-                                "subNavTitleLink" => [
-                                    "name" => ""
-                                ],
-                                "subNavColor" => "#999999",
                                 "mode" => "graphic",
                                 "showStyle" => "fixed",
                                 "rowCount" => 4,
@@ -258,15 +372,21 @@ class PagesDict
                                     "weight" => "bold",
                                     "color" => "#303133"
                                 ],
-                                "pageBgColor" => "",
-                                "componentBgColor" => "rgba(255, 255, 255, 1)",
-                                "topRounded" => 9,
+                                'pageStartBgColor' => '',
+                                'pageEndBgColor' => '',
+                                'pageGradientAngle' => 'to bottom',
+                                'componentBgUrl' => '',
+                                'componentBgAlpha' => 2,
+                                "componentStartBgColor" => "rgba(255, 255, 255, 1)",
+                                "componentEndBgColor" => "",
+                                "componentGradientAngle" => "to bottom",
+                                "topRounded" => 0,
                                 "bottomRounded" => 9,
                                 "elementBgColor" => "",
                                 "topElementRounded" => 0,
                                 "bottomElementRounded" => 0,
                                 "margin" => [
-                                    "top" => 6,
+                                    "top" => 0,
                                     "bottom" => 6,
                                     "both" => 16
                                 ],
@@ -359,12 +479,6 @@ class PagesDict
                                 "componentTitle" => "图文导航",
                                 "ignore" => [],
                                 "layout" => "vertical",
-                                "navTitle" => "",
-                                "subNavTitle" => "",
-                                "subNavTitleLink" => [
-                                    "name" => ""
-                                ],
-                                "subNavColor" => "#999999",
                                 "mode" => "graphic",
                                 "showStyle" => "fixed",
                                 "rowCount" => 4,
@@ -476,8 +590,14 @@ class PagesDict
                                         ]
                                     ]
                                 ],
-                                "pageBgColor" => "",
-                                "componentBgColor" => "rgba(255, 255, 255, 1)",
+                                'pageStartBgColor' => '',
+                                'pageEndBgColor' => '',
+                                'pageGradientAngle' => 'to bottom',
+                                'componentBgUrl' => '',
+                                'componentBgAlpha' => 2,
+                                "componentStartBgColor" => "rgba(255, 255, 255, 1)",
+                                "componentEndBgColor" => "",
+                                "componentGradientAngle" => "to bottom",
                                 "topRounded" => 9,
                                 "bottomRounded" => 9,
                                 "elementBgColor" => "",
@@ -502,15 +622,24 @@ class PagesDict
                     "data" => [
                         "global" => [
                             "title" => "个人中心（风格二）",
-                            "pageBgColor" => "#F8F8F8",
+                            'pageStartBgColor' => '#F8F8F8',
+                            'pageEndBgColor' => '',
+                            'pageGradientAngle' => 'to bottom',
                             "bgUrl" => "static/resource/images/diy/member_style2_bg.png",
+                            'bgHeightScale' => 0,
                             'imgWidth' => 750,
                             'imgHeight' => 403,
                             "bottomTabBarSwitch" => true,
                             "template" => [
                                 'textColor' => "#303133",
-                                "pageBgColor" => "",
-                                "componentBgColor" => "",
+                                'pageStartBgColor' => '',
+                                'pageEndBgColor' => '',
+                                'pageGradientAngle' => 'to bottom',
+                                'componentBgUrl' => '',
+                                'componentBgAlpha' => 2,
+                                "componentStartBgColor" => "",
+                                "componentEndBgColor" => "",
+                                "componentGradientAngle" => "to bottom",
                                 "topRounded" => 0,
                                 "bottomRounded" => 0,
                                 "elementBgColor" => "",
@@ -549,8 +678,14 @@ class PagesDict
                                 "componentTitle" => "会员信息",
                                 "uses" => 0,
                                 "ignore" => [],
-                                "pageBgColor" => "",
-                                "componentBgColor" => "",
+                                'pageStartBgColor' => '',
+                                'pageEndBgColor' => '',
+                                'pageGradientAngle' => 'to bottom',
+                                'componentBgUrl' => '',
+                                'componentBgAlpha' => 2,
+                                "componentStartBgColor" => "",
+                                "componentEndBgColor" => "",
+                                "componentGradientAngle" => "to bottom",
                                 "topRounded" => 0,
                                 "bottomRounded" => 0,
                                 "elementBgColor" => "",
@@ -569,18 +704,96 @@ class PagesDict
                                 "bgColorEnd" => ""
                             ],
                             [
+                                "path" => "edit-horz-blank",
+                                "uses" => 0,
+                                "id" => "5fo173bx5840",
+                                "componentName" => "HorzBlank",
+                                "componentTitle" => "辅助空白",
+                                "ignore" => [
+                                    "pageBgColor",
+                                    "componentBgUrl"
+                                ],
+                                "height" => 10,
+                                "textColor" => "#303133",
+                                "pageStartBgColor" => "",
+                                "pageEndBgColor" => "",
+                                "pageGradientAngle" => "to bottom",
+                                "componentBgUrl" => "",
+                                "componentBgAlpha" => 2,
+                                "componentStartBgColor" => "rgba(255, 255, 255, 1)",
+                                "componentEndBgColor" => "",
+                                "componentGradientAngle" => "to bottom",
+                                "topRounded" => 9,
+                                "bottomRounded" => 0,
+                                "elementBgColor" => "",
+                                "topElementRounded" => 0,
+                                "bottomElementRounded" => 0,
+                                "margin" => [
+                                    "top" => 0,
+                                    "bottom" => 0,
+                                    "both" => 16
+                                ]
+                            ],
+                            [
+                                "path" => "edit-text",
+                                "uses" => 0,
+                                "position" => "",
+                                "id" => "629cgb1ygcw0",
+                                "componentName" => "Text",
+                                "componentTitle" => "标题",
+                                "ignore" => [],
+                                "style" => "style-1",
+                                "styleName" => "风格1",
+                                "text" => "我的服务",
+                                "link" => [
+                                    "name" => ""
+                                ],
+                                "textColor" => "#303133",
+                                "fontSize" => 16,
+                                "fontWeight" => "normal",
+                                "textAlign" => "left",
+                                "subTitle" => [
+                                    "text" => "",
+                                    "color" => "#999999",
+                                    "fontSize" => 14,
+                                    "control" => false,
+                                    "fontWeight" => "normal"
+                                ],
+                                "more" => [
+                                    "text" => "查看更多",
+                                    "control" => false,
+                                    "isShow" => false,
+                                    "link" => [
+                                        "name" => ""
+                                    ],
+                                    "color" => "#999999"
+                                ],
+                                'pageStartBgColor' => '',
+                                'pageEndBgColor' => '',
+                                'pageGradientAngle' => 'to bottom',
+                                'componentBgUrl' => '',
+                                'componentBgAlpha' => 2,
+                                "componentStartBgColor" => "rgba(255, 255, 255, 1)",
+                                "componentEndBgColor" => "",
+                                "componentGradientAngle" => "to bottom",
+                                "topRounded" => 0,
+                                "bottomRounded" => 0,
+                                "elementBgColor" => "",
+                                "topElementRounded" => 0,
+                                "bottomElementRounded" => 0,
+                                "margin" => [
+                                    "top" => 0,
+                                    "bottom" => 0,
+                                    "both" => 16
+                                ]
+                            ],
+                            [
                                 "path" => "edit-graphic-nav",
                                 "id" => "62b7d7hl4ok",
                                 "componentName" => "GraphicNav",
                                 "componentTitle" => "图文导航",
                                 "uses" => 0,
                                 "layout" => "horizontal",
-                                "navTitle" => "我的服务",
-                                "subNavTitle" => "",
-                                "subNavTitleLink" => [
-                                    "name" => ""
-                                ],
-                                "subNavColor" => "#999999",
                                 "mode" => "graphic",
                                 "showStyle" => "fixed",
                                 "rowCount" => 4,
@@ -596,9 +809,15 @@ class PagesDict
                                     "weight" => "bold",
                                     "color" => "#303133"
                                 ],
-                                "pageBgColor" => "",
-                                "componentBgColor" => "rgba(255, 255, 255, 1)",
-                                "topRounded" => 9,
+                                'pageStartBgColor' => '',
+                                'pageEndBgColor' => '',
+                                'pageGradientAngle' => 'to bottom',
+                                'componentBgUrl' => '',
+                                'componentBgAlpha' => 2,
+                                "componentStartBgColor" => "rgba(255, 255, 255, 1)",
+                                "componentEndBgColor" => "",
+                                "componentGradientAngle" => "to bottom",
+                                "topRounded" => 0,
                                 "bottomRounded" => 9,
                                 "elementBgColor" => "",
                                 "topElementRounded" => 0,
@@ -697,12 +916,6 @@ class PagesDict
                                 "componentTitle" => "图文导航",
                                 "ignore" => [],
                                 "layout" => "vertical",
-                                "navTitle" => "",
-                                "subNavTitle" => "",
-                                "subNavTitleLink" => [
-                                    "name" => ""
-                                ],
-                                "subNavColor" => "#999999",
                                 "mode" => "graphic",
                                 "showStyle" => "fixed",
                                 "rowCount" => 4,
@@ -814,8 +1027,14 @@ class PagesDict
                                         ]
                                     ]
                                 ],
-                                "pageBgColor" => "",
-                                "componentBgColor" => "rgba(255, 255, 255, 1)",
+                                'pageStartBgColor' => '',
+                                'pageEndBgColor' => '',
+                                'pageGradientAngle' => 'to bottom',
+                                'componentBgUrl' => '',
+                                'componentBgAlpha' => 2,
+                                "componentStartBgColor" => "rgba(255, 255, 255, 1)",
+                                "componentEndBgColor" => "",
+                                "componentGradientAngle" => "to bottom",
                                 "topRounded" => 9,
                                 "bottomRounded" => 9,
                                 "elementBgColor" => "",
@@ -834,7 +1053,12 @@ class PagesDict
             ]
         ];
 
-        $pages = ( new DictLoader("UniappPages") )->load($system_pages);
+        if (!empty($params[ 'addon' ])) {
+            $pages = ( new DictLoader("UniappPages") )->load($params);
+        } else {
+            $pages = ( new DictLoader("UniappPages") )->load($system_pages);
+        }
+
         if (!empty($params[ 'type' ])) {
             if (!empty($pages[ $params[ 'type' ] ])) {
                 $temp = $pages[ $params[ 'type' ] ];
@@ -849,7 +1073,6 @@ class PagesDict
             } else {
                 return [];
             }
-
         }
 
         return $pages;

@@ -1,1 +1,0 @@
-import{aJ as e,__tla as s}from"./entry.9b92f05f.js";let a,n,r,o,c=Promise.all([(()=>{try{return s}catch{}})()]).then(async()=>{a=function(){return e.get("captcha",{time:new Date().getTime()})},n=function(t){return e.get(`agreement/${t}`)},o=function(t){return e.post(`send/mobile/${t.type}`,t)},r=function(t){return e.get("copyright",t)}});export{c as __tla,a,n as b,r as g,o as s};

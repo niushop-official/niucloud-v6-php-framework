@@ -1,18 +1,18 @@
 <template>
 	<view :style="warpCss">
 		<view class="simple-graph-wrap overflow-hidden relative leading-0">
-			<image :style="{ height: diyComponent.imgHeight }" :src="img(diyComponent.imageUrl)" mode="widthFix"
-				:show-menu-by-longpress="true" class="w-full"></image>
+			<image v-if="diyComponent.imageUrl" :style="itemCss" :src="img(diyComponent.imageUrl)" mode="widthFix" :show-menu-by-longpress="true" class="w-full"/>
+			<image v-else :style="itemCss" :src="img('static/resource/images/diy/figure.png')" mode="widthFix" :show-menu-by-longpress="true" class="w-full"/>
 
 			<template v-if="diyStore.mode != 'decorate'">
 				<!-- 热区功能 -->
-				<app-link :data="mapItem.link" class="absolute" v-for="(mapItem, mapIndex) in diyComponent.heatMapData"
+				<view @click="toRedirect(mapItem.link)" class="absolute" v-for="(mapItem, mapIndex) in diyComponent.heatMapData"
 					:key="mapIndex" :style="{
 					width: mapItem.width + '%',
 					height: mapItem.height + '%',
 					left: mapItem.left + '%',
 					top: mapItem.top + '%'
-				}"></app-link>
+				}"></view>
 
 			</template>
 		</view>
@@ -23,7 +23,8 @@
 	// 热区
 	import { computed, watch, onMounted } from 'vue';
 	import useDiyStore from '@/app/stores/diy';
-	import { img } from '@/utils/common';
+    import { img,redirect,diyRedirect, currRoute, getToken } from '@/utils/common';
+    import { useLogin } from '@/hooks/useLogin';
 
 	const props = defineProps(['component', 'index', 'pullDownRefreshCount']);
 
@@ -39,13 +40,22 @@
 
 	const warpCss = computed(() => {
 		var style = '';
-		if (diyComponent.value.componentBgColor) style += 'background-color:' + diyComponent.value.componentBgColor + ';';
-		if (diyComponent.value.topRounded) style += 'border-top-left-radius:' + diyComponent.value.topRounded * 2 + 'rpx;';
-		if (diyComponent.value.topRounded) style += 'border-top-right-radius:' + diyComponent.value.topRounded * 2 + 'rpx;';
-		if (diyComponent.value.bottomRounded) style += 'border-bottom-left-radius:' + diyComponent.value.bottomRounded * 2 + 'rpx;';
-		if (diyComponent.value.bottomRounded) style += 'border-bottom-right-radius:' + diyComponent.value.bottomRounded * 2 + 'rpx;';
+        if(diyComponent.value.componentStartBgColor) {
+            if (diyComponent.value.componentStartBgColor && diyComponent.value.componentEndBgColor) style += `background:linear-gradient(${diyComponent.value.componentGradientAngle},${diyComponent.value.componentStartBgColor},${diyComponent.value.componentEndBgColor});`;
+            else style += 'background-color:' + diyComponent.value.componentStartBgColor + ';';
+        }
 		return style;
 	})
+
+    const itemCss = computed(() => {
+        var style = '';
+        style += 'height:' + diyComponent.value.imgHeight + ';';
+        if (diyComponent.value.topRounded) style += 'border-top-left-radius:' + diyComponent.value.topRounded * 2 + 'rpx;';
+        if (diyComponent.value.topRounded) style += 'border-top-right-radius:' + diyComponent.value.topRounded * 2 + 'rpx;';
+        if (diyComponent.value.bottomRounded) style += 'border-bottom-left-radius:' + diyComponent.value.bottomRounded * 2 + 'rpx;';
+        if (diyComponent.value.bottomRounded) style += 'border-bottom-right-radius:' + diyComponent.value.bottomRounded * 2 + 'rpx;';
+        return style;
+    })
 
 	onMounted(() => {
 		refresh();
@@ -64,7 +74,6 @@
 		if (diyStore.mode == 'decorate') {
 			// 装修模式下设置默认图
 			if (diyComponent.value.imageUrl == '') {
-				diyComponent.value.imageUrl = 'static/resource/images/diy/figure.png';
 				diyComponent.value.imgWidth = 690;
 				diyComponent.value.imgHeight = 330;
 			}
@@ -77,6 +86,19 @@
 			// 处理下拉刷新业务
 		}
 	)
+
+    const toRedirect = (data: {}) => {
+        if (Object.keys(data).length) {
+            if (!data.url) return;
+            if (currRoute() == 'app/pages/member/index' && !getToken()) {
+                useLogin().setLoginBack({ url: data.url })
+                return;
+            }
+            diyRedirect(data);
+        } else {
+            redirect(data)
+        }
+    }
 </script>
 
 <style lang="scss">

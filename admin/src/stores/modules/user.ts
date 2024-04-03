@@ -11,9 +11,7 @@ interface User {
     userInfo: object,
     routers: any[],
     addonIndexRoute: Record<string, symbol>,
-    rules: any[],
-    appMenuList: any[],
-    globalAppKey: string
+    rules: any[]
 }
 
 const useUserStore = defineStore('user', {
@@ -23,9 +21,7 @@ const useUserStore = defineStore('user', {
             userInfo: storage.get('userinfo') || {},
             routers: [],
             addonIndexRoute: {},
-            rules: [],
-            globalAppKey: '',
-            appMenuList: storage.get('appMenuList' + (storage.get('userinfo') ? storage.get('userinfo').username : '')) || []
+            rules: []
         }
     },
     actions: {
@@ -37,6 +33,7 @@ const useUserStore = defineStore('user', {
                         this.userInfo = res.data.userinfo
                         setToken(res.data.token)
                         storage.set({ key: 'userinfo', data: res.data.userinfo })
+                        storage.set({ key: 'comparisonTokenStorage', data: res.data.token })
                         resolve(res)
                     })
                     .catch((error) => {
@@ -64,41 +61,12 @@ const useUserStore = defineStore('user', {
                         this.routers.forEach((item, index) => {
                             if (item.meta.app !== '') {
                                 if (item.children && item.children.length) {
-                                    this.addonIndexRoute[item.meta.app] = findFirstValidRoute(item.children)
+                                    this.addonIndexRoute[item.meta.addon] = findFirstValidRoute(item.children)
                                 } else {
-                                    this.addonIndexRoute[item.meta.app] = item.name
+                                    this.addonIndexRoute[item.meta.addon] = item.name
                                 }
                             }
                         })
-                        resolve(res)
-                    })
-                    .catch((error) => {
-                        reject(error)
-                    })
-            })
-        },
-        setAppMenuList(data: any) {
-            this.appMenuList = data
-            storage.set({ key: 'appMenuList' + (this.userInfo.username ? this.userInfo.username : ''), data })
-        },
-        getAppList() {
-            let appList:any = [];
-            let appTypeList:any = [];
-            let appKey = storage.get('menuAppStorage');
-            return new Promise((resolve, reject) => {
-                getApply()
-                    .then((res) => {
-                        appList = appList.concat(res.data);
-                        appList.forEach((item, index) => {
-                            if (item.type == 'app') { appTypeList.push(item.key) }
-                        });
-                        // 用于插件的卸载或安装
-                        if (!appList.length) {
-                            this.globalAppKey = '';
-                        }
-                        if (appList.length && !appKey) {
-                            this.globalAppKey = appTypeList[0];
-                        }
                         resolve(res)
                     })
                     .catch((error) => {

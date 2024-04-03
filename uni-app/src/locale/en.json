@@ -1,5 +1,7 @@
 {
     "pages.index.index": "Index",
+    "pages.article.list": "Information Center",
+    "pages.article.detail": "Information detail",
     "pages.member.index": "My",
     "pages.auth.login": "Login",
     "pages.auth.register": "Register",

@@ -122,6 +122,7 @@ const onSave = async (formEl: FormInstance | undefined) => {
             // loading.value = true
 
             const data = formData
+            console.log(data)
 
             // save(data).then(res => {
             //     loading.value = false

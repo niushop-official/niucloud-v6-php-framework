@@ -1,12 +1,12 @@
 <template>
     <div class="w-full p-5 bg-white">
         <div class="flex justify-between items-center mb-[20px]">
-            <span class="text-[20px]">{{ t('title') }}</span>
+            <span class="text-page-title">{{ t('title') }}</span>
         </div>
         <el-tabs v-model="activeName" class="demo-tabs" @tab-change="handleClick">
-            <el-tab-pane :label="t('weappAccessFlow')" name="/website/channel/weapp" />
-            <el-tab-pane :label="t('subscribeMessage')" name="/website/channel/weapp/message" />
-            <el-tab-pane :label="t('weappRelease')" name="/website/channel/weapp/code" />
+            <el-tab-pane :label="t('weappAccessFlow')" name="/channel/weapp" />
+            <el-tab-pane :label="t('subscribeMessage')" name="/channel/weapp/message" />
+            <el-tab-pane :label="t('weappRelease')" name="/channel/weapp/code" />
         </el-tabs>
         <div class="p-[20px]">
             <p class="text-[16px] mb-[20px]">{{ t("weappInlet") }}</p>
@@ -20,12 +20,15 @@
                                 </el-icon>
                             </template>
                             <template #icon v-else-if="active == 1">
-                                <div class="w-[24px] h-[24px] box-border rounded-full bg-color1 flex items-center justify-center">
+                                <div
+                                    class="w-[24px] h-[24px] box-border rounded-full bg-color1 flex items-center justify-center">
                                     <div class="h-[12px] w-[12px] bg-color rounded-full"></div>
                                 </div>
                             </template>
                             <template #icon v-else>
-                                <div class="w-[24px] h-[24px] text-[#fff] bg-[#778aa3] text-center leading-[24px] rounded-full">1</div>
+                                <div
+                                    class="w-[24px] h-[24px] text-[#fff] bg-[#778aa3] text-center leading-[24px] rounded-full">
+                                    1</div>
                             </template>
                             <template #title>
                                 <p class="text-[14px] text-[#303133] font-[700]">
@@ -35,7 +38,8 @@
                             <template #description>
                                 <span class="text-[#999]">{{ t("weappAttest") }}</span>
                                 <div class="mt-[20px] mb-[40px] h-[32px]">
-                                    <el-button type="primary" @click="linkEvent('https://mp.weixin.qq.com/')">{{t("clickAccess") }}</el-button>
+                                    <el-button type="primary"
+                                        @click="linkEvent('https://mp.weixin.qq.com/')">{{ t("clickAccess") }}</el-button>
                                 </div>
                             </template>
                         </el-step>
@@ -46,12 +50,15 @@
                                 </el-icon>
                             </template>
                             <template #icon v-else-if="active == 2">
-                                <div class="w-[24px] h-[24px] box-border rounded-full bg-color1 flex items-center justify-center">
+                                <div
+                                    class="w-[24px] h-[24px] box-border rounded-full bg-color1 flex items-center justify-center">
                                     <div class="h-[12px] w-[12px] bg-color rounded-full"></div>
                                 </div>
                             </template>
                             <template #icon v-else>
-                                <div class="w-[24px] h-[24px] text-[#fff] bg-[#778aa3] text-center leading-[24px] rounded-full">2</div>
+                                <div
+                                    class="w-[24px] h-[24px] text-[#fff] bg-[#778aa3] text-center leading-[24px] rounded-full">
+                                    2</div>
                             </template>
                             <template #title>
                                 <p class="text-[14px] text-[#303133] font-[700]">
@@ -61,7 +68,8 @@
                             <template #description>
                                 <span class="text-[#999]">{{ t("emplace") }}</span>
                                 <div class="mt-[20px] mb-[40px] h-[32px]">
-                                    <el-button type="primary" plain @click="router.push('/website/channel/weapp/config')">{{t("weappSettingBtn") }}</el-button>
+                                    <el-button type="primary" plain
+                                        @click="router.push('/channel/weapp/config')">{{ t("weappSettingBtn") }}</el-button>
                                 </div>
                             </template>
                         </el-step>
@@ -72,12 +80,15 @@
                                 </el-icon>
                             </template>
                             <template #icon v-else-if="active == 3">
-                                <div class="w-[24px] h-[24px] box-border rounded-full bg-color1 flex items-center justify-center">
+                                <div
+                                    class="w-[24px] h-[24px] box-border rounded-full bg-color1 flex items-center justify-center">
                                     <div class="h-[12px] w-[12px] bg-color rounded-full"></div>
                                 </div>
                             </template>
                             <template #icon v-else>
-                                <div class="w-[24px] h-[24px] text-[#fff] bg-[#778aa3] text-center leading-[24px] rounded-full">3</div>
+                                <div
+                                    class="w-[24px] h-[24px] text-[#fff] bg-[#778aa3] text-center leading-[24px] rounded-full">
+                                    3</div>
                             </template>
                             <template #title>
                                 <p class="text-[14px] text-[#303133] font-[700]">
@@ -87,7 +98,8 @@
                             <template #description>
                                 <span class="text-[#999]">{{ t("releaseCourse") }}</span>
                                 <div class="mt-[20px] mb-[40px] h-[32px]">
-                                    <el-button type="primary" plain @click="router.push('/website/channel/weapp/code')">{{t("weappRelease") }}</el-button>
+                                    <el-button type="primary" plain
+                                        @click="router.push('/channel/weapp/code')">{{ t("weappRelease") }}</el-button>
                                 </div>
                             </template>
                         </el-step>
@@ -98,12 +110,15 @@
                                 </el-icon>
                             </template>
                             <template #icon v-else-if="active == 4">
-                                <div class="w-[24px] h-[24px] box-border rounded-full bg-color1 flex items-center justify-center">
+                                <div
+                                    class="w-[24px] h-[24px] box-border rounded-full bg-color1 flex items-center justify-center">
                                     <div class="h-[12px] w-[12px] bg-color rounded-full"></div>
                                 </div>
                             </template>
                             <template #icon v-else>
-                                <div class="w-[24px] h-[24px] text-[#fff] bg-[#778aa3] text-center leading-[24px] rounded-full">4</div>
+                                <div
+                                    class="w-[24px] h-[24px] text-[#fff] bg-[#778aa3] text-center leading-[24px] rounded-full">
+                                    4</div>
                             </template>
                             <template #title>
                                 <p class="text-[14px] text-[#303133] font-[700]">
@@ -122,10 +137,10 @@
                 </el-col>
                 <el-col :span="4">
                     <div class="flex justify-center">
-                        <el-image class="w-[180px] h-[180px]" :src="qr_code?img(qr_code):''">
+                        <el-image class="w-[180px] h-[180px]" :src="qrCode ? img(qrCode) : ''">
                             <template #error>
                                 <div class="w-[100%] h-[100%] flex items-center  justify-center bg-[#f5f7fa]">
-                                    <span>{{ qr_code?t('fileErr'):t('emptyQrCode') }}</span>
+                                    <span>{{ qrCode ? t('fileErr') : t('emptyQrCode') }}</span>
                                 </div>
                             </template>
                         </el-image>
@@ -140,26 +155,26 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref } from "vue";
-import { useRouter } from "vue-router";
-import { t } from "@/lang";
-import {img} from '@/utils/common'
+import { onMounted, ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { t } from '@/lang'
+import { img } from '@/utils/common'
 import { getWeappConfig } from '@/app/api/weapp'
 
-const router = useRouter();
-let activeName = ref("/website/channel/weapp");
-let active = ref(2);
-let qr_code = ref('')
+const router = useRouter()
+const activeName = ref('/channel/weapp')
+const active = ref(2)
+const qrCode = ref('')
 onMounted(async () => {
-    let res = await getWeappConfig()
-    qr_code.value = res.data.qr_code
+    const res = await getWeappConfig()
+    qrCode.value = res.data.qr_code
 })
 const linkEvent = (url: string) => {
-    window.open(url, "_blank");
-};
+    window.open(url, '_blank')
+}
 const handleClick = (val: any) => {
-    router.push({ path: activeName.value });
-};
+    router.push({ path: activeName.value })
+}
 </script>
 
 <style lang="scss" scoped>
@@ -183,39 +198,43 @@ const handleClick = (val: any) => {
 .bg-color1 {
     background-color: var(--el-color-info-light-8);
 }
-:deep(.el-tabs__item:hover){
+
+:deep(.el-tabs__item:hover) {
     border-bottom: 2px solid var(--el-color-primary);
 }
-:deep(.el-tabs__item){
+
+:deep(.el-tabs__item) {
     padding: 0;
 }
-:deep(.el-tabs__item+.el-tabs__item){
+
+:deep(.el-tabs__item+.el-tabs__item) {
     margin-right: 20px;
     margin-left: 20px;
     // border-bottom: 2px solid var(--el-color-primary);
 }
+
 :deep(.el-tabs--top) {
-	.el-tabs__active-bar {
-		display: none;
-	}
+    .el-tabs__active-bar {
+        display: none;
+    }
 
-	.el-tabs__item.is-active {
-		border-bottom: 2px solid var(--el-color-primary);
-	}
+    .el-tabs__item.is-active {
+        border-bottom: 2px solid var(--el-color-primary);
+    }
 
-	.el-tabs__item.is-top:nth-child(2) {
-		margin-right: 20px;
-	}
+    .el-tabs__item.is-top:nth-child(2) {
+        margin-right: 20px;
+    }
 
 }
 
-:deep(.el-step.is-vertical .el-step__icon.is-icon){
+:deep(.el-step.is-vertical .el-step__icon.is-icon) {
     padding: 8px 0;
     height: 40px;
     background-color: #fff;
 }
-:deep(.el-step__title){
+
+:deep(.el-step__title) {
     height: 40px;
     line-height: 40px !important;
-}
-</style>
+}</style>

@@ -2,7 +2,7 @@
     <div class="main-container">
         <el-card class="box-card !border-none" shadow="never">
             <div class="flex justify-between items-center">
-                <span class="text-[20px]">{{pageName}}</span>
+                <span class="text-page-title">{{pageName}}</span>
             </div>
 
             <el-card class="box-card !border-none my-[10px] table-search-wrap" shadow="never">
@@ -10,20 +10,30 @@
                     <el-form-item :label="t('title')" prop="title">
                         <el-input v-model="diyRouteTableData.searchParam.title" :placeholder="t('titlePlaceholder')" />
                     </el-form-item>
+                    <el-form-item :label="t('forAddon')" prop="addon_name">
+                        <el-select v-model="diyRouteTableData.searchParam.addon_name" :placeholder="t('pageTypePlaceholder')">
+                            <el-option :label="t('all')" value="" />
+                            <el-option v-for="(item, key) in apps" :label="item.title" :value="key" :key="key"/>
+                        </el-select>
+                    </el-form-item>
                     <el-form-item>
                         <el-button type="primary" @click="loadDiyRouteList()">{{ t('search') }}</el-button>
                         <el-button @click="resetForm(searchFormDiyRouteRef)">{{ t('reset') }}</el-button>
                     </el-form-item>
                 </el-form>
             </el-card>
-            
+
             <el-table :data="diyRouteTableData.data" size="large" v-loading="diyRouteTableData.loading">
                 <template #empty>
                     <span>{{ !diyRouteTableData.loading ? t('emptyData') : '' }}</span>
                 </template>
                 <el-table-column prop="title" :label="t('title')" min-width="70" />
-                <el-table-column prop="addon_title" :label="t('forAddon')" min-width="70" />
-                <el-table-column prop="page" :label="t('wapUrl')" min-width="170">
+                <el-table-column prop="addon_title" :label="t('forAddon')" min-width="70">
+                    <template #default="{ row }">
+                        <span>{{ row.addon_info.title }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="page" :label="t('wapUrl')" min-width="230">
                     <template #default="{ row }">
                         <span class="mr-[10px]">{{ wapDomain + row.page }}</span>
                         <el-button type="primary" link @click="copyEvent(wapDomain + row.page)">{{ t('copy') }}</el-button>
@@ -35,7 +45,7 @@
                         <el-button type="primary" link @click="copyEvent(row.page)">{{ t('copy') }}</el-button>
                     </template>
                 </el-table-column>
-                <el-table-column :label="t('share')" fixed="right"  align="right" min-width="80">
+                <el-table-column :label="t('share')" fixed="right"  align="right" min-width="40">
                     <template #default="{ row }">
                         <el-button v-if="row.is_share == 1" type="primary" link @click="openShare(row)">{{ t('shareSet') }}</el-button>
                     </template>
@@ -82,8 +92,8 @@
 <script lang="ts" setup>
 import { reactive, ref, watch, computed } from 'vue'
 import { t } from '@/lang'
-import { getDiyTemplate, getDiyRouteList, getDiyRouteInfo, editDiyRouteShare } from '@/app/api/diy'
-import {  ElMessage, FormInstance, ElMessageBox } from 'element-plus'
+import { getDiyRouteAppList,getDiyTemplate, getDiyRouteList, getDiyRouteInfo, editDiyRouteShare } from '@/app/api/diy'
+import { ElMessage, FormInstance } from 'element-plus'
 import { useRoute, useRouter } from 'vue-router'
 import { useClipboard } from '@vueuse/core'
 import { getUrl } from '@/app/api/sys'
@@ -91,28 +101,39 @@ import { getUrl } from '@/app/api/sys'
 const pageTemplate: any = reactive({})
 const router = useRouter()
 const route = useRoute()
-const pageName = route.meta.title;
+const pageName = route.meta.title
 
 const formRef = ref<FormInstance>()
 const dialogVisible = ref(false)
 
-let diyRouteTableData = reactive({
+const diyRouteTableData = reactive({
     page: 1,
     limit: 10,
     total: 0,
     loading: true,
     data: [],
     searchParam: {
-        "title": "",
+        title: '',
+        addon_name:''
     }
 })
 
 const wapDomain = ref('')
 const getDomain = async () => {
-    wapDomain.value = (await getUrl()).data.wap_url;
-};
+    wapDomain.value = (await getUrl()).data.wap_url
+}
 
-getDomain();
+getDomain()
+
+const apps: any = reactive({}) // 应用插件列表
+
+getDiyRouteAppList({}).then(res=>{
+    if(res.data){
+        for (const key in res.data) {
+            apps[key] = res.data[key];
+        }
+    }
+});
 
 /**
  * 获取自定义路由列表
@@ -126,15 +147,15 @@ const loadDiyRouteList = (page: number = 1) => {
         limit: diyRouteTableData.limit,
         ...diyRouteTableData.searchParam
     }).then(res => {
-        diyRouteTableData.loading = false;
+        diyRouteTableData.loading = false
 
-        let len = Math.ceil(res.data.length / diyRouteTableData.limit);
-        let data = JSON.parse(JSON.stringify(res.data));
-        let dataGather = [];
-        for(var i = 0; i < len; i++){
-            dataGather[i] = data.splice(0, diyRouteTableData.limit);
+        const len = Math.ceil(res.data.length / diyRouteTableData.limit)
+        const data = JSON.parse(JSON.stringify(res.data))
+        const dataGather = []
+        for (let i = 0; i < len; i++) {
+            dataGather[i] = data.splice(0, diyRouteTableData.limit)
         }
-        diyRouteTableData.data = dataGather[diyRouteTableData.page-1];
+        diyRouteTableData.data = dataGather[diyRouteTableData.page - 1]
 
         diyRouteTableData.total = res.data.length
     }).catch(() => {
@@ -145,7 +166,7 @@ loadDiyRouteList()
 
 // 获取自定义页面模板
 getDiyTemplate({}).then(res => {
-    for (let key in res.data) {
+    for (const key in res.data) {
         pageTemplate[key] = res.data[key]
     }
 })
@@ -204,12 +225,12 @@ const shareFormRules = computed(() => {
 const shareFormRef = ref<FormInstance>()
 const openShare = async (row: any) => {
     // 基础页面
-    let info = (await getDiyRouteInfo({
+    const info = (await getDiyRouteInfo({
         name: row.name
-    })).data;
+    })).data
 
     if (info.title) {
-        row.id = info.id;
+        row.id = info.id
         row.title = info.title
         row.name = info.name
         row.page = info.page
@@ -224,18 +245,18 @@ const openShare = async (row: any) => {
     diyRouteData.is_share = row.is_share
     diyRouteData.sort = row.sort
 
-    shareFormId.value = row.id;
-    sharePage.value = row.title;
-    let share = row.share ? JSON.parse(row.share) : {
-        wechat: {title: '', desc: '', url: ''},
-        weapp: {title: '', url: ''}
-    };
+    shareFormId.value = row.id
+    sharePage.value = row.title
+    const share = row.share ? JSON.parse(row.share) : {
+        wechat: { title: '', desc: '', url: '' },
+        weapp: { title: '', url: '' }
+    }
     if (share) {
-        shareFormData.wechat = share.wechat;
-        shareFormData.weapp = share.weapp;
+        shareFormData.wechat = share.wechat
+        shareFormData.weapp = share.weapp
     }
 
-    shareDialogVisible.value = true;
+    shareDialogVisible.value = true
 }
 
 const shareEvent = async (formEl: FormInstance | undefined) => {
@@ -243,31 +264,25 @@ const shareEvent = async (formEl: FormInstance | undefined) => {
 
     await formEl.validate(async (valid) => {
         if (valid) {
-            let save = editDiyRouteShare
+            const save = editDiyRouteShare
             save({
                 id: shareFormId.value,
                 share: JSON.stringify(shareFormData),
                 ...diyRouteData
             }).then(() => {
                 loadDiyRouteList()
-                shareDialogVisible.value = false;
+                shareDialogVisible.value = false
             }).catch(() => {
             })
         }
     })
 }
 
-const resetForm = (formEl: FormInstance | undefined)=>{
+const resetForm = (formEl: FormInstance | undefined) => {
     if (!formEl) return
-    formEl.resetFields();
-    loadDiyRouteList();
+    formEl.resetFields()
+    loadDiyRouteList()
 }
 </script>
 
-<style lang="scss">
-.copy {
-    background: var(--el-color-primary) !important;
-    color: var(--el-color-white) !important;
-}
-</style>
 <style lang="scss" scoped></style>

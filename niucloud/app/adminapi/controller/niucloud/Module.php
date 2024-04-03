@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的多应用管理平台
+// | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud.com
+// | 官方网址：https://www.niucloud-admin.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -14,6 +14,7 @@ namespace app\adminapi\controller\niucloud;
 use app\service\admin\niucloud\NiucloudService;
 use app\service\core\niucloud\CoreAuthService;
 use core\base\BaseAdminController;
+use think\Response;
 
 class Module extends BaseAdminController
 {
@@ -32,7 +33,7 @@ class Module extends BaseAdminController
             ['auth_secret', '']
         ]);
         $this->validate($data, 'app\validate\niucloud\Module.set');
-        return success("AUTH_BIND_SUCCESS",  (new NiucloudService())->setAuthorize($data));
+        return success("SUCCESS",  (new NiucloudService())->setAuthorize($data));
     }
 
     /**
@@ -41,5 +42,31 @@ class Module extends BaseAdminController
     public function getAuthorize()
     {
         return success((new NiucloudService())->getAuthorize());
+    }
+
+    /**
+     * 获取框架最新版本
+     * @return Response
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function getFrameworkLastVersion() {
+        return success(data:(new NiucloudService())->getFrameworkLastVersion());
+    }
+
+    /**
+     * 获取框架最新版本
+     * @return Response
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function getFrameworkVersionList() {
+        return success(data:(new NiucloudService())->getFrameworkVersionList());
+    }
+
+    /**
+     * 申请体验
+     * @return Response
+     */
+    public function applyExperience() {
+        return success((new NiucloudService())->applyExperience());
     }
 }

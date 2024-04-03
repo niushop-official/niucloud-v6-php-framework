@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的多应用管理平台
+// | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud.com
+// | 官方网址：https://www.niucloud-admin.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -42,7 +42,6 @@ class Pay extends BaseApiController
 
         $data = $this->request->params([
             ['type', ''],
-//            ['out_trade_no', ''],
             ['trade_type', ''],//业务类型
             ['trade_id', ''],//业务id
             ['quit_url', ''],
@@ -69,5 +68,16 @@ class Pay extends BaseApiController
      */
     public function getPayType($trade_type){
         return success((new PayService())->getPayTypeByTrade($trade_type));
+    }
+    /**
+     * 关闭支付
+     * @return Response
+     */
+    public function close(){
+        $data = $this->request->params([
+            ['out_trade_no', ''],
+            ['type', ''],
+        ]);
+        return success('SUCCESS',(new PayService())->close($data['type'], $data['out_trade_no']));
     }
 }

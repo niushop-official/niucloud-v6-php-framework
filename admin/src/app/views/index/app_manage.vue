@@ -5,7 +5,7 @@
                 <div>
                     <div class="font-[600] text-[26px] text-[#222] leading-[37px]">{{ t('app') }}</div>
                     <div class="font-[500] text-[14px] text-[#222] leading-[20px] mt-[12px]">{{ t('versionInfo') }}&nbsp;{{
-                        t('currentVersion') }}&nbsp;{{ versions }}</div>
+                        t('currentVersion') }}</div>
                 </div>
                 <el-button @click="toAppStore" class="px-[15px]">
                     <div class="mr-[9px] text-[#3F3F3F] iconfont iconxiazai01"></div>
@@ -56,33 +56,39 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref, onMounted, computed } from 'vue'
+import { reactive, ref } from 'vue'
 import { t } from '@/lang'
-import { getAuthaddon, getVersions } from '@/app/api/auth'
+import { getInstalledAddonList } from '@/app/api/addon'
 import { img } from '@/utils/common'
 import { useRouter } from 'vue-router'
 import storage from '@/utils/storage'
 import { findFirstValidRoute } from '@/router/routers'
-import { UserFilled } from '@element-plus/icons-vue'
 import useUserStore from '@/stores/modules/user'
+import { AnyObject } from '@/types/global'
 
 const router = useRouter()
-const userStore = useUserStore()
+const userStore:AnyObject = useUserStore()
 const loading = ref(true)
-const detail = reactive({
+const detail:{
+    appList: {
+        title: string,
+        desc: string,
+        icon: string
+    }[]
+} = reactive({
     appList: []
 })
 const appLink: any = ref({})
 
 const getAuthaddonFn = () => {
     loading.value = true
-    getAuthaddon().then(res => {
-        res.data.forEach((item: any, index) => {
+    getInstalledAddonList().then(res => {
+        Object.values(res.data).forEach((item: any, index) => {
             if (item.type == 'app') {
                 detail.appList.push(item)
             }
         })
-        userStore.routers.forEach((item, index) => {
+        userStore.routers.forEach((item:any, index:number) => {
             if (item.children && item.children.length) {
                 item.name = findFirstValidRoute(item.children)
                 appLink.value[item.meta.app] = findFirstValidRoute(item.children)
@@ -93,7 +99,6 @@ const getAuthaddonFn = () => {
         loading.value = false
     }).catch(() => {
         loading.value = false
-
     })
 }
 
@@ -105,38 +110,14 @@ const itemPath = (data: any) => {
     const appMenuList = userStore.appMenuList
     appMenuList.push(data.key)
     userStore.setAppMenuList(appMenuList)
-    let name: any = appLink.value[data.key]
-    router.push({ name: name })
-}
-
-const goAppManage = () => {
-    router.push('/app_manage')
-}
-
-const goRouter = () => {
-    window.open('https://www.niucloud.com/app')
+    const name: any = appLink.value[data.key]
+    router.push({ name })
 }
 
 // 跳转至开发者
 const toAppStore = () => {
     router.push('/app_manage/app_store')
 }
-
-const goNiucloud = () => {
-    window.open('https://www.niucloud.com')
-}
-
-const logout = () => {
-    userStore.logout();
-}
-
-const versions = ref('')
-const getVersionsInfo = () => {
-    getVersions().then(res => {
-        versions.value = res.data.version.version
-    })
-}
-getVersionsInfo()
 </script>
 
 <style lang="scss" scoped>

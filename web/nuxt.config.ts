@@ -2,8 +2,7 @@
 import { loadEnv } from 'vite'
 import topLevelAwait from 'vite-plugin-top-level-await'
 
-const envScript = (process.env as any).npm_lifecycle_script.split(' ')
-const envName = envScript[envScript.length - 1]
+const envName = (process.env as any).npm_lifecycle_event == 'dev' ? 'dev' : 'product'
 const envData = loadEnv(envName, 'env')
 
 export default defineNuxtConfig({

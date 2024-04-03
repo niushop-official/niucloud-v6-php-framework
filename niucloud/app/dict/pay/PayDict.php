@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的多应用管理平台
+// | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud.com
+// | 官方网址：https://www.niucloud-admin.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -19,7 +19,7 @@ class PayDict
     public const ALIPAY = 'alipay';//支付宝支付
     //const UNIPAY = 'unipay';//银联
     public const OFFLINEPAY = 'offlinepay';//线下支付
-    public const BALANCEPAY = 'balancepay';//余额支付
+    public const BALANCEPAY = 'balancepay';//线下支付
 
 
     public const ON = '1';
@@ -41,11 +41,10 @@ class PayDict
     public const STATUS_FINISH = '2';//已支付
 
     public const STATUS_AUDIT = '3';//待审核
-    public const STATUS_CALCLE = '-1';//已取消
+    public const STATUS_CANCLE = '-1';//已取消
 
-    //操作人类型
     public const MEMBER = 'member';
-    public const STORE = 'store';
+    public const USER = 'user';
 
     /**
      * 支付类型
@@ -104,7 +103,7 @@ class PayDict
             self::STATUS_WAIT => get_lang('dict_pay.status_wait'),
             self::STATUS_ING => get_lang('dict_pay.status_ing'),
             self::STATUS_FINISH => get_lang('dict_pay.status_finish'),
-            self::STATUS_CALCLE => get_lang('dict_pay.status_cancle'),
+            self::STATUS_CANCLE => get_lang('dict_pay.status_cancle'),
             self::STATUS_AUDIT => get_lang('dict_pay.status_audit')
         ];
     }

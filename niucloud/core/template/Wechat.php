@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的多应用管理平台
+// | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud.com
+// | 官方网址：https://www.niucloud-admin.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -23,7 +23,6 @@ use Psr\Http\Message\ResponseInterface;
 class Wechat extends BaseTemplate
 {
 
-
     /**
      * @param array $config
      * @return void
@@ -32,15 +31,6 @@ class Wechat extends BaseTemplate
     {
         parent::initialize($config);
 
-    }
-
-    /**
-     * 实例化模板消息业务
-     * @return Client
-     */
-    public function template()
-    {
-        return CoreWechatService::app()->template_message;
     }
 
     /**
@@ -61,15 +51,22 @@ class Wechat extends BaseTemplate
         $url = $data[ 'url' ];
         $miniprogram = $data[ 'miniprogram' ];
 
-        if (!empty($first)) $template_data[ 'first' ] = $first;
-        if (!empty($remark)) $template_data[ 'remark' ] = $remark;
-        return $this->template()->send([
+
+
+        if (!empty($first)) $data[ 'first' ] = $first;
+        if (!empty($remark)) $data[ 'remark' ] = $remark;
+        $api = CoreWechatService::appApiClient();
+        $param = [
             'touser' => $openid,
             'template_id' => $template_id,
             'url' => $url,
             'miniprogram' => $miniprogram,
-            'data' => $template_data,
-        ]);
+            'data' => $data,
+        ];
+        if(!empty($client_msg_id)){
+            $param['client_msg_id'] = $client_msg_id;
+        }
+        return $api->postJson('cgi-bin/message/template/send', $param);
     }
 
     /**
@@ -81,7 +78,11 @@ class Wechat extends BaseTemplate
      */
     public function addTemplate(array $data)
     {
-        return $this->template()->addTemplate($data[ 'shortId' ], $data[ 'keyword_name_list' ]);
+        $api = CoreWechatService::appApiClient();
+        return $api->postJson('cgi-bin/template/api_add_template', [
+            'template_id_short' => $data[ 'shortId' ],
+            'keyword_name_list' => $data[ 'keyword_name_list' ]
+        ]);
     }
 
     /**
@@ -93,7 +94,11 @@ class Wechat extends BaseTemplate
      */
     public function delete(array $data)
     {
-        return $this->template()->deletePrivateTemplate($data[ 'templateId' ]);
+        $api = CoreWechatService::appApiClient();
+
+        return $api->postJson('cgi-bin/template/del_private_template', [
+            'template_id' => $data[ 'templateId' ],
+        ]);
     }
 
     /**

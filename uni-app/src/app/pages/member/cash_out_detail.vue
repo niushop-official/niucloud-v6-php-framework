@@ -1,5 +1,5 @@
 <template>
-	<view class="member-record-detail">
+	<view class="member-record-detail" :style="themeColor()">
 		<view class="money-wrap">
 			<text>-{{ cashOutInfo.apply_money }}</text>
 			<text>{{ cashOutInfo.status_name }}</text>
@@ -73,5 +73,5 @@ const getCashoutAccountListFn = (id) => {
 </script>
 
 <style lang="scss">
-@import '@/app/styles/member_record_detail.scss';
+@import '@/styles/member_record_detail.scss';
 </style>

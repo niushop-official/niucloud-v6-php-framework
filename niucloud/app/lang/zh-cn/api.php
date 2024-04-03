@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的多应用管理平台
+// | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud.com
+// | 官方网址：https://www.niucloud-admin.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -38,7 +38,6 @@ return [
     'ADDON_INSTALL_NOT_EXIST' => '未找到插件安装任务',
     'ADDON_INSTALL_EXECUTED' => '插件安装任务已执行',
     'INSTALL_CHECK_NOT_PASS' => '安装校验未通过',
-    'ADDON_INSTALLING' => '插件正在安装中',
     'SITE_INDEX_VIEW_PATH_NOT_EXIST' => '当前首页路径不存在',
     'ADMIN_INDEX_VIEW_PATH_NOT_EXIST' => '当前首页路径不存在',
     'ADDON_SQL_FAIL' => '插件sql执行失败',
@@ -46,8 +45,17 @@ return [
     'LAYOUT_NOT_EXIST' => '该布局不存在',
     'ZIP_FILE_NOT_FOUND' => '找不到可用的压缩文件',
     'DOWNLOAD_SUCCESS' => '下载成功',
-    'ADDON_INFO_FILE_NOT_EXIST' => '未找到插件info.json配置文件',
-    'AUTH_BIND_SUCCESS' => '授权绑定成功',
+    'APP_NOT_ALLOW_UNINSTALL' => '该应用下存在站点卸载前请先删除相关站点',
+    'ADDON_INSTALL_FAIL' => '插件安装失败',
+    'ADMIN_DIR_NOT_EXIST' => '未找到admin源码所在目录, <a style="text-decoration: underline;" href="https://www.kancloud.cn/niucloud/niucloud-admin-develop/3213544" target="blank">点击查看相关手册</a>',
+    'WEB_DIR_NOT_EXIST' => '未找到web源码所在目录, <a style="text-decoration: underline;" href="https://www.kancloud.cn/niucloud/niucloud-admin-develop/3213544" target="blank">点击查看相关手册</a>',
+    'UNIAPP_DIR_NOT_EXIST' => '未找到uni-app源码所在目录, <a style="text-decoration: underline;" href="https://www.kancloud.cn/niucloud/niucloud-admin-develop/3213544" target="blank">点击查看相关手册</a>',
+    'OPEN_BASEDIR_ERROR' => '请关闭防跨站攻击, 具体操作方法<a style="text-decoration: underline;" href="https://www.kancloud.cn/niucloud/niucloud-admin-develop/3213393" target="blank">点击查看相关手册</a>',
+    'ADDON_DOWNLOAD_VERSION_EMPTY' => '该插件还没有发布过版本',
+    'ADDON_IS_NOT_EXIST' => '插件不存在',
+    'ADDON_KEY_IS_EXIST' => '已存在相同插件标识的应用',
+    'ADDON_IS_INSTALLED_NOT_ALLOW_DEL' => '已安装的插件不允许删除',
+    'ADDON_ZIP_ERROR' => '插件压缩失败',
     //登录注册重置账号....
 
     'LOGIN_SUCCESS' => '登录成功',
@@ -56,6 +64,7 @@ return [
     'LOGIN_STATE_ERROR' => '登录状态有误,请重新登录',
     'USER_LOCK' => '账号被锁定',
     'USER_ERROR' => '账号或密码错误',
+    'USER_NOT_EXIST' => '账号不存在',
     'NO_SITE_PERMISSION' => '您没有当前站点的访问权限',
     'SITE_NOT_EXIST' => '站点不存在',
     'LOGOUT' => '登陆退出',
@@ -82,7 +91,7 @@ return [
     'NO_SITE_USER_ROLE' => '用户不存在关联权限',
     'ADMIN_NOT_ALLOW_EDIT_ROLE' => '超级管理员不允许改动权限',
     'USERNAME_REPEAT' => '用户名重复',
-
+    'SITE_USER_EXIST' => '该用户已存在',
 
     //角色管理
     'USER_ROLE_NOT_EXIST' => '角色不存在',
@@ -143,7 +152,9 @@ return [
     'MOBILE_NOT_BIND_MEMBER' => '当前填写的手机号没有绑定此账号',
     'MOBILE_NOT_EXIST_MEMBER' => '当前填写的手机号不存在账号',
     'MOBILE_IS_BIND_MEMBER' => '当前账号已绑定手机号',
+    'MOBILE_NOT_CHANGE' => '绑定的手机号与原手机号一致',
     'QRCODE_EXPIRE' => '登录二维码失效',
+    'PASSWORD_REQUIRE' => '密码不能为空',
 
     //会员提现
     'CASHOUT_NOT_OPEN' => '会员提现业务未开启',
@@ -177,16 +188,16 @@ return [
     'SITE_EXPIRE' => '站点已过期',
     'SITE_EXPIRE_NOT_ALLOW' => '站点已打烊，续费后可继续使用此项功能',
     'SITE_CLOSE_NOT_ALLOW' => '站点已停止',
+    'SITE_GROUP_APP_NOT_EXIST' => '存在无效的应用',
 
     //支付相关(todo  注意:7段不共享)
-    'PAY_TRANSACTION_NO_NOT_EXIST' => '无效的支付交易号',
+    'ALIPAY_TRANSACTION_NO_NOT_EXIST' => '无效的支付交易号',
     'PAYMENT_METHOD_NOT_SUPPORT' => '您选择到支付方式不受业务支持',
     'PAYMENT_LOCK' => '支付中,请稍后再试',
     'PAY_SUCCESS' => '当前支付已完成',
     'PAY_IS_REMOVE' => '当前支付已取消',
-    'PAY_NOT_FOUND_TRADE' => '找不到可支付的交易',
     'PAYMENT_METHOD_NOT_EXIST' => '你选择的支付方式未启用',
-    'PAYMENT_METHOD_NOT_SCENE' => '你选择的支付方式不适用于当前场景',
+    'PAYMENT_METHOD_NOT_SCENE'=> '你选择的支付方式不适用于当前场景',
     'TREAT_PAYMENT_IS_OPEN' => '只有待支付时可以关闭',
     'TRANFER_STATUS_NOT_IN_WAIT_TANSFER' => '当前转账未处于待转账状态',
     'TRANSFER_ORDER_INVALID' => '无效的转账单据',
@@ -235,17 +246,8 @@ return [
     // 授权相关
     'AUTH_NOT_EXISTS' => '未获取到授权信息',
 
-    //插件相关
-
-    'ADDON_IS_NOT_EXIST' => '插件不存在',
-    'ADDON_KEY_IS_EXIST' => '已存在相同插件标识的应用',
-    'ADDON_IS_INSTALLED_NOT_ALLOW_DEL' => '已安装的插件不允许删除',
-    'ADDON_ZIP_ERROR' => '插件压缩失败',
-    'ADMIN_DIR_NOT_EXIST' => '未找到admin源码所在目录',
-    'WEB_DIR_NOT_EXIST' => '未找到web源码所在目录',
-    'UNIAPP_DIR_NOT_EXIST' => '未找到uni-app源码所在目录',
-    'ADDON_INSTALL_FAIL' => '插件安装失败',
-
+    /********************************************************* home端专用 **************************************/
+    'USER_ROLE_NOT_HAS_SITE' => '当前登录用户下没有此项站点',
 
     // 云服务
     'CLOUD_WEAPP_COMPILE_NOT_EXIST' => '未找到微信小程序编译包',
@@ -253,5 +255,6 @@ return [
     'UPLOAD_KEY_EMPTY' => '还没有配置微信小程序代码上传秘钥',
     'UPLOAD_KEY_NOT_EXIST' => '未找到微信小程序代码上传秘钥',
     'NEED_TO_AUTHORIZE_FIRST' => '使用云服务需先进行授权',
-    'WEAPP_UPLOADING' => '小程序有正在上传的版本，请等待上一版本上传完毕后再进行操作'
+    'WEAPP_UPLOADING' => '小程序有正在上传的版本，请等待上一版本上传完毕后再进行操作',
+    'CLOUD_BUILD_TASK_EXIST' => '已有正在执行中的编译任务'
 ];

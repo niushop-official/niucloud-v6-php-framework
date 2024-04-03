@@ -64,6 +64,13 @@ export function fetchBase64Image(data: AnyObject) {
 /**
  * 获取版权信息
  */
-export function getCopyRight(data: AnyObject) {
-    return request.get('copyright', data)
+export function getCopyRight() {
+    return request.get('copyright')
+}
+
+/**
+ * 获取站点信息
+ */
+export function getSiteInfo() {
+    return request.get('site')
 }

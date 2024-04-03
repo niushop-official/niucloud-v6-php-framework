@@ -1,20 +1,21 @@
 <template>
 	<view :style="warpCss">
 		<view class="pt-[34rpx] member-info">
+			<!-- #ifdef MP-WEIXIN --><view :style="navbarInnerStyle" class="flex items-center justify-center fixed left-0 right-0 z-10 top-0"></view>
+			<!-- 解决fixed定位后导航栏塌陷的问题 -->
+			<view :style="navbarInnerStyle"></view>
+			<!-- #endif -->
 			<view v-if="info" class="flex ml-[32rpx] mr-[52rpx]  items-center relative">
 				<!-- 唤起获取微信 -->
 				<u-avatar :src="img(info.headimg)" size="55" leftIcon="none" @click="clickAvatar"></u-avatar>
 				<view class="ml-[22rpx]">
-					<view class="text-[#222222] truncate w-[430rpx] font-bold text-lg"
-						:style="{ color : diyComponent.textColor }">{{ info.nickname }}</view>
-					<view class="text-[#696B70] text-[24rpx] mt-[10rpx]" :style="{ color : diyComponent.textColor }">
-						UID：{{ info.member_no }}</view>
+					<view class="text-[#222222] truncate w-[430rpx] font-bold text-lg" :style="{ color : diyComponent.textColor }">{{ info.nickname }}</view>
+					<view class="text-[#696B70] text-[24rpx] mt-[10rpx]" :style="{ color : diyComponent.textColor }">UID：{{ info.member_no }}</view>
 				</view>
 				<view class="set-icon flex items-center absolute right-0 top-2">
-					<app-link url="/app/pages/setting/index">
-						<text class="iconfont iconshezhi text-[1.6rem] ml-[10rpx]"
-							:style="{ color : diyComponent.textColor }"></text>
-					</app-link>
+					<view @click="redirect({ url: '/app/pages/setting/index' })">
+						<text class="iconfont iconshezhi text-[1.6rem] ml-[10rpx]" :style="{ color : diyComponent.textColor }"></text>
+					</view>
 				</view>
 			</view>
 			<view v-else class="flex ml-[32rpx] mr-[52rpx]  items-center relative" @click="toLogin">
@@ -25,33 +26,28 @@
 					</view>
 				</view>
 				<view class="set-icon flex items-center absolute right-0 top-2">
-					<app-link url="/app/pages/setting/index">
-						<text class="iconfont iconshezhi text-[1.6rem] ml-[10rpx]"
-							:style="{ color : diyComponent.textColor }"></text>
-					</app-link>
+					<view @click="redirect({ url: '/app/pages/setting/index' })">
+						<text class="iconfont iconshezhi text-[1.6rem] ml-[10rpx]" :style="{ color : diyComponent.textColor }"></text>
+					</view>
 				</view>
 			</view>
 
 			<view class="flex m-[30rpx] mb-0 py-[30rpx] items-center">
 				<view class="flex-1 text-center">
 					<view class="font-bold">
-						<app-link :url="(info ? '/app/pages/member/balance' : '')"
-							:style="{ color : diyComponent.textColor }">{{ money }}</app-link>
+						<view @click="redirect({ url: info ? '/app/pages/member/balance' : '' })" :style="{ color : diyComponent.textColor }">{{ money }}</view>
 					</view>
 					<view class="text-sm mt-[10rpx]">
-						<app-link :url="(info ? '/app/pages/member/balance' : '')"
-							:style="{ color : diyComponent.textColor }">{{ t('balance') }}</app-link>
+						<view @click="redirect({ url: info ? '/app/pages/member/balance' : '' })" :style="{ color : diyComponent.textColor }">{{ t('balance') }}</view>
 					</view>
 				</view>
 				<view class="border-solid border-white border-l border-b-0 border-t-0 border-r-0 h-[60rpx]"></view>
 				<view class="flex-1 text-center">
 					<view class="font-bold">
-						<app-link :url="(info ? '/app/pages/member/point' : '')"
-							:style="{ color : diyComponent.textColor }">{{ parseInt(info?.point) || 0 }}</app-link>
+						<view @click="redirect({ url: info ? '/app/pages/member/point' : '' })" :style="{ color : diyComponent.textColor }">{{ parseInt(info?.point) || 0 }}</view>
 					</view>
 					<view class="text-sm mt-[10rpx]">
-						<app-link :url="(info ? '/app/pages/member/point' : '')"
-							:style="{ color : diyComponent.textColor }">{{ t('point') }}</app-link>
+						<view @click="redirect({ url: info ? '/app/pages/member/point' : '' })" :style="{ color : diyComponent.textColor }">{{ t('point') }}</view>
 					</view>
 				</view>
 			</view>
@@ -64,14 +60,14 @@
 </template>
 
 <script lang="ts" setup>
-	import { computed, ref, watch,nextTick } from 'vue'
+	import { computed, ref, watch } from 'vue'
 	import useMemberStore from '@/stores/member'
 	import { useLogin } from '@/hooks/useLogin'
 	import { img, isWeixinBrowser, redirect, urlDeconstruction, moneyFormat } from '@/utils/common'
 	import { t } from '@/locale'
 	import { wechatSync } from '@/app/api/system'
 	import useDiyStore from '@/app/stores/diy'
-	import informationFilling from '@/app/components/information-filling/information-filling.vue'
+
 	const props = defineProps(['component', 'index', 'pullDownRefreshCount']);
 
 	const diyStore = useDiyStore();
@@ -83,19 +79,22 @@
 			return props.component;
 		}
 	})
-
 	const warpCss = computed(() => {
 		var style = '';
-		if (diyComponent.value.componentBgColor) style += 'background-color:' + diyComponent.value.componentBgColor + ';';
+        if(diyComponent.value.componentStartBgColor) {
+            if (diyComponent.value.componentStartBgColor && diyComponent.value.componentEndBgColor) style += `background:linear-gradient(${diyComponent.value.componentGradientAngle},${diyComponent.value.componentStartBgColor},${diyComponent.value.componentEndBgColor});`;
+            else style += 'background-color:' + diyComponent.value.componentStartBgColor + ';';
+        }
 		if (diyComponent.value.bgUrl) {
 			style += 'background-image:url(' + img(diyComponent.value.bgUrl) + ');';
-			style += 'background-size: cover;';
+			style += 'background-size: 100%;';
 			style += 'background-repeat: no-repeat;';
 		}
 		if (diyComponent.value.topRounded) style += 'border-top-left-radius:' + diyComponent.value.topRounded * 2 + 'rpx;';
 		if (diyComponent.value.topRounded) style += 'border-top-right-radius:' + diyComponent.value.topRounded * 2 + 'rpx;';
 		if (diyComponent.value.bottomRounded) style += 'border-bottom-left-radius:' + diyComponent.value.bottomRounded * 2 + 'rpx;';
 		if (diyComponent.value.bottomRounded) style += 'border-bottom-right-radius:' + diyComponent.value.bottomRounded * 2 + 'rpx;';
+
 		return style;
 	})
 
@@ -149,11 +148,7 @@
 	const infoFill = ref(false)
 	const clickAvatar = () => {
 		// #ifdef MP-WEIXIN
-		nextTick(()=>{
-			console.log(infoFill.value)
-		if(infoFill.value) infoFill.value.show = true
-		})
-		
+		infoFill.value.show = true
 		// #endif
 
 		// #ifdef H5
@@ -164,10 +159,40 @@
 		}
 		// #endif
 	}
+	
+	
+		// 获取系统状态栏的高度
+		let systemInfo = uni.getSystemInfoSync();
+		let platform = systemInfo.platform;
+		let menuButtonInfo = {};
+		// 如果是小程序，获取右上角胶囊的尺寸信息，避免导航栏右侧内容与胶囊重叠(支付宝小程序非本API，尚未兼容)
+		// #ifdef MP-WEIXIN || MP-BAIDU || MP-TOUTIAO || MP-QQ
+		menuButtonInfo = uni.getMenuButtonBoundingClientRect();
+		// #endif
+	
+	// 导航栏内部盒子的样式
+	const navbarInnerStyle = computed(() => {
+		let style = '';
+		// 导航栏宽度，如果在小程序下，导航栏宽度为胶囊的左边到屏幕左边的距离
+		// #ifdef MP
+		let rightButtonWidth = menuButtonInfo.width ? menuButtonInfo.width * 2 + 'rpx' : '70rpx';
+		style += 'height:' + menuButtonInfo.height + 'px;';
+		style += 'padding-right:calc(' + rightButtonWidth + ' + 30rpx);';
+		style += 'padding-left:calc(' + rightButtonWidth + ' + 30rpx);';
+		style += 'padding-top:' + (menuButtonInfo.top-15) + 'px;';
+		style += 'padding-bottom: 8px;';
+		style += 'font-size: 32rpx;';
+		if (platform === 'ios') {
+			// 苹果(iOS)设备
+			style += 'font-weight: 500;';
+		} else if (platform === 'android') {
+		  // 安卓(Android)设备
+			style += 'font-size: 36rpx;';
+		}
+		// #endif
+		return style;
+	})
 </script>
 
 <style lang="scss" scoped>
-	.member-info {
-		// background-image: linear-gradient(#E3F0FF, #F5F6F8)
-	}
 </style>

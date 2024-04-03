@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的多应用管理平台
+// | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud.com
+// | 官方网址：https://www.niucloud-admin.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -24,8 +24,8 @@ Route::any('wechat/serve', 'wechat.Serve/serve')
     ->middleware(ApiLog::class);
 
 Route::group(function() {
-    Route::post('niucloud/notify', function() {
-        return ( new CoreNotifyService() )->notify();
+    Route::post('niucloud/notify', function(){
+        return (new CoreNotifyService())->notify();
     });
 
 });
@@ -37,7 +37,7 @@ Route::group(function() {
     //获取授权地址
     Route::get('wechat/codeurl', 'wechat.Wechat/getCodeUrl');
 
-    //公众号通过code登录s
+    //公众号通过code登录
     Route::post('wechat/login', 'wechat.Wechat/login');
     //公众号通过code注册
     Route::post('wechat/register', 'wechat.Wechat/register');
@@ -79,6 +79,8 @@ Route::group(function() {
     Route::get('wechat/jssdkconfig', 'wechat.Wechat/jssdkConfig');
     /***************************************************** 版权相关设置**************************************************/
     Route::get('copyright', 'sys.Config/getCopyright');
+    // 站点信息
+    Route::get('site', 'sys.Config/site');
     //场景域名
     Route::get('scene_domain', 'sys.Config/getSceneDomain');
     // 获取手机端首页列表
@@ -91,6 +93,10 @@ Route::group(function() {
     Route::get('area/tree/:level', 'sys.Area/tree');
     // 获取省市县数据根据地址id
     Route::get('area/code/:code', 'sys.Area/areaByAreaCode');
+
+    /***************************************************** 海报管理 ****************************************************/
+    //获取海报
+    Route::get('poster', 'poster.Poster/poster');
 })->middleware(ApiChannel::class)
     ->middleware(ApiCheckToken::class)
     ->middleware(ApiLog::class);

@@ -1,6 +1,9 @@
 import { getTabbarPages } from './pages'
 import useDiyStore from '@/app/stores/diy'
 import useMemberStore from '@/stores/member'
+import pagesZh from '@/locale/zh-Hans.json'
+import pagesEn from '@/locale/en.json'
+import { onReady } from '@dcloudio/uni-app'
 
 /**
 * 跳转页面
@@ -160,23 +163,23 @@ export function urlDeconstruction(url : string) {
 
 /**
 * 判断是否是url
-* @param str 
-* @returns 
+* @param str
+* @returns
 */
 export function isUrl(str : string) : boolean {
-	return str.indexOf('http://') != -1 || str.indexOf('https://') != -1
+	return str && (str.indexOf('http://') != -1 || str.indexOf('https://') != -1) || false
 }
 
 /**
 * 图片输出
-* @param path 
-* @returns 
+* @param path
+* @returns
 */
 export function img(path : string) : string {
     // #ifdef H5
 	return isUrl(path) ? path : `${import.meta.env.VITE_IMG_DOMAIN || location.origin}/${path}`
     // #endif
-    
+
     // #ifndef H5
     return isUrl(path) ? path : `${import.meta.env.VITE_IMG_DOMAIN}/${path}`
     // #endif
@@ -186,7 +189,7 @@ export function img(path : string) : string {
  * 手机号隐藏
  */
 export function mobileHide(mobile: string) {
-    return mobile.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2')
+	return mobile.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2')
 }
 
 /**

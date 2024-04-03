@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的多应用管理平台
+// | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud.com
+// | 官方网址：https://www.niucloud-admin.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -50,7 +50,6 @@ class CoreAddonBaseService extends BaseCoreService
             $info = json_decode($json_string, true);
             $info['icon'] = $resource_path . 'icon.png';
             $info['cover'] = $resource_path . 'cover.png';
-            $info['compile'] = $info['compile'] ?? [];
         }
         return $info ?? [];
     }
@@ -79,7 +78,7 @@ class CoreAddonBaseService extends BaseCoreService
      * 读取json文件转化成数组返回
      * @param $json_file_path //json文件目录
      */
-    protected function jsonFileToArray(string $json_file_path)
+    public function jsonFileToArray(string $json_file_path)
     {
         if (file_exists($json_file_path)) {
             $content_json = @file_get_contents($json_file_path);
@@ -94,7 +93,7 @@ class CoreAddonBaseService extends BaseCoreService
      * @param string $file_path
      * @return true
      */
-    protected function writeArrayToJsonFile(array $content, string $file_path)
+    public function writeArrayToJsonFile(array $content, string $file_path)
     {
         $content_json = json_encode($content, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
         $content_json = preg_replace('/\[\]/', '{}', $content_json);

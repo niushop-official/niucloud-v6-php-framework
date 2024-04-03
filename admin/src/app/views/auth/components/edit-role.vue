@@ -40,7 +40,7 @@
 import { ref, reactive, computed, watch, toRaw } from 'vue'
 import { t } from '@/lang'
 import type { FormInstance } from 'element-plus'
-import { addRole, editRole, getRoleInfo, getSiteMenus } from '@/app/api/sys'
+import { addRole, editRole, getRoleInfo, getMenus } from '@/app/api/sys'
 import { debounce } from '@/utils/common'
 
 const showDialog = ref(false)
@@ -51,7 +51,7 @@ let popTitle: string = '';
 
 // 获取权限数据
 const menus = ref<Record<string, any>[]>([])
-getSiteMenus().then((res) => {
+    getMenus().then((res) => {
     menus.value = res.data
 })
 

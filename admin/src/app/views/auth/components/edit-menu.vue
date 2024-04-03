@@ -30,7 +30,7 @@
                 <el-tree-select class="input-width" v-else v-model="formData.parent_key" :props="{label:'menu_name',value:'menu_key'}" :data="sysMenuList" check-strictly :render-after-expand="false" />
             </el-form-item>
 
-            <el-form-item :label="t('routePath')" prop="router_path" v-show="formData.menu_type != 2">
+            <el-form-item :label="t('routePath')" prop="router_path" v-show="formData.menu_type == 1">
                 <el-input v-model="formData.router_path" :placeholder="t('routePathPlaceholder')" class="input-width" />
             </el-form-item>
 
@@ -158,9 +158,8 @@ const formRules = computed(() => {
                 trigger: 'blur'
             }
         ],
-        //return /^([a-zA-Z_$])([a-zA-Z0-9_$])*$/.test(val)
         router_path: [
-            { required: formData.menu_type != 2, message: t('routePathPlaceholder'), trigger: 'blur' }
+            { required: formData.menu_type == 1, message: t('routePathPlaceholder'), trigger: 'blur' }
         ],
         view_path: [
             { required: formData.menu_type == 1, message: t('viewPathPlaceholder'), trigger: 'blur' }

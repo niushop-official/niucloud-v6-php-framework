@@ -1,1 +1,0 @@
-import{e as r,v as t,x as n,y as c,V as s}from"./base-2de02574.js";import{E as a}from"./el-main-e7ca7755.js";import{_}from"./_plugin-vue_export-helper-c27b6911.js";const i={};function m(p,f){const e=s("router-view"),o=a;return r(),t(o,{class:"w-screen h-screen min-w-[1200px]"},{default:n(()=>[c(e)]),_:1})}const x=_(i,[["render",m]]);export{x as default};

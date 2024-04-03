@@ -1,1 +1,0 @@
-const e="刷新",s="重置",t="重置菜单",c="重置菜单会按照菜单的配置文件进行重置，针对用户自己添加的菜单不处理",a="数据缓存",r="新增/修改数据表后，需要清除数据表缓存",n={refresh:e,resetting:s,refreshMenu:t,refreshMenuDesc:c,dataCache:a,dataCacheDesc:r};export{a as dataCache,r as dataCacheDesc,n as default,e as refresh,t as refreshMenu,c as refreshMenuDesc,s as resetting};

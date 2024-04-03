@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的多应用管理平台
+// | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud.com
+// | 官方网址：https://www.niucloud-admin.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -11,8 +11,13 @@
 
 namespace app\adminapi\controller\diy;
 
+use app\dict\diy\PagesDict;
 use app\service\admin\diy\DiyService;
 use core\base\BaseAdminController;
+use Exception;
+use think\db\exception\DataNotFoundException;
+use think\db\exception\DbException;
+use think\db\exception\ModelNotFoundException;
 use think\Response;
 
 
@@ -24,7 +29,7 @@ use think\Response;
 class Diy extends BaseAdminController
 {
     /**
-     * 获取自定义页面分页列表
+     * @notes 获取自定义页面分页列表
      * @return Response
      */
     public function lists()
@@ -32,7 +37,8 @@ class Diy extends BaseAdminController
         $data = $this->request->params([
             [ "title", "" ],
             [ "type", "" ],
-            [ 'mode', '' ]
+            [ 'mode', '' ],
+            [ 'addon_name', '' ]
         ]);
         return success(( new DiyService() )->getPage($data));
     }
@@ -40,6 +46,9 @@ class Diy extends BaseAdminController
     /**
      * @notes 获取自定义页面列表
      * @return Response
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function getList()
     {
@@ -73,7 +82,7 @@ class Diy extends BaseAdminController
             [ "type", "" ],
             [ 'template', '' ],
             [ 'mode', 'diy' ], // 页面展示模式，diy：自定义，fixed：固定
-            [ "value", "" ],
+            [ "value", "", false ],
             [ 'is_default', 0 ],
             [ 'is_change', '' ]
         ]);
@@ -93,9 +102,10 @@ class Diy extends BaseAdminController
         $data = $this->request->params([
             [ "title", "" ],
             [ "name", "" ],
-            [ "value", "" ],
+            [ "value", "", false ],
             [ 'is_change', '' ]
         ]);
+
         $this->validate($data, 'app\validate\diy\Diy.edit');
         ( new DiyService() )->edit($id, $data);
         return success('MODIFY_SUCCESS');
@@ -116,6 +126,7 @@ class Diy extends BaseAdminController
      * 设为使用
      * @param $id
      * @return Response
+     * @throws Exception
      */
     public function setUse($id)
     {
@@ -132,9 +143,7 @@ class Diy extends BaseAdminController
         $params = $this->request->params([
             [ 'id', "" ],
             [ "name", "" ],
-            [ "url", "" ],
             [ "type", "" ],
-            [ 'template', '' ],
             [ "title", "" ],
         ]);
 
@@ -158,9 +167,11 @@ class Diy extends BaseAdminController
     public function getTemplate()
     {
         $params = $this->request->params([
-            [ 'type', [] ], // 页面类型模板
+            [ 'key', '' ], // 页面模板标识
             [ 'action', '' ], // 页面是否装修标识，为空标识不装修，decorate：装修
-            [ 'mode', '' ] // 页面展示模式，diy：自定义，fixed：固定
+            [ 'mode', '' ], // 页面展示模式，diy：自定义，fixed：固定
+            [ 'type', '' ], // 页面类型，index：首页、member_index：个人中心，空：普通页面
+            [ 'addon', '' ], // 插件标识
         ]);
         $diy_service = new DiyService();
         return success($diy_service->getTemplate($params));
@@ -185,7 +196,10 @@ class Diy extends BaseAdminController
      */
     public function getDecoratePage()
     {
-        return success(( new DiyService() )->getDecoratePage());
+        $params = $this->request->params([
+            [ 'type', '' ],
+        ]);
+        return success(( new DiyService() )->getDecoratePage($params));
     }
 
     /**
@@ -194,16 +208,37 @@ class Diy extends BaseAdminController
     public function changeTemplate()
     {
         $data = $this->request->params([
-            [ "id", "" ],
             [ 'type', '' ], // 页面类型
-            [ 'name', '' ], // 页面名称标识
-            [ 'mode', '' ], //  页面展示模式，diy：自定义，fixed：固定，other：其他页面
-            [ 'template', '' ], // 模板名称
-            [ 'page', '' ], // 页面路由
-            [ 'title', '' ], // 页面标题
+            [ 'name', '' ], // 链接名称标识
+            [ 'parent', '' ], // 链接父级名称标识
+            [ 'page', '' ], // 链接路由
+            [ 'title', '' ], // 链接标题
             [ 'action', '' ] // 是否存在操作，decorate 表示支持装修
         ]);
-        return success(( new DiyService() )->changeTemplate($data));
+        ( new DiyService() )->changeTemplate($data);
+        return success('MODIFY_SUCCESS');
     }
 
+    /**
+     * 获取模板页面列表
+     * @return Response
+     */
+    public function getTemplatePages()
+    {
+        $params = $this->request->params([
+            [ 'type', '' ], // 页面类型
+            [ 'mode', '' ] // 页面模式：diy：自定义，fixed：固定
+        ]);
+        $pages = PagesDict::getPages($params);
+        return success($pages);
+    }
+
+    /**
+     * 获取模板页面（存在的应用插件列表）
+     * @return Response
+     */
+    public function getApps()
+    {
+        return success(( new DiyService() )->getApps());
+    }
 }

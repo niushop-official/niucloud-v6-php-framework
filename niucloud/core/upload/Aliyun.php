@@ -41,7 +41,7 @@ class Aliyun extends BaseUpload
         try {
             $this->client()->uploadFile(
                 $bucket,
-                $this->getFullPath(),
+                $this->getFullPath($dir),
                 $this->getRealPath()
             );
             return true;
@@ -115,7 +115,7 @@ class Aliyun extends BaseUpload
 
     public function thumb($file_path, $thumb_type)
     {
-        $thumb_config = config('upload.thumb_type');
+        $thumb_config = config('upload.thumb.thumb_type');
         $thumb_data = [];
         foreach ($thumb_config as $k => $v) {
             if ($thumb_type == 'all' || $thumb_type == $k || (is_array($thumb_type) && in_array($k, $thumb_type))) {

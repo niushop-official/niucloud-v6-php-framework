@@ -1,8 +1,5 @@
 <template>
     <div class="main-container">
-        <div class="flex ml-[18px] justify-between items-center mt-[20px]">
-			<span class="text-[20px]">{{pageName}}</span>
-		</div>
         <el-form :model="formData" label-width="150px" ref="formRef" :rules="formRules" class="page-form" v-loading="loading">
             <el-card class="box-card !border-none" shadow="never">
                 <h3 class="panel-title !text-sm">{{ t('copyrightEdit') }}</h3>
@@ -13,7 +10,7 @@
                 <el-form-item :label="t('companyName')" prop="company_name">
                     <el-input v-model="formData.company_name" :placeholder="t('companyNamePlaceholder')" class="input-width" clearable maxlength="30"/>
                 </el-form-item>
-                
+
                 <el-form-item :label="t('copyrightLink')" >
                     <el-input v-model="formData.copyright_link" :placeholder="t('copyrightLinkPlaceholder')" class="input-width" clearable />
                 </el-form-item>
@@ -21,7 +18,7 @@
                 <el-form-item :label="t('copyrightDesc')" >
                     <el-input v-model="formData.copyright_desc" type="textarea" rows="4" clearable :placeholder="t('copyrightDescPlaceholder')" class="input-width" maxlength="150" />
                 </el-form-item>
-                
+
             </el-card>
 
             <el-card class="box-card !border-none mt-[16px]" shadow="never">
@@ -42,7 +39,7 @@
                 <el-form-item :label="t('marketSupervisionUrl')" >
                     <el-input v-model="formData.market_supervision_url" rows="4" clearable :placeholder="t('marketSupervisionUrlPlaceholder')" class="input-width" />
                 </el-form-item>
-                
+
             </el-card>
         </el-form>
 
@@ -57,12 +54,12 @@
 <script lang="ts" setup>
 import { reactive, ref } from 'vue'
 import { t } from '@/lang'
-import { setCopyright,getCopyright } from '@/app/api/sys'
+import { setCopyright, getCopyright } from '@/app/api/sys'
 import { FormInstance, FormRules } from 'element-plus'
-import { useRoute } from 'vue-router'
+// import { useRoute } from 'vue-router'
 
-const route = useRoute()
-const pageName = route.meta.title
+// const route = useRoute()
+// const pageName = route.meta.title
 
 const loading = ref(true)
 
@@ -71,20 +68,19 @@ const formData = reactive<Record<string, string>>({
     gov_record: '',
     gov_url: '',
     market_supervision_url: '',
-    logo:'',
+    logo: '',
     company_name: '',
     copyright_link: '',
     copyright_desc: ''
 })
- 
 
 const setFormData = async (id: number = 0) => {
     const data = await (await getCopyright()).data
     Object.keys(formData).forEach((key: string) => {
         if (data[key] != undefined) formData[key] = data[key]
     })
-  
-    loading.value = false;
+
+    loading.value = false
 }
 setFormData()
 
@@ -96,7 +92,7 @@ const formRules = reactive<FormRules>({
         { required: true, message: t('siteNamePlaceholder'), trigger: 'blur' }
     ]
 })
- 
+
 /**
  * 保存
  */
@@ -108,7 +104,6 @@ const save = async (formEl: FormInstance | undefined) => {
             loading.value = true
             setCopyright(formData).then(() => {
                 loading.value = false
-
             }).catch(() => {
                 loading.value = false
             })

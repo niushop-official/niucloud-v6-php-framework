@@ -3,24 +3,34 @@
 </template>
 
 <script lang="ts" setup>
-import { ref,computed, watch, markRaw, defineAsyncComponent } from 'vue'
-import useSystemStore from '@/stores/modules/system'
-const systemStore = useSystemStore()
-const modules = import.meta.glob('./*/index.vue')
+import { ref, markRaw, defineAsyncComponent, provide } from 'vue'
+import { getAppType } from '@/utils/common'
+import useUserStore from '@/stores/modules/user'
+import Storage from '@/utils/storage'
 
-// 主题样式
-let themeStyle = {
-    'oneType': 'default',  
-    'twoType': 'profession',
-    'threeType': 'business'
-}
+const sysLayout = import.meta.glob('./*/index.vue')
+const addonLayout = import.meta.glob('@/addon/**/layout/index.vue')
+const modules = Object.assign(sysLayout, addonLayout)
 
-watch(() =>systemStore.sidebarStyle, () => {location.reload();})
+let siteLayout = Storage.get('layout') || 'default'
 
-const adminLayout = themeStyle[systemStore.sidebarStyle]
 const layout = ref<any>(null)
+
 Object.keys(modules).forEach(key => {
-    key.indexOf(adminLayout) !== -1 && (layout.value = markRaw(defineAsyncComponent(modules[key])))
+    key.indexOf(siteLayout) !== -1 && (layout.value = markRaw(defineAsyncComponent(modules[key])))
+})
+
+!layout.value && (layout.value = markRaw(defineAsyncComponent(modules['./default/index.vue'])))
+
+/**
+ * 监听某些页面需要独立配置布局
+ */
+provide('setLayout', (name: any) => {
+    if (siteLayout == name) return
+    siteLayout = name
+    Object.keys(modules).forEach(key => {
+        key.indexOf(name) !== -1 && (layout.value = markRaw(defineAsyncComponent(modules[key])))
+    })
 })
 </script>
 

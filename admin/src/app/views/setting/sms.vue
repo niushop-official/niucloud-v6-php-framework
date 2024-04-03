@@ -2,7 +2,7 @@
     <div class="main-container">
         <el-card class="box-card !border-none" shadow="never">
             <div class="flex justify-between items-center">
-                <span class="text-[20px]">{{pageName}}</span>
+                <span class="text-page-title">{{pageName}}</span>
             </div>
             <div class="mt-[20px]">
                 <el-table :data="smsTableData.data" size="large" v-loading="smsTableData.loading">
@@ -17,7 +17,7 @@
                             <el-tag class="ml-2" type="error" v-if="row.is_use == 0">{{t('statusDeactivate') }}</el-tag>
                         </template>
                     </el-table-column>
-                    <el-table-column :label="t('operation')" fixed="right" align="right" width="100">
+                    <el-table-column :label="t('operation')" align="right" fixed="right" width="100">
                        <template #default="{ row }">
                            <el-button type="primary" link @click="editEvent(row)">{{ t('config') }}</el-button>
                        </template>
@@ -35,20 +35,20 @@
 <script lang="ts" setup>
 import { reactive, ref } from 'vue'
 import { t } from '@/lang'
-import { getSmsList,getSmsInfo } from '@/app/api/notice'
+import { getSmsList } from '@/app/api/notice'
 import Ali from '@/app/views/setting/components/sms-ali.vue'
 import Tencent from '@/app/views/setting/components/sms-tencent.vue'
 import { useRoute } from 'vue-router'
 
 const route = useRoute()
-const pageName = route.meta.title;
+const pageName = route.meta.title
 
 const aliyunDialog: Record<string, any> | null = ref(null)
 const tencentDialog: Record<string, any> | null = ref(null)
 
-let smsTableData = reactive({
+const smsTableData = reactive({
     loading: true,
-    data: [],
+    data: []
 })
 
 /**
@@ -66,8 +66,8 @@ const loadSmsList = () => {
 
 loadSmsList()
 const editEvent = (data: any) => {
-    eval(data.sms_type+'Dialog.value.setFormData(data)');
-    eval(data.sms_type+'Dialog.value.showDialog = true;');
+    eval(data.sms_type + 'Dialog.value.setFormData(data)')
+    eval(data.sms_type + 'Dialog.value.showDialog = true;')
 }
 
 </script>

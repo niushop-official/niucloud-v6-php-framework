@@ -2,7 +2,7 @@
     <div class="main-container">
         <el-card class="box-card !border-none" shadow="never">
             <div class="flex justify-between items-center">
-                <span class="text-[20px]">{{pageName}}</span>
+                <span class="text-page-title">{{pageName}}</span>
             </div>
 
             <el-card class="box-card !border-none my-[10px] table-search-wrap" shadow="never">
@@ -51,7 +51,7 @@
                     <el-table-column prop="receiver" :label="t('receiver')" min-width="120" />
                     <el-table-column prop="create_time" :label="t('createTime')" min-width="140" />
 
-                    <el-table-column :label="t('operation')" fixed="right" align="right" width="100">
+                    <el-table-column :label="t('operation')" align="right" fixed="right" width="100">
                         <template #default="{ row }">
                             <el-button type="primary" link @click="infoEvent(row)">{{ t('info') }}</el-button>
                         </template>
@@ -73,13 +73,13 @@
 <script lang="ts" setup>
 import { reactive, ref } from 'vue'
 import { t } from '@/lang'
-import { getNoticeLog, getNoticeList } from '@/app/api/notice'
+import { getNoticeList } from '@/app/api/notice'
 import RecordsInfo from '@/app/views/setting/components/notice-records-info.vue'
 import { FormInstance } from 'element-plus'
 import { useRoute } from 'vue-router'
 
 const route = useRoute()
-const pageName = route.meta.title;
+const pageName = route.meta.title
 
 const recordsTableData = reactive({
     page: 1,

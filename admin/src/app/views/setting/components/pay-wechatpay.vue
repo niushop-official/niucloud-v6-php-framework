@@ -4,12 +4,14 @@
             v-loading="loading">
 
             <el-form-item :label="t('mchId')" prop="config.mch_id">
-                <el-input v-model="formData.config.mch_id" :placeholder="t('mchIdPlaceholder')" class="input-width" maxlength="32" show-word-limit clearable />
+                <el-input v-model="formData.config.mch_id" :placeholder="t('mchIdPlaceholder')" class="input-width"
+                    maxlength="32" show-word-limit clearable />
                 <div class="form-tip">{{ t('mchIdTips') }}</div>
             </el-form-item>
 
             <el-form-item :label="t('mchSecretKey')" prop="config.mch_secret_key">
-                <el-input v-model="formData.config.mch_secret_key" :placeholder="t('mchSecretKeyPlaceholder')" class="input-width" maxlength="32" show-word-limit clearable />
+                <el-input v-model="formData.config.mch_secret_key" :placeholder="t('mchSecretKeyPlaceholder')"
+                    class="input-width" maxlength="32" show-word-limit clearable />
                 <div class="form-tip">{{ t('mchSecretKeyTips') }}</div>
             </el-form-item>
 
@@ -42,7 +44,7 @@
 import { ref, reactive, computed } from 'vue'
 import { t } from '@/lang'
 import type { FormInstance } from 'element-plus'
-import { setPatConfig } from '@/app/api/sys'
+// import { setPatConfig } from '@/app/api/sys'
 
 const showDialog = ref(false)
 const loading = ref(true)

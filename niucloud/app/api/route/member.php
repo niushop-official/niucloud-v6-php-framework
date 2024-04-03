@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的多应用管理平台
+// | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud.com
+// | 官方网址：https://www.niucloud-admin.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -73,16 +73,6 @@ Route::group('member', function () {
     Route::put('cashout_account/:account_id', 'member.CashOutAccount/edit');
     // 删除提现账号
     Route::delete('cashout_account/:account_id', 'member.CashOutAccount/del');
-
-    /***************************************************** 会员收藏 **************************************************/
-    //收藏 添加
-    Route::post('collect', 'member.Collect/setMemberCollect');
-    //收藏 查询(单条)
-    Route::get('collect', 'member.Collect/getCollect');
-    //收藏 查询(全部)
-    Route::get('collect/all', 'member.Collect/getList');
-    //收藏 取消
-    Route::delete('collect/:id', 'member.Collect/del');
 
     /***************************************************** 会员地址 **************************************************/
     //会员收货地址列表

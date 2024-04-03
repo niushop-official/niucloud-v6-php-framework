@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的多应用管理平台
+// | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud.com
+// | 官方网址：https://www.niucloud-admin.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -43,8 +43,8 @@ class CoreRefundService extends BaseCoreService
      */
     public function create(string $out_trade_no, float $money, string $reason = '', $trade_type = '', $trade_id = ''){
         //通过交易流水号获取支付单据
-        $pay = (new CorePayService())->findPayInfoByOutTradeNo( $out_trade_no);
-        if($pay->isEmpty()) throw new PayException('PAY_TRANSACTION_NO_NOT_EXIST');//单据不存在
+        $pay = (new CorePayService())->findPayInfoByOutTradeNo($out_trade_no);
+        if($pay->isEmpty()) throw new PayException('ALIPAY_TRANSACTION_NO_NOT_EXIST');//单据不存在
         //校验当前数据是否存在
         //存在就修改,不存在就创建
         $refund_no = create_no();
@@ -56,7 +56,6 @@ class CoreRefundService extends BaseCoreService
             'refund_no' => $refund_no,
             'status' => RefundDict::WAIT,
             'reason' => $reason,
-            'fail_reason' => $pay->fail_reason ?? '',
             'trade_type' => $trade_type,
             'trade_id' => $trade_id
         );
@@ -70,8 +69,8 @@ class CoreRefundService extends BaseCoreService
      * @param string $voucher
      * @return true
      */
-    public function refund( string $refund_no, $voucher = '', $refund_type = RefundDict::BACK, $main_type = '', $main_id = 0){
-        $refund = $this->findByRefundNo( $refund_no);
+    public function refund(string $refund_no, $voucher = '', $refund_type = RefundDict::BACK, $main_type = '', $main_id = 0){
+        $refund = $this->findByRefundNo($refund_no);
         if($refund->isEmpty()) throw new PayException('REFUND_NOT_EXIST');
         $out_trade_no = $refund->out_trade_no;
         $money = $refund->money;
@@ -80,10 +79,10 @@ class CoreRefundService extends BaseCoreService
             $refund->save(['refund_type' => $refund_type]);
             if($refund_type == RefundDict::BACK){
                 //判断成功的话,可以直接调用退款成功
-                $pay_result = $this->pay_event->init( $refund->channel, $refund->type)->refund($out_trade_no, $money, $money, $refund_no, $voucher);
+                $pay_result = $this->pay_event->init($refund->channel, $refund->type)->refund($out_trade_no, $money, $money, $refund_no, $voucher);
                 $this->refundNotify($out_trade_no, $refund->type, $pay_result);
             }else if($refund_type == RefundDict::OFFLINE){
-                $pay_result = $this->pay_event->init( $refund->channel, PayDict::OFFLINEPAY)->refund($out_trade_no, $money, $money, $refund_no, $voucher);
+                $pay_result = $this->pay_event->init($refund->channel, PayDict::OFFLINEPAY)->refund($out_trade_no, $money, $money, $refund_no, $voucher);
                 $this->refundNotify($out_trade_no, $refund->type, $pay_result, $main_type, $main_id);
             }
 
@@ -106,7 +105,7 @@ class CoreRefundService extends BaseCoreService
 
 
 
-    public function refundNotify( $out_trade_no, string $type, array $params = [], $main_type = '', $main_id = 0){
+    public function refundNotify($out_trade_no, string $type, array $params = [], $main_type = '', $main_id = 0){
         $refund_no = $params['refund_no'];
 
         $refund = $this->findByRefundNo($refund_no);
@@ -120,7 +119,7 @@ class CoreRefundService extends BaseCoreService
         try {
             switch($status){
                 case RefundDict::SUCCESS://退款成功
-                    $this->refundSuccess( [
+                    $this->refundSuccess([
                         'out_trade_no' => $out_trade_no,
                         'refund_no' => $refund_no,
                         'trade_type' => $refund['trade_type'],
@@ -137,7 +136,7 @@ class CoreRefundService extends BaseCoreService
                     ]);
                     break;
                 case RefundDict::FAIL://退款失败
-                    $this->refundFail( [
+                    $this->refundFail([
                         'out_trade_no' => $out_trade_no,
                         'refund_no' => $refund_no,
                         'fail_reason' => $params['fail_reason'] ?? ''
@@ -159,7 +158,7 @@ class CoreRefundService extends BaseCoreService
      * @param $data
      * @return true
      */
-    public function check( $data){
+    public function check($data){
         $out_trade_no = $data['out_trade_no'];
         $refund_no = $data['refund_no'];
         $refund = $this->findByRefundNo($refund_no);
@@ -171,21 +170,19 @@ class CoreRefundService extends BaseCoreService
         $status = $refund_info['status'];
         switch($status){
             case RefundDict::SUCCESS://退款成功
-                $this->refundSuccess( [
+                $this->refundSuccess([
                     'out_trade_no' => $out_trade_no,
                     'refund_no' => $refund_no,
-                    'trade_type' => $refund['trade_type'],
-                    'trade_id' => $refund['trade_id'],
                 ]);
                 break;
             case RefundDict::DEALING://退款处理中
-                $this->refundDealing( [
+                $this->refundDealing([
                     'out_trade_no' => $out_trade_no,
                     'refund_no' => $refund_no,
                 ]);
                 break;
             case RefundDict::FAIL://退款失败
-                $this->refundFail( [
+                $this->refundFail([
                     'out_trade_no' => $out_trade_no,
                     'refund_no' => $refund_no,
                     'fail_reason' => $refund_info['fail_reason']
@@ -200,7 +197,7 @@ class CoreRefundService extends BaseCoreService
      * @param array $data
      * @return bool
      */
-    public function refundSuccess( array $data){
+    public function refundSuccess(array $data){
 
         $out_trade_no = $data['out_trade_no'];
         $refund_no = $data['refund_no'];
@@ -209,8 +206,8 @@ class CoreRefundService extends BaseCoreService
         ])->update([
             'status' => RefundDict::SUCCESS
         ]);
-//        $pay = (new CorePayService())->findPayInfoByOutTradeNo( $out_trade_no);
-        $result = event('RefundSuccess', ['refund_no' => $refund_no, 'trade_type' => $data['trade_type'], 'trade_id' => $data['trade_id']]);
+        $pay = (new CorePayService())->findPayInfoByOutTradeNo($out_trade_no);
+        $result = event('RefundSuccess', ['refund_no' => $refund_no, 'trade_type' => $pay->trade_type, 'trade_id' => $data['trade_id']]);
         if(!check_event_result($result)){
             return false;
         }
@@ -238,7 +235,7 @@ class CoreRefundService extends BaseCoreService
      * @param array $data
      * @return true
      */
-    public function refundDealing( array $data){
+    public function refundDealing(array $data){
         $out_trade_no = $data['out_trade_no'];
         $refund_no = $data['refund_no'];
         $this->model->where([

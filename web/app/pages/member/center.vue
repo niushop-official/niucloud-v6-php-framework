@@ -12,8 +12,7 @@
                     <el-form :model="info" class="form-wrap" label-width="120px">
                         <el-form-item :label="t('memberHeadimg')">
                             <div class="w-full flex justify-between content-center items-center">
-                                <img v-if="!info.headimg" class="w-[80px] h-[80px]"
-                                    src="@/assets/images/default_headimg.png" alt="">
+                                <img v-if="!info.headimg" class="w-[80px] h-[80px]" src="@/assets/images/default_headimg.png" alt="">
                                 <img v-else :src="img(info.headimg)" class="w-[80px] h-[80px]" alt="">
                                 <el-upload class="avatar-uploader" :show-file-list="false" v-bind="upload">
                                     <span class="cursor-pointer text-color">{{ t('edit') }}</span>
@@ -23,8 +22,7 @@
                         <el-form-item :label="t('nickname')">
                             <div class="w-full flex justify-between content-center">
                                 <span>{{ updateNickname.value }}</span>
-                                <span class="cursor-pointer text-color" @click="updateNickname.modal = true">{{
-                                    t('edit') }}</span>
+                                <span class="cursor-pointer text-color" @click="updateNickname.modal = true">{{ t('edit')}}</span>
                             </div>
                         </el-form-item>
                     </el-form>
@@ -79,6 +77,7 @@ definePageMeta({ middleware: 'auth' })
 const upload = computed(() => {
     const headers: Record<string, any> = {}
     headers.token = getToken()
+    headers['site-id'] = storage.get('siteId') || 1
     return {
         action: `${request.options.baseURL}/file/image`,
         limit: 1,
@@ -121,4 +120,4 @@ const updateNicknameConfirm = () => {
 ::v-deep .form-wrap .el-form-item {
     align-items: center;
 }
-</style>~/app/api/member
+</style>

@@ -5,6 +5,8 @@
                 <h3 class="panel-title">{{ t('mapSetting') }}</h3>
                 <el-form-item :label="t('mapKey')" prop="site_name">
                     <el-input v-model="formData.key" class="input-width" clearable />
+                    <span class="ml-2 cursor-pointer tutorial-btn" @click="tutorialFn">{{ t('clickTutorial') }}</span>
+                    <span class="ml-2 cursor-pointer secret-btn" @click="secretlFn">{{ t('clickSecretKey') }}</span>
                 </el-form-item>
             </el-card>
         </el-form>
@@ -26,11 +28,11 @@ import { FormInstance } from 'element-plus'
 const loading = ref(false)
 const formRef = ref<FormInstance>()
 const formData = reactive<Record<string, string>>({
-	key : ''
+    key: ''
 })
 const setFormData = async () => {
-	const service_data = await (await getMap()).data
-	formData.key = service_data.key
+    const service_data = await (await getMap()).data
+    formData.key = service_data.key
 }
 setFormData()
 
@@ -46,6 +48,28 @@ const save = async (formEl: FormInstance | undefined) => {
     })
 }
 
-</script>
+/**
+ * 点击访问教程
+ */
+const tutorialFn = () => {
+    window.open('https://www.kancloud.cn/niucloud/niucloud-admin-develop/3214217')
+}
 
-<style lang="scss" scoped></style>
+/**
+ * 点击访问腾讯地图
+ */
+const secretlFn = () => {
+    window.open('https://lbs.qq.com/dev/console/key/manage')
+}
+
+</script>
+<style lang="scss" scoped>
+.tutorial-btn{
+    color:var(--el-color-primary);
+}
+
+.secret-btn{
+    color:var(--el-color-primary);
+}
+
+</style>

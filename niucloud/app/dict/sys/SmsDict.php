@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的多应用管理平台
+// | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud.com
+// | 官方网址：https://www.niucloud-admin.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -67,9 +67,9 @@ class SmsDict
     public static function getStatusType()
     {
         return [
-            self::SENDING => get_lang('dict_sms.status_sending'),
-            self::SUCCESS => get_lang('dict_sms.status_success'),
-            self::FAIL => get_lang('dict_sms.status_fail'),
+            self::SENDING => 'dict_sms.status_sending',
+            self::SUCCESS => 'dict_sms.status_success',
+            self::FAIL => 'dict_sms.status_fail',
         ];
     }
 

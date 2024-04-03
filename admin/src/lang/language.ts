@@ -1,4 +1,4 @@
-import {nextTick} from 'vue'
+import { nextTick } from 'vue'
 
 class Language {
     private i18n: any;
@@ -30,10 +30,10 @@ class Language {
      */
     public async loadLocaleMessages(app: string, path: string, locale: string) {
         try {
-            const file = path == '/' ? 'index' : path.replace(/^(\/admin\/|\/)/, '').replaceAll('/', '.')
+            const file = path == '/' ? 'index' : path.replace(/^(\/admin\/|\/site\/|\/)/, '').replaceAll('/', '.')
 
             // 引入语言包文件
-            const messages = await import(app ? `@/${app}/lang/${locale}/${file}.json` : `@/app/lang/${locale}/${file}.json`)
+            const messages = await import(app ? `@/addon/${app}/lang/${locale}/${file}.json` : `@/app/lang/${locale}/${file}.json`)
 
             let data: Record<string, string> = {}
             Object.keys(messages.default).forEach(key => {

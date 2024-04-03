@@ -61,7 +61,7 @@ export function getSmsList() {
  * @returns
  */
 export function getSmsInfo(sms_type: string) {
-    return request.get(`notice/notice/sms/${sms_type}`)
+    return request.get(`notice/notice/sms/${sms_type}`,)
 }
 
 /**

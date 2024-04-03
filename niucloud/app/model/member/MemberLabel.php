@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的多应用管理平台
+// | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud.com
+// | 官方网址：https://www.niucloud-admin.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -43,8 +43,13 @@ class MemberLabel extends BaseModel
      */
     public function getMemberNumAttr($value, $data)
     {
-        if (isset($data['label_id'])) {
-            return (new Member())->where([['member_label', 'like', '%"' . $data['label_id'] . '"%']])->count();
+        if (isset($data[ 'label_id' ])) {
+            $like_arr = [
+                '[' . $data[ 'label_id' ] . ']',
+                '[' . $data[ 'label_id' ] . ',%',
+                '%,' . $data[ 'label_id' ] . ']'
+            ];
+            return ( new Member() )->where([ [ 'member_label', "like", $like_arr, 'or' ] ])->count();
         } else
             return 0;
     }

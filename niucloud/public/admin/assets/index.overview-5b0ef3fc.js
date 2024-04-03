@@ -1,1 +1,0 @@
-const t="应用",i="暂无安装任何应用或插件，马上去",n="官方应用市场",p="逛逛",s="安装应用",o={app:t,descriptionLeft:i,link:n,descriptionRight:p,installApp:s};export{t as app,o as default,i as descriptionLeft,p as descriptionRight,s as installApp,n as link};

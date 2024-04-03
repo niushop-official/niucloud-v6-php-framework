@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的多应用管理平台
+// | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud.com
+// | 官方网址：https://www.niucloud-admin.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -40,7 +40,7 @@ class CoreOfflineService extends BaseCoreService
         if (empty($voucher)) throw new CommonException('VOUCHER_NOT_EMPTY');
 
         $pay = (new CorePayService())->findPayInfoByOutTradeNo($out_trade_no);
-        if ($pay->isEmpty()) throw new CommonException('PAY_TRANSACTION_NO_NOT_EXIST');
+        if ($pay->isEmpty()) throw new CommonException('ALIPAY_TRANSACTION_NO_NOT_EXIST');
 
         $pay->voucher = $voucher;
         $pay->save();
@@ -63,7 +63,7 @@ class CoreOfflineService extends BaseCoreService
         if (empty($voucher)) throw new CommonException('VOUCHER_NOT_EMPTY');
 
         $pay = (new CoreRefundService())->findByRefundNo($refund_no);
-        if ($pay->isEmpty()) throw new CommonException('PAY_TRANSACTION_NO_NOT_EXIST');
+        if ($pay->isEmpty()) throw new CommonException('ALIPAY_TRANSACTION_NO_NOT_EXIST');
 
         $pay->voucher = $voucher;
         $pay->save();
@@ -97,11 +97,11 @@ class CoreOfflineService extends BaseCoreService
      */
     public function pass(string $out_trade_no) {
         $pay = (new CorePayService())->findPayInfoByOutTradeNo($out_trade_no);
-        if ($pay->isEmpty()) throw new CommonException('PAY_TRANSACTION_NO_NOT_EXIST');
+        if ($pay->isEmpty()) throw new CommonException('ALIPAY_TRANSACTION_NO_NOT_EXIST');
         if ($pay->status != PayDict::STATUS_AUDIT) throw new CommonException('ONLY_PAYING_CAN_AUDIT');
         if ($pay->type != PayDict::OFFLINEPAY) throw new CommonException('ONLY_OFFLINEPAY_CAN_AUDIT');
 
-        return (new CorePayService())->paySuccess( [
+        return (new CorePayService())->paySuccess([
             'status' => PayDict::STATUS_FINISH,
             'type' => $pay->type,
             'out_trade_no' => $out_trade_no,
@@ -113,11 +113,10 @@ class CoreOfflineService extends BaseCoreService
      * 未通过审核
      * @param string $out_trade_no
      * @param string $reason
-     * @return void
      */
     public function refuse(string $out_trade_no, string $reason = '') {
         $pay = (new CorePayService())->findPayInfoByOutTradeNo($out_trade_no);
-        if ($pay->isEmpty()) throw new CommonException('PAY_TRANSACTION_NO_NOT_EXIST');
+        if ($pay->isEmpty()) throw new CommonException('ALIPAY_TRANSACTION_NO_NOT_EXIST');
         if ($pay->status != PayDict::STATUS_AUDIT) throw new CommonException('ONLY_PAYING_CAN_AUDIT');
         if ($pay->type != PayDict::OFFLINEPAY) throw new CommonException('ONLY_OFFLINEPAY_CAN_AUDIT');
 

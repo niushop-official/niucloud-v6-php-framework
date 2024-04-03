@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的多应用管理平台
+// | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud.com
+// | 官方网址：https://www.niucloud-admin.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -72,9 +72,9 @@ class CoreWechatConfigService extends BaseCoreService
 //        $domain = request()->domain();
         $wap_domain = (new CoreSysConfigService())->getSceneDomain()['wap_url'] ?? '';
         $wap_domain_array = explode('/', $wap_domain);
-        if(count($wap_domain_array) > 2){
-            $wap_domain = $wap_domain_array[0].'/'.$wap_domain_array[1].'/'.$wap_domain_array[2];
-        }
+//        if(count($wap_domain_array) > 2){
+//            $wap_domain = $wap_domain_array[0].'/'.$wap_domain_array[1].'/'.$wap_domain_array[2];
+//        }
         return [
             'serve_url' => (string)url('/api/wechat/serve', [],'',true),
             'business_domain'   => $wap_domain,

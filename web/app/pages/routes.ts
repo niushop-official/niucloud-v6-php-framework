@@ -55,5 +55,19 @@ export default [
         meta: {
             middleware: ["auth"]
         }
+    },
+    {
+        path: "/site/close",
+        component: () => import('~/app/pages/site/close.vue'),
+        meta: {
+            layout: "container"
+        }
+    },
+    {
+        path: "/site/nosite",
+        component: () => import('~/app/pages/site/nosite.vue'),
+        meta: {
+            layout: "container"
+        }
     }
 ]

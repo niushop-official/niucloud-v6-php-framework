@@ -1,11 +1,12 @@
 <template>
-    <el-container :class="['w-full h-screen bg-page login-wrap']">
+  <el-container :class="['w-full h-screen bg-page flex flex-col']">
+    <template v-if="!imgLoading">
         <!-- 平台端登录 -->
-        <el-main class="login-main items-center justify-center" v-if="!imgLoading">
+        <el-main class="login-main items-center justify-center">
             <div class="flex rounded-2xl overflow-hidden">
                 <div class="login-main-left w-[450px] flex flex-wrap justify-center">
                     <el-image v-if="loginConfig.bg" class="w-[450px] h-[400px]" :src="img(loginConfig.bg)" fit="cover" />
-                    <img v-else src="@/app/assets/images/login/login_index_left.png" alt="">
+                    <img v-else src="@/app/assets/images/login/niushop_login_index_left.jpg" alt="">
                 </div>
                 <div class="login flex flex-col w-[400px] h-[400px] p-[40px]">
                     <h3 class="text-center text-lg font-bold mb-[10px]">{{ webSite.site_name || t('siteTitle') }}</h3>
@@ -14,7 +15,7 @@
                     <el-form :model="form" ref="formRef" :rules="formRules">
                         <el-form-item prop="username">
                             <el-input v-model="form.username" :placeholder="t('userPlaceholder')"
-                                @keyup.enter="handleLogin(formRef)" class="h-[40px] input-with-select">
+                                      @keyup.enter="handleLogin(formRef)" class="h-[40px] input-with-select">
                                 <template #prepend>
                                     <icon name="element-User" />
                                 </template>
@@ -23,8 +24,8 @@
 
                         <el-form-item prop="password">
                             <el-input v-model="form.password" :placeholder="t('passwordPlaceholder')" type="password"
-                                @keyup.enter="handleLogin(formRef)" :show-password="true"
-                                class="h-[40px] input-with-select">
+                                      @keyup.enter="handleLogin(formRef)" :show-password="true"
+                                      class="h-[40px] input-with-select">
                                 <template #prepend>
                                     <icon name="element-Lock" />
                                 </template>
@@ -33,7 +34,7 @@
 
                         <el-form-item>
                             <el-button type="primary" class="mt-[30px] h-[40px] w-full" @click="handleLogin(formRef)"
-                                :loading="loading">{{ loading ? t('logging') : t('login') }}</el-button>
+                                       :loading="loading">{{ loading ? t('logging') : t('login') }}</el-button>
                         </el-form-item>
 
                     </el-form>
@@ -41,129 +42,151 @@
             </div>
         </el-main>
 
-        <!-- 验证组件 -->
-        <verify @success="success" :mode="pop" captchaType="blockPuzzle" :imgSize="{ width: '330px', height: '155px' }"
+        <div class="flex items-center justify-center mt-[20px] text-[#999] text-sm pb-8" v-if="copyright">
+            <a :href="copyright.gov_url" v-if="copyright.gov_record" class="flex" target="_blank">
+                <img src="@/app/assets/images/gov_icon.png" alt="" class="h-[20px] mr-1">
+                <span class="mr-3">公安备案号:{{ copyright.gov_record }}</span>
+            </a>
+            <a href="https://beian.miit.gov.cn/" target="_blank" v-if="copyright.icp">
+                <span class="mr-3">备案号:{{ copyright.icp }}</span>
+            </a>
+            <a :href="copyright.copyright_link" target="_blank">
+                <span class="mr-3" v-if="copyright.company_name">{{ copyright.company_name }}</span>
+                <span class="mr-3" v-if="copyright.copyright_desc">©{{ copyright.copyright_desc }}</span>
+            </a>
+        </div>
+    </template>
+
+    <!-- 验证组件 -->
+    <verify @success="success" :mode="pop" captchaType="blockPuzzle" :imgSize="{ width: '330px', height: '155px' }"
             ref="verifyRef"></verify>
-        <!-- <el-footer></el-footer> -->
-    </el-container>
+  </el-container>
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref } from 'vue'
+import { inject, reactive, ref } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
 import { useRoute, useRouter } from 'vue-router'
 import { t } from '@/lang'
 import storage from '@/utils/storage'
 import { getLoginConfig } from '@/app/api/auth'
 import useUserStore from '@/stores/modules/user'
-import { setWindowTitle, img, getAppType } from '@/utils/common'
-import { getWebConfig } from '@/app/api/sys'
+import { setWindowTitle, img } from '@/utils/common'
+import { getWebConfig, getWebCopyright } from '@/app/api/sys'
+
+const setLayout = inject('setLayout')
+setLayout('decorate')
 
 const loading = ref(false)
 const imgLoading = ref(false)
 const userStore = useUserStore()
 const route = useRoute()
 const router = useRouter()
+const copyright = ref(null)
+const webSite = ref([])
+
+getWebCopyright().then(({ data }) => {
+    copyright.value = data
+})
+
+getWebConfig().then(({ data }) => {
+    webSite.value = data
+})
 
 route.redirectedFrom && (route.query.redirect = route.redirectedFrom.path)
 
-const webSite = ref([])
-const setFormData = async (id: number = 0) => {
-    webSite.value = await (await getWebConfig()).data
-    storage.set({ key: 'siteInfo', data: webSite.value })
-}
-setFormData()
 setWindowTitle(t('adminLogin'))
 
 // 验证码 - start
 const verifyRef = ref(null)
 const success = (params) => {
-    loginFn({ captcha_code: params.captchaVerification })
+  loginFn({ captcha_code: params.captchaVerification })
 }
 
 const form = reactive({
-    username: '',
-    password: ''
+  username: '',
+  password: ''
 })
 
 // 获取登录配置信息
 const loginConfig = ref({})
 const getLoginConfigFn = async (id: number = 0) => {
-    imgLoading.value = true
-    const data = await (await getLoginConfig()).data
-    loginConfig.value = data
-    imgLoading.value = false
+  imgLoading.value = true
+  const data = await (await getLoginConfig()).data
+  loginConfig.value = data
+  imgLoading.value = false
 }
 getLoginConfigFn()
 
 const formRef = ref<FormInstance>()
 
 const formRules = reactive<FormRules>({
-    username: [
-        { required: true, message: t('userPlaceholder'), trigger: 'blur' }
-    ],
-    password: [
-        { required: true, message: t('passwordPlaceholder'), trigger: 'blur' }
-    ]
+  username: [
+    { required: true, message: t('userPlaceholder'), trigger: 'blur' }
+  ],
+  password: [
+    { required: true, message: t('passwordPlaceholder'), trigger: 'blur' }
+  ]
 })
 
 const handleLogin = async (formEl: FormInstance | undefined) => {
-    if (loading.value || !formEl) return
+  if (loading.value || !formEl) return
 
-    await formEl.validate((valid, fields) => {
-        if (valid) {
-            if (parseInt(loginConfig.value.is_captcha)) { verifyRef.value.show() } else { loginFn() }
-        }
-    })
+  await formEl.validate((valid, fields) => {
+    if (valid) {
+      if (parseInt(loginConfig.value.is_captcha)) { verifyRef.value.show() } else { loginFn() }
+    }
+  })
 }
 
 // data 验证码
 const loginFn = (data = {}) => {
-    loading.value = true
-    userStore.login({ username: form.username, password: form.password, ...data }).then(res => {
-        const { query: { redirect } } = route
-        const path = typeof redirect === 'string' ? redirect : '/'
-        router.push(path)
-    }).catch(() => {
-        loading.value = false
-    })
+  loading.value = true
+  userStore.login({ username: form.username, password: form.password, ...data }).then(res => {
+    const { query: { redirect } } = route
+    const path = typeof redirect === 'string' ? redirect : '/'
+    const url = router.resolve(path)
+    location.href = url.href
+  }).catch(() => {
+    loading.value = false
+  })
 }
 </script>
 
 <style lang="scss">
 .login-wrap {
-    background-image: url("@/app/assets/images/login/login_index_bg.png");
-    background-repeat: no-repeat;
-    background-size: cover;
+  background-image: url("@/app/assets/images/login/login_index_bg.png");
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
 .login-site-main {
-    padding: 0 !important;
+  padding: 0 !important;
 }
 
 .input-with-select .el-input-group__prepend {
-    background-color: var(--el-fill-color-blank);
-    padding: 0 15px;
+  background-color: var(--el-fill-color-blank);
+  padding: 0 15px;
 }
 
 .login-main {
-    display: flex !important;
+  display: flex !important;
 }
 
 .login {
-    background: var(--el-bg-color);
+  background: var(--el-bg-color);
 }
 
 .admin_name {
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    -o-text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  -o-text-overflow: ellipsis;
 }
 
 @media only screen and (max-width: 750px) {
-    .login-main-left {
-        display: none;
-    }
+  .login-main-left {
+    display: none;
+  }
 }
 </style>

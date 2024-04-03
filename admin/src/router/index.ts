@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory, RouteLocationRaw, RouteLocationNormalizedLoaded } from 'vue-router'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
-import { STATIC_ROUTES, NO_LOGIN_ROUTES, ROOT_ROUTER, ADMIN_ROUTE, DECORATE_ROUTER,PREVIEW_ROUTER,APP_MANAGE_ROUTER,TOOL_ROUTER, findFirstValidRoute } from './routers'
+import { STATIC_ROUTES, NO_LOGIN_ROUTES, ROOT_ROUTER, ADMIN_ROUTE, findFirstValidRoute } from './routers'
 import { language } from '@/lang'
 import useSystemStore from '@/stores/modules/system'
 import useUserStore from '@/stores/modules/user'
@@ -13,6 +13,32 @@ const router = createRouter({
     routes: [ADMIN_ROUTE, ...STATIC_ROUTES]
 })
 
+/**
+ * 重写push方法
+ */
+const originPush = router.push
+router.push = (to: RouteLocationRaw) => {
+    const route = typeof to == 'string' ? urlToRouteRaw(to) : to
+    if (route.path) {
+        const paths = route.path.split('/').filter((item: string) => { return item })
+        route.path = ['admin'].indexOf(paths[0]) == -1 ? `/${getAppType()}${route.path}` : route.path
+    }
+    return originPush(route)
+}
+
+/**
+ * 重写resolve方法
+ */
+const originResolve = router.resolve
+router.resolve = (to: RouteLocationRaw, currentLocation?: RouteLocationNormalizedLoaded) => {
+    const route = typeof to == 'string' ? urlToRouteRaw(to) : to
+    if (route.path) {
+        const paths = route.path.split('/').filter((item: string) => { return item })
+        route.path = ['admin'].indexOf(paths[0]) == -1 ? `/${getAppType()}${route.path}` : route.path
+    }
+    return originResolve(route, currentLocation)
+}
+
 // 全局前置守卫
 router.beforeEach(async (to, from, next) => {
     NProgress.configure({ showSpinner: false })
@@ -21,16 +47,22 @@ router.beforeEach(async (to, from, next) => {
     to.redirectedFrom && (to.query = to.redirectedFrom.query)
 
     const userStore = useUserStore()
-    const siteInfo = storage.get('siteInfo') || false
-    let title = (to.meta.title ? (to.meta.title + ' - ') : '') + (siteInfo.site_name ? siteInfo.site_name : '')
+    const systemStore = useSystemStore()
+    const siteInfo = userStore.siteInfo
+
+    let title: string = to.meta.title ?? ''
+
+    if (siteInfo) {
+        title += '-' + siteInfo.site_name
+    }
 
     // 设置网站标题
     setWindowTitle(title)
 
     // 加载语言包
-    await language.loadLocaleMessages(to.meta.app || '', (to.meta.view || to.path), useSystemStore().lang);
+    await language.loadLocaleMessages(to.meta.addon || '', (to.meta.view || to.path), systemStore.lang);
 
-    const loginPath = '/login'
+    const loginPath = '/admin/login'
 
     // 判断是否需登录
     if (NO_LOGIN_ROUTES.includes(to.path)) {
@@ -39,70 +71,43 @@ router.beforeEach(async (to, from, next) => {
         // 如果已加载路由
         if (userStore.routers.length) {
             if (to.path === loginPath) {
-                next('/')
+                next(`/${getAppType()}`)
             } else {
                 next()
             }
         } else {
             try {
+                if (!systemStore.apps.length) {
+                    await systemStore.getInstallAddons()
+                }
                 await userStore.getAuthMenus()
 
-                // 设置首页路由 
-                let currApp = storage.get('menuAppStorage')
-                const firstRoute = findFirstValidRoute(userStore.routers)
-                
-                if (!currApp) {
-                    await userStore.getAppList()
-                    currApp = userStore.globalAppKey
+                // 设置首页路由
+                let firstRoute: symbol | string | undefined = findFirstValidRoute(userStore.routers)
+                if (systemStore.apps[0]) {
+                    firstRoute = userStore.addonIndexRoute[ systemStore.apps[0].key ]
                 }
-                
-                if (currApp) {
-                    ROOT_ROUTER.redirect = { name: userStore.addonIndexRoute[currApp] ?? firstRoute }
-                } else {
-                    ROOT_ROUTER.redirect = { name: firstRoute }
-                }
-                // console.log(currApp, ROOT_ROUTER.redirect)
+
+                ROOT_ROUTER.redirect = { name: firstRoute }
                 router.addRoute(ROOT_ROUTER)
+
+                // 设置应用首页路由
+                ADMIN_ROUTE.children[0].redirect = { name: firstRoute }
+                router.addRoute(ADMIN_ROUTE)
 
                 // 添加动态路由
                 userStore.routers.forEach(route => {
-                    // 页面装修
-                    if (route.path == DECORATE_ROUTER.path) {
-                        DECORATE_ROUTER.children = route.children
-                        router.addRoute(DECORATE_ROUTER)
-                        return
-                    }
-
-                    // 手机页面预览
-                    if (route.path == PREVIEW_ROUTER.path) {
-                        PREVIEW_ROUTER.children = route.children
-                        router.addRoute(PREVIEW_ROUTER)
-                        return
-                    }
-
-                    // 应用管理
-                    if (route.path == APP_MANAGE_ROUTER.path) {
-                        APP_MANAGE_ROUTER.children = route.children
-                        router.addRoute(APP_MANAGE_ROUTER)
-                        return
-                    }
-                    if (route.path == TOOL_ROUTER.path) {
-                        TOOL_ROUTER.children = route.children
-                        router.addRoute(TOOL_ROUTER)
-                        return
-                    }
                     if (!route.children) {
-                        router.addRoute(ADMIN_ROUTE.children[0].name, route)
+                        router.addRoute(ADMIN_ROUTE.name, route)
                         return
                     }
 
                     // 动态添加可访问路由表
                     router.addRoute(ADMIN_ROUTE.name, route)
                 })
-
-                next({ path: to.path, query: to.query, replace: true })
+                next(to)
             } catch (err) {
-                userStore.logout()
+                console.log(err)
                 next({ path: loginPath, query: { redirect: to.fullPath } })
             }
         }

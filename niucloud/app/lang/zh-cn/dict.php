@@ -22,7 +22,10 @@ return [
         'type_button' => '按钮',
         //菜单状态
         'status_on' => '正常',
-        'status_off' => '停用'
+        'status_off' => '停用',
+        'source_system' => '系统文件',
+        'source_create' => '新建菜单',
+        'source_generator' => '代码生成器'
     ],
     'dict_user' => [
         //用户状态
@@ -42,7 +45,9 @@ return [
         'status_experience' => '体验期',
         'status_expire' => '已到期',
         'status_close' => '已停止',
-
+        'pay' => '支付',
+        'refund' => '退款',
+        'transfer' => '转账',
     ],
     // 站点
     'dict_site_index' => [
@@ -198,11 +203,11 @@ return [
     'dict_diy' => [
         'page_index' => '首页',
         'page_member_index' => '个人中心',
-        'page_diy' => '自定义页面',
+        'page_diy' => '微页面',
         'component_type_basic' => '基础组件',
 
         'system_title' => '系统',
-        'system_link' => '系统页面',
+        'system_link' => '启动页',
         'system_link_index' => '首页',
 
         'member_link' => '会员页面',
@@ -272,6 +277,10 @@ return [
         'offline' => '线下退款',
         'balance' => '退款到余额',
         'back' => '原路退款',
+        'status_success' => '退款成功',
+        'status_dealing' => '退款中',
+        'status_wait' => '待退款',
+        'status_fail' => '退款失败',
     ],
     'dict_order_refund' => [
         'refunding' => '退款中',

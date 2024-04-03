@@ -2,6 +2,7 @@
 
 namespace app;
 use app\dict\common\ChannelDict;
+use app\service\core\site\CoreSiteService;
 
 /**
  * Class Request
@@ -35,7 +36,7 @@ class Request extends \think\Request
             }
             $default = $param[1];
             $item_filter = $param[2] ?? $filter;
-            $input[$name] = $this->paramFilter($this->param($key, $default, $filter_rule ?? ''), $item_filter);
+            $input[$key] = $this->paramFilter($this->param($key, $default, $filter_rule ?? ''), $item_filter);
             //过滤后产生空字符串，按照默认值
             if($input[$name] === '')
             {
@@ -91,7 +92,6 @@ class Request extends \think\Request
     }
 
 
-
     /**
      * 用户账号
      * @param string $username
@@ -101,13 +101,26 @@ class Request extends \think\Request
     {
         if (!empty($username)) {
             static::$auth_info['username'] = $username;
+            return $username;
         } else {
             return static::$auth_info['username'] ?? '';
         }
     }
 
 
-
+    /**
+     * 定义站点类型
+     * @param string $app_type
+     * @return mixed|string
+     */
+    public function appType(string $app_type = ''){
+        if (!empty($app_type)) {
+            static::$auth_info['app_type'] = $app_type;
+            return $app_type;
+        } else {
+            return static::$auth_info['app_type'] ?? '';
+        }
+    }
 
     /**
      * 获取管理端token
@@ -126,9 +139,6 @@ class Request extends \think\Request
         return $this->header(system_name('api_token_name'));
     }
 
-
-
-
     /**
      * 获取场景
      * @return array|string
@@ -137,6 +147,13 @@ class Request extends \think\Request
         return $this->header(system_name('channel_name'), ChannelDict::H5);
     }
 
+    /**
+     * 获取默认站点
+     * @return int
+     */
+    public function defaultSiteId(){
+        return 0;
+    }
 
     /**
      * get传参追加值
@@ -169,19 +186,6 @@ class Request extends \think\Request
             static::$auth_info[$key] = $value;
         } else {
             return static::$auth_info[$key] ?? '';
-        }
-    }
-
-    /**
-     * 定义站点类型
-     * @param string $app_type
-     * @return mixed|string
-     */
-    public function appType(string $app_type = ''){
-        if (!empty($app_type)) {
-            static::$auth_info['app_type'] = $app_type;
-        } else {
-            return static::$auth_info['app_type'] ?? '';
         }
     }
 }

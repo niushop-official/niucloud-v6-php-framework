@@ -1,42 +1,13 @@
-import {RouteRecordRaw, RouterView} from 'vue-router'
+import { toRaw } from 'vue'
+import { RouteRecordRaw, RouterView } from 'vue-router'
 import Default from '@/layout/index.vue'
 import Decorate from '@/layout/decorate/index.vue'
-import Preview from '@/layout/preview/index.vue'
-import AppManage from '@/layout/app_manage/index.vue'
-import Tools from '@/layout/tools/index.vue'
-import {Key} from '@element-plus/icons-vue'
 
 // 静态路由
 export const STATIC_ROUTES: Array<RouteRecordRaw> = [
     {
         path: '/:pathMatch(.*)*',
         component: () => import('@/app/views/error/404.vue')
-    },
-    {
-        path: '/login',
-        component: () => import('@/app/views/login/index.vue')
-    },
-    {
-        path: '/user',
-        component: AppManage,
-        children: [
-            {
-                path: 'center',
-                meta: {
-                    type: 1,
-                    title: '个人中心'
-                },
-                component: () => import('@/app/views/index/personal.vue')
-            },
-            {
-                path: 'edit_center',
-                meta: {
-                    type: 1,
-                    title: '编辑个人中心'
-                },
-                component: () => import('@/app/views/index/edit_personal.vue')
-            }
-        ]
     }
 ]
 
@@ -56,16 +27,29 @@ export const ROOT_ROUTER: RouteRecordRaw = {
 export const ADMIN_ROUTE: RouteRecordRaw = {
     path: '/admin',
     name: Symbol('admin'),
+    component: Default,
     children: [
         {
             path: '',
             name: Symbol('adminRoot'),
             component: Default
+        },
+        {
+            path: 'login',
+            component: () => import('@/app/views/login/index.vue')
+        },
+        {
+            path: 'user/center',
+            meta: {
+                type: 1,
+                title: '个人中心',
+                show: false
+            },
+            component: () => import('@/app/views/index/edit_personal.vue')
         }
     ]
 }
 
-// 装修路由
 export const DECORATE_ROUTER: RouteRecordRaw = {
     path: '/decorate',
     component: Decorate,
@@ -73,31 +57,8 @@ export const DECORATE_ROUTER: RouteRecordRaw = {
     children: []
 }
 
-// 页面预览路由
-export const PREVIEW_ROUTER: RouteRecordRaw = {
-    path: '/preview',
-    component: Preview,
-    name: Symbol('preview'),
-    children: []
-}
-
-// 切换应用路由
-export const APP_MANAGE_ROUTER: RouteRecordRaw = {
-    path: '/app_manage',
-    component: AppManage,
-    name: Symbol('app_manage'),
-    children: []
-}
-
-// 切换应用路由
-export const TOOL_ROUTER: RouteRecordRaw = {
-    path: '/tools',
-    component: Tools,
-    name: Symbol('tools'),
-    children: []
-}
 const modules = import.meta.glob('@/app/views/**/*.vue')
-const addonModules = import.meta.glob('@/**/views/**/*.vue')
+const addonModules = import.meta.glob('@/addon/**/views/**/*.vue')
 
 interface Route {
     menu_name: string,
@@ -112,37 +73,35 @@ interface Route {
     },
     children?: [],
     is_show: boolean,
-    addon: string,
-    menu_attr: string
+    app_type: string,
+    addon: string
 }
 
 /**
  * 创建路由
- * @param route
- * @param parentRoute
+ * @param data
+ * @returns
  */
 const createRoute = function (route: Route, parentRoute: RouteRecordRaw | null = null): RouteRecordRaw {
-    // parentRoute ? Symbol(`${parentRoute.path}/${route.router_path}`) : Symbol(`/${route.router_path}`)
     const record: RouteRecordRaw = {
-        path: parentRoute ? route.router_path : `/${route.router_path}`,
+        path: `/${route.app_type}/${route.router_path}`,
         name: route.menu_key,
         meta: {
             title: route.menu_name,
-            shortTitle: route.menu_short_name,
+            short_title: route.menu_short_name,
             icon: route.icon,
             type: route.menu_type,
             show: route.is_show,
-            app: route.addon,
+            app: route.app_type,
             view: route.view_path,
-            key: route.menu_key,
-            attr: route.menu_attr
+            addon: route.addon,
+            parent_route: parentRoute ? parentRoute.meta : parentRoute
         }
     }
     if (route.menu_type == 0) {
-        record.component = parentRoute ? RouterView : () => Promise.resolve(Default)
-        if (!route.children) record.component = RouterView
+        record.component = RouterView
     } else {
-        record.component = route.addon ? addonModules[`/src/${route.addon}/views/${route.view_path}.vue`] : modules[`/src/app/views/${route.view_path}.vue`]
+        record.component = route.addon ? addonModules[`/src/addon/${route.addon}/views/${route.view_path}.vue`] : modules[`/src/app/views/${route.view_path}.vue`]
     }
     return record
 }
@@ -169,7 +128,7 @@ export function formatRouters(routes: Route[], parentRoute: RouteRecordRaw | nul
  */
 export function findFirstValidRoute(routes: RouteRecordRaw[]): string | undefined {
     for (const route of routes) {
-        if (route.meta?.type == 1) {
+        if (route.meta?.type == 1 && route.meta?.show) {
             return route.name as string
         }
         if (route.children) {

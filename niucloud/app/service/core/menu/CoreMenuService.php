@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的多应用管理平台
+// | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud.com
+// | 官方网址：https://www.niucloud-admin.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -11,6 +11,7 @@
 
 namespace app\service\core\menu;
 
+use app\dict\sys\AppTypeDict;
 use app\dict\sys\MenuDict;
 use app\model\addon\Addon;
 use app\model\sys\SysMenu;
@@ -40,6 +41,7 @@ class CoreMenuService extends BaseCoreService
      */
     public function uninstallAddonMenu($addon)
     {
+        $addon_loader = new DictLoader("Menu");
 
         $this->deleteByAddon($addon);
         // 清除缓存
@@ -85,15 +87,14 @@ class CoreMenuService extends BaseCoreService
     {
         $addon_loader = new DictLoader("Menu");
 
-        $addon_menu_tree = $addon_loader->load(["addon" => $addon]);
+        $addon_admin_tree = $addon_loader->load(["addon" => $addon, "app_type" => "admin"]);
 
-        $menu = [];
-        if (!empty($addon_menu_tree)) {
-            $menu = $this->loadMenu($addon_menu_tree, $addon);
-        }
+        if (isset($addon_admin_tree['delete'])) unset($addon_admin_tree['delete']);
 
+        $admin_menu = $this->loadMenu($addon_admin_tree, "admin", $addon);
         $this->deleteByAddon($addon, false);
-        $this->install($menu);
+        $this->install($admin_menu);
+
         return true;
 
     }
@@ -102,11 +103,11 @@ class CoreMenuService extends BaseCoreService
      * 加载菜单
      * @return array
      */
-    public function loadMenu(array $menu_tree, string $addon = '')
+    public function loadMenu(array $menu_tree, string $app_type, string $addon = '')
     {
         //加载系统
         $menu_list = [];
-        $this->menuTreeToList($menu_tree, '', $addon, $menu_list);
+        $this->menuTreeToList($menu_tree, '', $app_type, $addon, $menu_list);
         return $menu_list;
     }
 
@@ -114,17 +115,19 @@ class CoreMenuService extends BaseCoreService
      * 菜单数转为列表
      * @param array $tree
      * @param string $parent_key
+     * @param string $app_type
      * @param string $addon
      * @param array $menu_list
      */
-    private function menuTreeToList(array $tree, string $parent_key = '', string $addon = '', array &$menu_list = [])
+    private function menuTreeToList(array $tree, string $parent_key = '', string $app_type = AppTypeDict::ADMIN, string $addon = '', array &$menu_list = [])
     {
         if (is_array($tree)) {
-            foreach ($tree as $value) {
+            foreach ($tree as $key => $value) {
                 $item = [
                     'menu_name' => $value['menu_name'],
                     'menu_short_name' => $value['menu_short_name'] ?? '',
                     'menu_key' => $value['menu_key'],
+                    'app_type' => $app_type,
                     'addon' => $addon,
                     'parent_key' => $value['parent_key'] ?? $parent_key,
                     'menu_type' => $value['menu_type'],
@@ -135,15 +138,14 @@ class CoreMenuService extends BaseCoreService
                     'methods' => $value['methods'] ?? '',
                     'sort' => $value['sort'] ?? '',
                     'status' => 1,
-                    'is_show' => $value['is_show'] ?? 1,
-                    'source' => MenuDict::SYSTEM
+                    'is_show' => $value['is_show'] ?? 1
                 ];
                 $refer = $value;
                 if (isset($refer['children'])) {
                     unset($refer['children']);
                     $menu_list[] = $item;
                     $p_key = $refer['menu_key'];
-                    $this->menuTreeToList($value['children'], $p_key, $addon, $menu_list);
+                    $this->menuTreeToList($value['children'], $p_key, $app_type, $addon, $menu_list);
                 } else {
                     $menu_list[] = $item;
                 }
@@ -174,7 +176,7 @@ class CoreMenuService extends BaseCoreService
      * @throws \think\db\exception\ModelNotFoundException
      */
     public function getRoutePathByMenuKey($menu_key, $paths = []) {
-        $menu = $this->model->where([ ['menu_key', '=', $menu_key] ])->field('parent_key,router_path')->find();
+        $menu = $this->model->where([ ['menu_key', '=', $menu_key], ['app_type', '=', 'admin'] ])->field('parent_key,router_path')->find();
         array_unshift($paths, $menu['router_path']);
         if (!empty($menu['parent_key'])) {
             return $this->getRoutePathByMenuKey($menu['parent_key'], $paths);

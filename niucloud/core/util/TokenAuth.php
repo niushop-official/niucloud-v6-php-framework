@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的多应用管理平台
+// | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud.com
+// | 官方网址：https://www.niucloud-admin.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -28,7 +28,7 @@ class TokenAuth
     /**
      *创建token
      * @param int $id 编码  一般传入用户id
-     * @param string $type 类型（admin，api）
+     * @param string $type 类型（admin，site，home）
      * @param array $params 参数  传入id, name
      * @param int $expire_time 有效期
      * @return array

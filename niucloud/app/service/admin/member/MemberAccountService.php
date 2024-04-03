@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的多应用管理平台
+// | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud.com
+// | 官方网址：https://www.niucloud-admin.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -45,9 +45,7 @@ class MemberAccountService extends BaseAdminService
         if (!empty($where[ 'keywords' ])) {
             $member_where[] = [ "member.member_no|member.nickname|member.mobile", 'like', '%' . $where[ 'keywords' ] . '%' ];
         }
-        $search_model = $this->model->withSearch([ 'join_member_id' => 'member_id', 'account_type', 'from_type', 'join_create_time' => 'create_time' ], $where)->withJoin([ 'member' => function($query) {
-            $query->field("member.nickname, member.headimg, member.mobile, member.member_id, member.member_no");
-        }
+        $search_model = $this->model->withSearch([ 'join_member_id' => 'member_id', 'account_type', 'from_type', 'join_create_time' => 'create_time' ], $where)->withJoin([ 'member' => ['nickname', 'headimg', 'mobile', 'member_id', 'member_no']
         ])->where($member_where)->field($field)->order('create_time desc')->append([ 'from_type_name', 'account_type_name' ]);
         return $this->pageQuery($search_model);
     }
@@ -70,7 +68,7 @@ class MemberAccountService extends BaseAdminService
      */
     public function adjustPoint(array $data)
     {
-        return ( new CoreMemberAccountService() )->addLog( $data[ 'member_id' ], 'point', $data[ 'account_data' ], 'adjust', $data[ 'memo' ]);
+        return ( new CoreMemberAccountService() )->addLog($data[ 'member_id' ], 'point', $data[ 'account_data' ], 'adjust', $data[ 'memo' ]);
     }
 
     /**
@@ -80,12 +78,12 @@ class MemberAccountService extends BaseAdminService
      */
     public function adjustBalance(array $data)
     {
-        return ( new CoreMemberAccountService() )->addLog( $data[ 'member_id' ], 'balance', $data[ 'account_data' ], 'adjust', $data[ 'memo' ]);
+        return ( new CoreMemberAccountService() )->addLog($data[ 'member_id' ], 'balance', $data[ 'account_data' ], 'adjust', $data[ 'memo' ]);
     }
 
     public function adjustMoney(array $data)
     {
-        return ( new CoreMemberAccountService() )->addLog( $data[ 'member_id' ], MemberAccountTypeDict::MONEY, $data[ 'account_data' ], 'adjust', $data[ 'memo' ]);
+        return ( new CoreMemberAccountService() )->addLog($data[ 'member_id' ], MemberAccountTypeDict::MONEY, $data[ 'account_data' ], 'adjust', $data[ 'memo' ]);
     }
 
     /**
@@ -116,7 +114,7 @@ class MemberAccountService extends BaseAdminService
     public function getMemberAccountInfo(int $member_id)
     {
         $field = 'point, point_get, balance, balance_get, growth, growth_get, money, money_get, commission, commission_get';
-        return ( new Member() )->where([ [ 'member_id', '=', $member_id ]])->field($field)->findOrEmpty()->toArray();
+        return ( new Member() )->where([ [ 'member_id', '=', $member_id ] ])->field($field)->findOrEmpty()->toArray();
     }
 
     /**

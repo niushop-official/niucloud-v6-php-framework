@@ -1,1 +1,0 @@
-const e="开发环境配置",a="API请求地址",l="图片服务器地址",t="请输入数字",m="最大不能超过",r={developTitle:e,baseUrl:a,imgUrl:l,pleaseEnterNumber:t,maximumCannotExceed:m};export{a as baseUrl,r as default,e as developTitle,l as imgUrl,m as maximumCannotExceed,t as pleaseEnterNumber};

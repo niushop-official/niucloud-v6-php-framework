@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的多应用管理平台
+// | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud.com
+// | 官方网址：https://www.niucloud-admin.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -11,13 +11,12 @@
 
 namespace app\validate\channel;
 
-use core\base\BaseValidate;
 use think\Validate;
 
 /**
  * 支付宝小程序配置验证类
  */
-class Aliapp extends BaseValidate
+class Aliapp extends Validate
 {
 
     //用户名或密码的规范可能是从数据库中获取的

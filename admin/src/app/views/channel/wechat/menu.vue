@@ -1,12 +1,12 @@
 <template>
     <div class="main-container p-5">
         <div class="flex justify-between items-center mb-[20px]">
-            <span class="text-[20px]">{{ pageName }}</span>
+            <span class="text-page-title">{{ pageName }}</span>
         </div>
         <el-tabs v-model="activeName" class="demo-tabs" @tab-change="handleClick">
-            <el-tab-pane :label="t('wechatAccessFlow')" name="/website/channel/wechat" />
-            <el-tab-pane :label="t('customMenu')" name="/website/channel/wechat/menu" />
-            <el-tab-pane :label="t('wechatTemplate')" name="/website/channel/wechat/message" />
+            <el-tab-pane :label="t('wechatAccessFlow')" name="/channel/wechat" />
+            <el-tab-pane :label="t('customMenu')" name="/channel/wechat/menu" />
+            <el-tab-pane :label="t('wechatTemplate')" name="/channel/wechat/message" />
         </el-tabs>
         <div class="flex" v-loading="loading">
             <div class="preview-wrap w-[300px] h-[550px] mr-[16px] bg-overlay rounded-md flex flex-col justify-between border border-color">
@@ -19,9 +19,12 @@
                         </div>
                     </div>
                     <div class="flex-1 flex w-0">
-                        <div class="menu-item py-[15px] flex items-center justify-center cursor-pointer" :class="{ 'size-1': button.length == 1, 'size-2-3': button.length > 1, 'active': index == buttonIndex, 'curr': index == buttonIndex && subButtonIndex == -1 }"
+                        <div class="menu-item py-[15px] flex items-center justify-center cursor-pointer"
+                            :class="{ 'size-1': button.length == 1, 'size-2-3': button.length > 1, 'active': index == buttonIndex, 'curr': index == buttonIndex && subButtonIndex == -1 }"
                             v-for="(item, index) in button" :key="index" @click="selectButton(index)">
-                            <div class="menu-name px-[10px] border-r border-color w-full leading-[40px] text-base truncate text-center">{{ item.name }}</div>
+                            <div
+                                class="menu-name px-[10px] border-r border-color w-full leading-[40px] text-base truncate text-center">
+                                {{ item.name }}</div>
                             <div class="active-shade"></div>
 
                             <!-- 子菜单 -->
@@ -34,13 +37,16 @@
                                     <div class="active-shade"></div>
                                 </div>
                                 <!-- 添加子菜单 -->
-                                <div class="add-menu flex items-center justify-center flex-1 cursor-pointer menu-item h-[50px]" v-show="!item.sub_button || item.sub_button.length < 5" @click.stop="addSubButton(index)">
+                                <div class="add-menu flex items-center justify-center flex-1 cursor-pointer menu-item h-[50px]"
+                                    v-show="!item.sub_button || item.sub_button.length < 5"
+                                    @click.stop="addSubButton(index)">
                                     <icon name="element-Plus" />
                                 </div>
                             </div>
                         </div>
                         <!-- 添加菜单 -->
-                        <div class="add-menu flex items-center justify-center flex-1 cursor-pointer menu-item" v-show="button.length < 3" @click="addButton">
+                        <div class="add-menu flex items-center justify-center flex-1 cursor-pointer menu-item"
+                            v-show="button.length < 3" @click="addButton">
                             <icon name="element-Plus" />
                         </div>
                     </div>
@@ -58,7 +64,8 @@
 
                             <div v-for="(subItem, subIndex) in item.sub_button" :key="subIndex">
                                 <div v-show="index == buttonIndex && subIndex == subButtonIndex">
-                                    <menu-form :data="subItem" @delete="deleteButton" :index="index" :sub-index="subIndex" ref="formRef" />
+                                    <menu-form :data="subItem" @delete="deleteButton" :index="index" :sub-index="subIndex"
+                                        ref="formRef" />
                                 </div>
                             </div>
                         </div>
@@ -92,16 +99,16 @@ const button = ref<Record<string, any>[]>([])
 const buttonIndex = ref<number>(0)
 const subButtonIndex = ref<number>(-1)
 const formRef = ref<Record<string, any>[] | null>(null)
-let activeName = ref("/website/channel/wechat/menu");
+const activeName = ref('/channel/wechat/menu')
 const handleClick = (val: any) => {
-    router.push({ path: activeName.value });
-};
+    router.push({ path: activeName.value })
+}
 /**
  * 获取公众号菜单配置
  */
 getWechatMenu().then((res) => {
     button.value = res.data
-    loading.value = false;
+    loading.value = false
 })
 
 /**
@@ -297,17 +304,16 @@ const save = async () => {
 }
 
 :deep(.el-tabs--top) {
-	.el-tabs__active-bar {
-		display: none;
-	}
+    .el-tabs__active-bar {
+        display: none;
+    }
 
-	.el-tabs__item.is-active {
-		border-bottom: 2px solid var(--el-color-primary);
-	}
+    .el-tabs__item.is-active {
+        border-bottom: 2px solid var(--el-color-primary);
+    }
 
-	.el-tabs__item.is-top:nth-child(2) {
-		margin-right: 20px;
-	}
+    .el-tabs__item.is-top:nth-child(2) {
+        margin-right: 20px;
+    }
 
-}
-</style>
+}</style>

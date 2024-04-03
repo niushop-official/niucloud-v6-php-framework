@@ -1,48 +1,55 @@
 <script setup lang="ts">
 	import { onLaunch, onShow, onHide } from '@dcloudio/uni-app'
 	import manifest from '@/manifest.json'
-	import { redirectInterceptor, launchInterceptor } from '@/utils/interceptor'
+	import { launchInterceptor } from '@/utils/interceptor'
 	import { getToken, isWeixinBrowser } from '@/utils/common'
 	import useMemberStore from '@/stores/member'
 	import useConfigStore from '@/stores/config'
+	import useSystemStore from '@/stores/system'
 	import { useLogin } from '@/hooks/useLogin'
-	import { language } from './locale'
 
 	onLaunch(async (data) => {
+
 		// 添加初始化拦截器
 		launchInterceptor()
-		// 添加页面跳转拦截器
-		redirectInterceptor()
 
 		// #ifdef H5
 		uni.getSystemInfoSync().platform == 'ios' && (uni.setStorageSync('initUrl', location.href))
 
-		// 传输给后台数据
-		window.parent.postMessage(JSON.stringify({
-			type: 'appOnLaunch',
-			message: '初始化加载完成'
-		}), '*');
+        // 传输给后台数据
+        window.parent.postMessage(JSON.stringify({
+            type: 'appOnLaunch',
+            message: '初始化加载完成'
+        }), '*');
 
-		// 监听父页面发来的消息
-		window.addEventListener('message', event => {
-			try {
-				let data = JSON.parse(event.data);
-				if (data.type == 'appOnReady') {
-					window.parent.postMessage(JSON.stringify({
-						type: 'appOnReady',
-						message: '加载完成'
-					}), '*');
-				}
-			} catch (e) {
-				console.log('uniapp app接受数据错误', e)
-			}
-		}, false);
+        // 监听父页面发来的消息
+        window.addEventListener('message', event => {
+            try {
+                let data = {
+                    type :''
+                };
+                if(typeof event.data == 'string') {
+                    data = JSON.parse(event.data)
+                }else if(typeof event.data == 'object') {
+                    data = event.data
+                }
+                if (data.type && data.type == 'appOnReady') {
+                    window.parent.postMessage(JSON.stringify({
+                        type: 'appOnReady',
+                        message: '加载完成'
+                    }), '*');
+                }
+            } catch (e) {
+                console.log('uni-app App.vue 接受数据错误', e)
+            }
+        }, false);
 
 		// #endif
 
 		const configStore = useConfigStore()
-		configStore.getTabbarConfig()
 		await configStore.getLoginConfig()
+
+		useSystemStore().getSiteInfoFn()
 
 		// 隐藏tabbar
 		uni.hideTabBar()
@@ -65,18 +72,9 @@
 			}
 			// #endif
 		}
-
-		// 监听浏览器返回
-		// #ifdef H5
-		window.addEventListener("popstate", function (e) {
-			const path = '/' + location.pathname.replace(manifest.h5.router.base, '')
-			language.loadLocaleMessages(path, uni.getLocale())
-		}, false);
-		// #endif
 	})
 
 	onShow(() => {
-
 	})
 
 	onHide(() => {
@@ -84,7 +82,7 @@
 </script>
 
 <style>
-	uni-page-head {
-		display: none !important;
-	}
+    uni-page-head {
+        display: none!important;
+    }
 </style>

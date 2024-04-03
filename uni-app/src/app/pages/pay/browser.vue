@@ -1,7 +1,6 @@
 <template>
-    <view class="w-screen h-screen bg-[#424040] text-right">
-        <image :src="img('static/resource/images/pay/invite_friends_share.png')" mode="heightFix"
-            class="pt-[30rpx] pr-[30rpx] h-[200rpx]"></image>
+    <view class="w-screen h-screen bg-[#424040] text-right" :style="themeColor()">
+        <image :src="img('static/resource/images/pay/invite_friends_share.png')" mode="heightFix" class="pt-[30rpx] pr-[30rpx] h-[200rpx]"/>
         <view class="text-white font-bold pt-[30rpx] pr-[30rpx]">点击右上角跳转到浏览器打开</view>
     </view>
 </template>
@@ -13,7 +12,7 @@
     onLoad((data : AnyObject) => {
         if (!isWeixinBrowser() && data.alipay) {
             uni.setStorageSync('paymenting', { trade_type: data.trade_type, trade_id: data.trade_id })
-            location.href = decodeURIComponent(data.alipay)
+            location.href = data.alipay
         }
     })
 </script>

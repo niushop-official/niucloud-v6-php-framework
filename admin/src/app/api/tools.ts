@@ -19,7 +19,6 @@ export function getAddontype() {
 
 /**
  * 获取插件详情
-
  * @returns
  */
 export function getAddonDevelopInfo(key: any) {
@@ -28,7 +27,6 @@ export function getAddonDevelopInfo(key: any) {
 
 /**
  * 获取插件key是否存在
-
  * @returns
  */
 export function getAddonDevelopCheck(key: any) {
@@ -77,9 +75,8 @@ export function addonDevelopBuild(key: any) {
  * @returns
  */
 export function addonDevelopDownload(key: any) {
-    return request.post(`addon_develop/download/${key}`, {}, {"responseType": "blob"})
+    return request.post(`addon_develop/download/${key}`, {})
 }
-
 /***************************************************** 代码生成 ****************************************************/
 
 /**
@@ -114,7 +111,7 @@ export function addGenerateTable(params: Record<string, any>) {
  * @param params
  */
 export function editGenerateTable(params: Record<string, any>) {
-    return request.put(`generator/generator/${params.id}`, params)
+    return request.put(`generator/generator/${params.id}`, params, {showSuccessMessage: true})
 }
 
 /**
@@ -177,4 +174,11 @@ export function getGeneratorTableColumn(params: any) {
  */
 export function generatorCheckFile(params: Record<string, any>) {
     return request.get(`generator/check_file`, {params})
+}
+
+/**
+ * 根据模型获取表字段
+ */
+export function getGeneratorModelTableColumn(params: any) {
+    return request.get(`generator/model_table_column`, {params})
 }

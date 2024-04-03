@@ -2,7 +2,7 @@
     <div class="main-container">
         <el-card class="box-card !border-none" shadow="never">
             <div class="flex justify-between items-center">
-                <span class="text-[20px]">{{ pageName }}</span>
+                <span class="text-page-title">{{ pageName }}</span>
                 <el-button type="primary" class="w-[100px]" @click="addEvent">{{ t('addRole') }}</el-button>
             </div>
 
@@ -105,7 +105,7 @@ const editRoleDialog: Record<string, any> | null = ref(null)
  * 添加角色
  */
 const addEvent = () => {
-    router.push({ path: '/setting/auth/role_edit' })
+    router.push({ path: '/auth/role_edit' })
 }
 
 /**
@@ -114,7 +114,7 @@ const addEvent = () => {
  */
 const editEvent = (role_id: any) => {
     router.push({
-        path: '/setting/auth/role_edit',
+        path: '/auth/role_edit',
         query: {
             role_id
         }

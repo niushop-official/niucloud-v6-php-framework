@@ -6,6 +6,7 @@ use app\dict\pay\OnlinePayDict;
 use app\dict\pay\RefundDict;
 use app\dict\pay\TransferDict;
 use core\exception\PayException;
+use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\ResponseInterface;
 use Throwable;
 use Yansongda\Pay\Exception\ContainerException;
@@ -34,6 +35,7 @@ class Alipay extends BasePay
         $config['app_public_cert_path'] = url_to_path($config['app_public_cert_path'] ?? '');
         $config['alipay_public_cert_path'] = url_to_path($config['alipay_public_cert_path'] ?? '');
         $config['alipay_root_cert_path'] = url_to_path($config['alipay_root_cert_path'] ?? '');
+        $config['mode'] = Pay::MODE_NORMAL;
         $this->config = $this->payConfig($config, 'alipay');
         Pay::config($this->config);
     }
@@ -50,10 +52,11 @@ class Alipay extends BasePay
      */
     public function web(array $params)
     {
-        return $this->returnUrl(Pay::alipay()->web([
+        return $this->returnFormat(Pay::alipay()->web([
             'out_trade_no' => $params['out_trade_no'],
             'total_amount' => $params['money'],
             'subject' => $params['boby'],
+            '_method' => 'get',
         ]));
     }
 
@@ -64,7 +67,7 @@ class Alipay extends BasePay
      */
     public function wap(array $params)
     {
-        return $this->returnUrl(Pay::alipay()->wap([
+        return $this->returnFormat(Pay::alipay()->h5([
             'out_trade_no' => $params['out_trade_no'],
             'total_amount' => $params['money'],
             'subject' => $params['boby'],
@@ -79,8 +82,9 @@ class Alipay extends BasePay
      * @return array
      */
     public function app(array $params)
+
     {
-        return $this->returnUrl(Pay::alipay()->app([
+        return $this->returnFormat(Pay::alipay()->app([
             'out_trade_no' => $params['out_trade_no'],
             'total_amount' => $params['money'],
             'subject' => $params['boby'],//用户付款中途退出返回商户网站的地址, 一般是商品详情页或购物车页
@@ -184,6 +188,9 @@ class Alipay extends BasePay
             'out_trade_no' => $out_trade_no,
         ]));
         //todo  支付宝关闭异步回调
+        if (isset($result['sub_code']) && in_array($result['sub_code'], ['ACQ.REASON_ILLEGAL_STATUS', 'ACQ.REASON_TRADE_STATUS_INVALID', 'ACQ.TRADE_NOT_EXIST', 'ACQ.TRADE_STATUS_ERROR'])) {
+            return true;
+        }
         if (!empty($result['msg']) && $result['msg'] == 'Success') {
             return true;
         } else {
@@ -224,7 +231,7 @@ class Alipay extends BasePay
             ];
         } else {
             //todo 这儿可以抛出错误
-            throw new PayException($result['msg']);
+            return false;
         }
     }
 
@@ -278,7 +285,7 @@ class Alipay extends BasePay
         $order = [
             'out_trade_no' => $out_trade_no,
         ];
-        $result = $this->returnFormat(Pay::alipay()->find($order));
+        $result = $this->returnFormat(Pay::alipay()->query($order));
         if (!empty($result['msg']) && $result['msg'] == 'Success') {
             return [
                 'status' => OnlinePayDict::getAliPayStatus($result['trade_status'])
@@ -306,10 +313,10 @@ class Alipay extends BasePay
         $order = [
             'out_trade_no' => $out_trade_no,
             'out_request_no' => $refund_no,
-            '_type' => 'refund',
+            '_action' => 'refund', // 默认值，查询退款网页订单
         ];
 
-        $result = $this->returnFormat(Pay::alipay()->find($order));
+        $result = $this->returnFormat(Pay::alipay()->query($order));
         if (!empty($result['msg']) && $result['msg'] == 'Success') {
             $refund_status = $result['refund_status'] ?? '';
             if ($refund_status == 'REFUND_SUCCESS') {
@@ -339,13 +346,13 @@ class Alipay extends BasePay
      * @throws InvalidParamsException
      * @throws ServiceNotFoundException
      */
-    public function getTransfer(string $transfer_no)
+    public function getTransfer(string $transfer_no, $out_transfer_no = '')
     {
         $order = [
             'out_biz_no' => $transfer_no,
-            '_type' => 'transfer'
+            '_action' => 'transfer'
         ];
-        $result = $this->returnFormat(Pay::alipay()->find($order));
+        $result = $this->returnFormat(Pay::alipay()->query($order));
         if (!empty($result['msg']) && $result['msg'] == 'Success') {
             $status = $result['SUCCESS'] ?? '';
             $status_array = array(
@@ -374,6 +381,6 @@ class Alipay extends BasePay
 
     public function returnUrl($params)
     {
-        return ['url' => $params->getHeader('Location')[0]];
+        return ['url' => $params->getHeader('Location')[0] ?? ''];
     }
 }

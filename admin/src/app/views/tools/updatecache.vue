@@ -1,13 +1,13 @@
 <template>
     <div class="main-container h-[500px] w-full p-5 bg-white" v-loading="loading">
         <div class="flex flex-wrap px-2 plug-list pb-10">
-            <div class="flex items-center bg-[#F7F8FA] p-3 w-[295px] relative plug-item mr-4 mb-4 cursor-pointer">
-                <div class="flex flex-col ml-2">
-                    <span class="text-sm truncate w-[190px]">{{t('refreshMenu')}}</span>
-                    <span class="text-xs text-gray-400 mt-1 truncate w-[190px]" :title="t('refreshMenuDesc')">{{t('refreshMenuDesc')}}</span>
-                </div>
-                <span class="plug-item-operate" @click="refreshMenu()">{{t('resetting')}}</span>
-            </div>
+           <div class="flex items-center bg-[#F7F8FA] p-3 w-[295px] relative plug-item mr-4 mb-4 cursor-pointer">
+               <div class="flex flex-col ml-2">
+                   <span class="text-sm truncate w-[190px]">{{t('refreshMenu')}}</span>
+                   <span class="text-xs text-gray-400 mt-1 truncate w-[190px]" :title="t('refreshMenuDesc')">{{t('refreshMenuDesc')}}</span>
+               </div>
+               <span class="plug-item-operate" @click="refreshMenu()">{{t('refresh')}}</span>
+           </div>
 
             <div class="flex items-center bg-[#F7F8FA] p-3 w-[295px] relative plug-item mr-4 mb-4 cursor-pointer">
                 <div class="flex flex-col ml-2">
@@ -32,10 +32,6 @@ const schemaCache = () => {
     loading.value = true
     clearSchemaCache({}).then(res => {
         loading.value = false
-        setTimeout(() => {
-		  // 需要定时执行的代码
-		  location.reload()
-        }, 500)
     }).catch(() => {
         loading.value = false
     })
@@ -44,13 +40,9 @@ const schemaCache = () => {
 const refreshMenu = () => {
     loading.value = true
     menuRefresh({}).then(res => {
-	    loading.value = false
-        setTimeout(() => {
-		  // 需要定时执行的代码
-		  location.reload()
-        }, 500)
+        loading.value = false
     }).catch(() => {
-	    loading.value = false
+        loading.value = false
     })
 }
 

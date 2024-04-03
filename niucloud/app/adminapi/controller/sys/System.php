@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的多应用管理平台
+// | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud.com
+// | 官方网址：https://www.niucloud-admin.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -28,7 +28,7 @@ class System extends BaseAdminController
      */
     public function info()
     {
-        return success(( new SystemService() )->getInfo());
+        return success((new SystemService())->getInfo());
     }
 
     /**
@@ -37,7 +37,7 @@ class System extends BaseAdminController
      */
     public function url()
     {
-        return success(( new SystemService() )->getUrl());
+        return success((new SystemService())->getUrl());
     }
 
     /**
@@ -46,7 +46,7 @@ class System extends BaseAdminController
      */
     public function getSystemInfo()
     {
-        return success(( new SystemService() )->getSystemInfo());
+        return success((new SystemService())->getSystemInfo());
     }
 
     /**
@@ -55,7 +55,7 @@ class System extends BaseAdminController
     public function schemaCache()
     {
 
-        return success(( new SystemService() )->schemaCache());
+        return success((new SystemService())->schemaCache());
     }
 
     /**
@@ -64,7 +64,7 @@ class System extends BaseAdminController
      */
     public function checkJob()
     {
-        return success(data: ( new SystemService() )->checkJob());
+        return success(data: (new SystemService())->checkJob());
     }
 
     /**
@@ -73,15 +73,14 @@ class System extends BaseAdminController
      */
     public function checkSchedule()
     {
-        return success(data: ( new SystemService() )->checkSchedule());
+        return success(data: (new SystemService())->checkSchedule());
     }
 
     /**
      * 获取布局
      * @return Response
      */
-    public function layout()
-    {
+    public function layout() {
         $layouts = event('SiteLayout');
         if (count($layouts) > 1) {
             array_multisort(array_column($layouts, 'sort'), SORT_ASC, $layouts);
@@ -94,10 +93,9 @@ class System extends BaseAdminController
      * 设置布局
      * @return Response
      */
-    public function setLayout()
-    {
+    public function setLayout(){
         $key = input('key', '');
-        return success(data: ( new SystemService() )->setLayout($key));
+        return success(data: (new SystemService())->setLayout($key));
     }
 
     /**

@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的多应用管理平台
+// | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud.com
+// | 官方网址：https://www.niucloud-admin.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -11,7 +11,6 @@
 
 namespace app\validate\member;
 
-use core\base\BaseValidate;
 use think\facade\Lang;
 use think\Validate;
 
@@ -20,7 +19,7 @@ use think\Validate;
  * Class LoginConfig
  * @package app\validate\member
  */
-class MemberConfig extends BaseValidate
+class MemberConfig extends Validate
 {
     protected $rule = [
         'length' => 'number|checkLength'
