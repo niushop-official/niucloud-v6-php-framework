@@ -33,7 +33,9 @@ export function logout() {
  */
 export function usernameRegister(data : AnyObject) {
     let url = 'register'
-    data.pid && (url += `?pid=${data.pid}`)
+    if(uni.getStorageSync('pid')){
+        data.pid = uni.getStorageSync('pid');
+    }
     return request.post(url, data, { showErrorMessage: true })
 }
 
@@ -42,8 +44,24 @@ export function usernameRegister(data : AnyObject) {
  */
 export function mobileRegister(data : AnyObject) {
     let url = 'register/mobile'
-    data.pid && (url += `?pid=${data.pid}`)
+    if(uni.getStorageSync('pid')){
+        data.pid = uni.getStorageSync('pid');
+    }
     return request.post(url, data, { showErrorMessage: true })
+}
+
+/**
+ * 微信公众号授权信息
+ */
+export function wechatUser(data : AnyObject) {
+    return request.get('wechat/user', data, { showErrorMessage: false })
+}
+
+/**
+ * 微信公众号授权信息登录（openid）
+ */
+export function wechatUserLogin(data : AnyObject) {
+    return request.post('wechat/userlogin', data, { showErrorMessage: true })
 }
 
 /**
@@ -54,7 +72,7 @@ export function wechatLogin(data : AnyObject) {
 }
 
 /**
- * 微信公众号授权登录
+ * 微信小程序授权登录
  */
 export function weappLogin(data : AnyObject) {
     return request.post('weapp/login', data, { showErrorMessage: false })
@@ -65,7 +83,9 @@ export function weappLogin(data : AnyObject) {
  */
 export function bind(data : AnyObject) {
     let url = 'bind'
-    data.pid && (url += `?pid=${data.pid}`)
+    if(uni.getStorageSync('pid')){
+        data.pid = uni.getStorageSync('pid');
+    }
     return request.post(url, data, { showErrorMessage: true })
 }
 

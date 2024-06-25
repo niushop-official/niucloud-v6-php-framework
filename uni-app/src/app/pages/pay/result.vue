@@ -45,32 +45,31 @@
      * 获取支付信息
      */
     const getPayInfo = () => {
-        getPayInfoApi(tradeType, tradeId)
-            .then((res : responseResult) => {
-                if (!uni.$u.test.isEmpty(res.data)) {
-                    if (res.data.status == 1 && requestNum < 5) {
-                        loading.value = true
-                        requestNum++
-                        setTimeout(() => {
-                            getPayInfo()
-                        }, 1000)
-                        return
-                    }
-                    payInfo.value = res.data
-                    loading.value = false
-                    uni.setNavigationBarTitle({
-                        title: payInfo.value.status == 2 ? t('pay.paySuccess') : t('pay.payFail')
-                    })
+        getPayInfoApi(tradeType, tradeId).then((res: responseResult) => {
+            if (!uni.$u.test.isEmpty(res.data)) {
+                if (res.data.status == 1 && requestNum < 5) {
+                    loading.value = true
+                    requestNum++
+                    setTimeout(() => {
+                        getPayInfo()
+                    }, 1000)
+                    return
                 }
-            }).catch(() => {
+                payInfo.value = res.data
+                loading.value = false
+                uni.setNavigationBarTitle({
+                    title: payInfo.value.status == 2 ? t('pay.paySuccess') : t('pay.payFail')
+                })
+            }
+        }).catch(() => {
 
-            })
+        })
     }
 
     const complete = () => {
         const payReturn = decodeURIComponent(uni.getStorageSync('payReturn'))
-        if (payReturn) redirect({ url: payReturn, mode: 'redirectTo' })
-        else redirect({ url: getFirstPage(), param: { code: payInfo.value?.out_trade_no }, mode: 'redirectTo' })
+        if (payReturn) redirect({ url: payReturn, mode: 'reLaunch' })
+        else redirect({ url: getFirstPage(), param: { code: payInfo.value?.out_trade_no }, mode: 'reLaunch' })
     }
 </script>
 

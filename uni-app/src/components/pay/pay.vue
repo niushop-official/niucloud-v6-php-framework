@@ -1,7 +1,6 @@
 <template>
-	<u-popup :show="show" :round="10" @close="handleClose" :closeable="true" bgColor="#fff" zIndex="10081"
-		:closeOnClickOverlay="false">
-		<view class="flex flex-col h-[75vh]" v-if="payInfo">
+	<u-popup :show="show" :round="10" @close="handleClose" :closeable="true" bgColor="#fff" zIndex="10081" :closeOnClickOverlay="false">
+		<view class="flex flex-col h-[75vh]" v-if="payInfo" @touchmove.prevent.stop>
 			<view class="head">
 				<view class="text-center py-[26rpx]">{{ t('pay.payTitle') }}</view>
 				<view class="flex items-end justify-center w-full text-xl font-bold py-[20rpx]">
@@ -12,12 +11,11 @@
 			<scroll-view scroll-y="true" class="flex-1 pt-[20rpx]">
 				<view class="flex text-sm px-[30rpx] py-[20rpx]">
 					<view class="text-gray-500">{{ t('pay.orderInfo') }}</view>
-					<view class="text-right flex-1 pl-[30rpx] truncate">{{ payInfo.body }}</view>
+					<view class="text-right flex-1 pl-[30rpx] using-hidden">{{ payInfo.body }}</view>
 				</view>
 				<view class="mx-[30rpx] py-[10rpx] px-[30rpx] bg-white rounded-md bg-page">
                     <block v-if="payInfo.pay_type_list.length">
-                        <view class="pay-item py-[18rpx] flex items-center border-0 border-b border-solid border-[#eee]"
-                            v-for="(item, index) in payInfo.pay_type_list" :key="index" @click="type = item.key">
+                        <view class="pay-item py-[18rpx] flex items-center border-0 border-b border-solid border-[#eee]" v-for="(item, index) in payInfo.pay_type_list" :key="index" @click="type = item.key">
                             <u-image :src="img(item.icon)" width="50rpx" height="50rpx"></u-image>
                             <view class="flex-1 px-[20rpx] text-sm font-bold">{{ item.name }}</view>
                             <u-icon name="checkbox-mark" color="var(--primary-color)" v-if="item.key == type"></u-icon>
@@ -27,8 +25,7 @@
 				</view>
 			</scroll-view>
 			<view class="p-[30rpx]">
-				<u-button type="primary" :loading="loading" :text="t('pay.confirmPay')" shape="circle"
-					@click="confirmPay"></u-button>
+				<u-button type="primary" :loading="loading" :text="t('pay.confirmPay')" shape="circle" @click="confirmPay"></u-button>
 			</view>
 		</view>
 	</u-popup>
@@ -65,7 +62,8 @@
 		pay({
 			trade_type: payInfo.value?.trade_type,
             trade_id: payInfo.value?.trade_id,
-			type: type.value
+			type: type.value,
+            openid: uni.getStorageSync('openid') || ''
 		}).then(res => {
 			switch (type.value) {
 				case 'wechatpay':
@@ -111,6 +109,16 @@
 					// #endif
 					break;
 				default:
+                    if (res.data.url) {
+                        redirect({
+                            url: res.data.url,
+                            param: res.data.param || {},
+                            mode: 'redirectTo',
+                            success() {
+                            }
+                        })
+                        return
+                    }
                     toPayResult()
 			}
 		}).catch(() => {
@@ -137,8 +145,10 @@
 			})
 		}
 	})
-
+	const repeat = ref(false)
 	const open = (tradeType : string, tradeId : number, payReturn: string = '') => {
+		if (repeat.value) return
+		repeat.value = true
         // 设置支付后跳转页面
         uni.setStorageSync('payReturn', encodeURIComponent(payReturn))
 
@@ -155,11 +165,14 @@
                     toPayResult()
 					return
 				}
-
 				type.value = data.pay_type_list[0] ? data.pay_type_list[0].key : ''
 				show.value = true
+				repeat.value = false
+
 			})
-			.catch(() => { })
+			.catch(() => {
+				repeat.value = false
+			})
 	}
 
     const toPayResult = ()=> {
