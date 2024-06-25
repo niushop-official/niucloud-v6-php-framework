@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -23,6 +23,8 @@ Route::group('diy', function() {
     Route::get('diy', 'diy.Diy/info');
 
     Route::get('tabbar', 'diy.Diy/tabbar');
+
+    Route::get('tabbar/list', 'diy.Diy/tabbarList');
 
     Route::get('share', 'diy.Diy/share');
 

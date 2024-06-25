@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -30,7 +30,19 @@ class Diy extends BaseApiController
             [ 'id', '' ],
             [ 'name', '' ]
         ]);
-        return success((new DiyService())->getInfo($params));
+        return success(( new DiyService() )->getInfo($params));
+    }
+
+    /**
+     * 底部菜单信息
+     * @return Response
+     */
+    public function tabbarList()
+    {
+        $params = $this->request->params([
+            [ 'key', '' ],
+        ]);
+        return success(( new DiyConfigService() )->getBottomList($params));
     }
 
     /**
@@ -42,7 +54,7 @@ class Diy extends BaseApiController
         $params = $this->request->params([
             [ 'key', 'app' ],
         ]);
-        return success((new DiyConfigService())->getBottomConfig($params[ 'key' ]));
+        return success(( new DiyConfigService() )->getBottomConfig($params[ 'key' ]));
     }
 
     /**
@@ -55,6 +67,6 @@ class Diy extends BaseApiController
             [ 'route', '' ],
             [ 'params', '' ]
         ]);
-        return success((new DiyRouteService())->getShare($data));
+        return success(( new DiyRouteService() )->getShare($data));
     }
 }

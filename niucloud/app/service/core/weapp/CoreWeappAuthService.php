@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -11,13 +11,10 @@
 
 namespace app\service\core\weapp;
 
+use app\service\core\wxoplatform\CoreOplatformService;
 use core\base\BaseCoreService;
 use EasyWeChat\Kernel\Exceptions\DecryptException;
 use EasyWeChat\Kernel\Exceptions\InvalidArgumentException;
-use EasyWeChat\Kernel\Exceptions\InvalidConfigException;
-use EasyWeChat\Kernel\Support\Collection;
-use GuzzleHttp\Exception\GuzzleException;
-use Psr\Http\Message\ResponseInterface;
 
 /**
  * 微信小程序服务提供
@@ -42,8 +39,13 @@ class CoreWeappAuthService extends BaseCoreService
      */
     public function session(?string $code)
     {
-        $utils = CoreWeappService::app()->getUtils();
-        return $utils->codeToSession($code);
+        $config = (new CoreWeappConfigService())->getWeappConfig();
+        if ($config['is_authorization']) {
+            return CoreOplatformService::codeToSession($code);
+        } else {
+            $utils = CoreWeappService::app()->getUtils();
+            return $utils->codeToSession($code);
+        }
     }
 
     /**

@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -12,13 +12,11 @@
 namespace app\service\api\login;
 
 use app\dict\common\ChannelDict;
-use app\dict\site\SiteDict;
 use app\model\member\Member;
 use app\Request;
 use app\service\api\member\MemberService;
 use app\service\core\channel\CoreH5Service;
 use app\service\core\channel\CorePcService;
-use app\service\core\site\CoreSiteService;
 use app\service\core\weapp\CoreWeappAuthService;
 use core\base\BaseApiService;
 use core\exception\ApiException;
@@ -80,6 +78,7 @@ class AuthService extends BaseApiService
         if(empty($mobile)){
             $result = (new CoreWeappAuthService())->getUserPhoneNumber($mobile_code);
             if(empty($result)) throw new ApiException('WECHAT_EMPOWER_NOT_EXIST');
+            if ($result[ 'errcode' ] != 0) throw new ApiException($result[ 'errmsg' ]);
             $phone_info = $result['phone_info'];
             $mobile = $phone_info['purePhoneNumber'];
             if(empty($mobile)) throw new ApiException('WECHAT_EMPOWER_NOT_EXIST');

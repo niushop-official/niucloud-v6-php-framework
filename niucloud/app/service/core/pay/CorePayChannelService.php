@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -54,7 +54,7 @@ class CorePayChannelService extends BaseCoreService
      * @throws ModelNotFoundException
      */
     public function getAllowPayTypeByChannel(string $channel, string $trade_type = ''){
-        $channel_pay_list = $this->model->where([ ['channel', '=', $channel], ['status', '=', 1]])->field('type,config')->order('sort asc')->select()->toArray();
+        $channel_pay_list = $this->model->where([['channel', '=', $channel], ['status', '=', 1]])->field('type,config')->order('sort asc')->select()->toArray();
 
         if(!empty($channel_pay_list)){
             $temp_channel_pay_list = array_column($channel_pay_list, 'type');

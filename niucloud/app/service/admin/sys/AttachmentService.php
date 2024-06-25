@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -118,7 +118,7 @@ class AttachmentService extends BaseAdminService
      */
     public function getPage(array $data)
     {
-        $where = [];
+        $where = array ();
         if (!empty($data[ 'att_type' ])) {
             $where[] = [ 'att_type', '=', $data[ 'att_type' ] ];
         }
@@ -206,7 +206,8 @@ class AttachmentService extends BaseAdminService
      */
     public function getCategoryPage(array $data)
     {
-        $where = [];
+        $where = array (
+        );
         if (!empty($data[ 'type' ])) {
             $where[] = [ 'type', '=', $data[ 'type' ] ];
         }
@@ -226,7 +227,7 @@ class AttachmentService extends BaseAdminService
      */
     public function getCategoryList(array $data)
     {
-        $where =[];
+        $where = array ();
         if (!empty($data[ 'type' ])) {
             $where[] = [ 'type', '=', $data[ 'type' ] ];
         }
@@ -278,7 +279,7 @@ class AttachmentService extends BaseAdminService
             foreach ($icon as $ck => $cv) {
                 // 素材表中数据保持要一致
                 $icon[ $ck ][ 'att_id' ] = $cv[ 'icon_id' ];
-                $icon[ $ck ][ 'url' ] = $v[ 'font_family' ] . '-' . $v[ 'css_prefix_text' ] . $cv[ 'font_class' ];
+                $icon[ $ck ][ 'url' ] = $v[ 'font_family' ] . ' ' . $v[ 'css_prefix_text' ] . $cv[ 'font_class' ];
                 $icon[ $ck ][ 'real_name' ] = $cv[ 'name' ];
 
                 // 查询名称

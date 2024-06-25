@@ -308,16 +308,17 @@ class ModelGenerator extends BaseGenerator
      */
     public function getSoftDeleteFunction()
     {
-        $data = [];
+        $data = [
+            'softDelete' => '',
+            'deleteColumn' => '',
+            'deleteColumnValue' => '',
+        ];
         foreach ($this->tableColumn as $column) {
-            if ($column['is_delete'] == 0) {
-                $data['softDelete'] = '';
-                $data['deleteColumn'] = '';
-                $data['deleteColumnValue'] = '';
-            }else{
+            if ($column['is_delete']) {
                 $data['softDelete'] = ' use SoftDelete;';
                 $data['deleteColumn'] = '/**'.PHP_EOL.'    * 定义软删除标记字段.'.PHP_EOL.'    * @var string'.PHP_EOL.'    */'.PHP_EOL.'    protected $deleteTime = '."'".$column['column_name']."';";
                 $data['deleteColumnValue'] = '/**'.PHP_EOL.'    * 定义软删除字段的默认值.'.PHP_EOL.'    * @var int'.PHP_EOL.'    */'.PHP_EOL.'    protected $defaultSoftDelete = 0;';
+                break;
             }
         }
         return $data;
@@ -378,7 +379,7 @@ class ModelGenerator extends BaseGenerator
             if (!empty($column['model'])) {
                 $str = strripos($column['model'],'\\');
                 $model = substr($column['model'],$str+1);
-               $content .= PHP_EOL.'    public function '.Str::camel($model).'(){'.PHP_EOL.'       return $this->hasOne('.$model.'::class, '."'".$column['column_name']."', '".$column['value_key']."')->joinType('left')->withField('".$column['label_key'].','.$column['value_key']."'".")->bind(['".$column['column_name'].'_name'."'".'=>'."'".$column['label_key']."'"."]);".PHP_EOL.'    }'.PHP_EOL;
+               $content .= PHP_EOL.'    public function '.Str::camel($model).'(){'.PHP_EOL.'       return $this->hasOne('.$model.'::class, '."'".$column['value_key']."', '".$column['column_name']."')->joinType('left')->withField('".$column['label_key'].','.$column['value_key']."'".")->bind(['".$column['column_name'].'_name'."'".'=>'."'".$column['label_key']."'"."]);".PHP_EOL.'    }'.PHP_EOL;
             }
         }
         return $content;

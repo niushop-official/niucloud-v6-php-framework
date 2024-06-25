@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -11,7 +11,6 @@
 
 namespace app\service\core\sys;
 
-use app\service\core\site\CoreSiteService;
 use core\base\BaseCoreService;
 
 /**
@@ -31,7 +30,8 @@ class CoreSysConfigService extends BaseCoreService
      * 暂用于单站点业务(不适用于命令行模式)
      * @return array
      */
-    public function getSceneDomain(){
+    public function getSceneDomain()
+    {
         $wap_domain = !empty(env("system.wap_domain")) ? preg_replace('#/$#', '', env("system.wap_domain")) : request()->domain();
         $web_domain = !empty(env("system.web_domain")) ? preg_replace('#/$#', '', env("system.web_domain")) : request()->domain();
 
@@ -47,11 +47,10 @@ class CoreSysConfigService extends BaseCoreService
      */
     public function getCopyright()
     {
-        $info = (new CoreConfigService())->getConfig('COPYRIGHT');
-        if(empty($info))
-        {
+        $info = ( new CoreConfigService() )->getConfig('COPYRIGHT');
+        if (empty($info)) {
             $info = [];
-            $info['value'] = [
+            $info[ 'value' ] = [
                 'icp' => '',
                 'gov_record' => '',
                 'gov_url' => '',
@@ -62,7 +61,7 @@ class CoreSysConfigService extends BaseCoreService
                 'copyright_desc' => ''
             ];
         }
-        return $info['value'];
+        return $info[ 'value' ];
     }
 
     /**
@@ -89,5 +88,29 @@ class CoreSysConfigService extends BaseCoreService
 
         $index_list = array_values($index_list);
         return $index_list;
+    }
+
+    /**
+     * 获取地图key
+     * @return array|mixed
+     */
+    public function getMap()
+    {
+        $info = ( new CoreConfigService() )->getConfig('MAPKEY');
+        if (empty($info)) {
+            $info = [];
+            $info[ 'value' ] = [
+                'is_open' => 1, // 是否开启定位
+                'valid_time' => 5 // 定位有效期/分钟，过期后将重新获取定位信息，0为不过期
+            ];
+        }
+
+        // 前端不展示关键信息
+        if (!empty($info[ 'value' ][ 'key' ])) {
+            unset($info[ 'value' ][ 'key' ]);
+        }
+        $info[ 'value' ][ 'is_open' ] = $info[ 'value' ][ 'is_open' ] ?? 1;
+        $info[ 'value' ][ 'valid_time' ] = $info[ 'value' ][ 'valid_time' ] ?? 5;
+        return $info[ 'value' ];
     }
 }

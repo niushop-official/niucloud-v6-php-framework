@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -29,14 +29,9 @@ Route::group('auth', function () {
     //授权用户信息
     Route::get('get', 'auth.Auth/get');
     //授权用户信息
-    Route::put('modify/:field', 'auth.Auth/modify');
-    //授权用户信息
     Route::put('edit', 'auth.Auth/edit');
-    //授权站点信息
-    Route::get('site', 'auth.Auth/site');
-    //站点可以显示的菜单
-    Route::get('site/showmenu', 'auth.Auth/getShowMenuList');
-
+    //授权用户信息
+    Route::put('modify/:field', 'auth.Auth/modify');
 })->middleware([
     AdminCheckToken::class,
     AdminCheckRole::class,

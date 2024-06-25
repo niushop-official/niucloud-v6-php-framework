@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -76,7 +76,7 @@ class CoreMemberAccountService extends BaseCoreService
                 $account_type => $account_new_data,
                 $account_type."_get" => $account_type_get
             ];
-            event("memberAccount", $data);
+            event("MemberAccount", $data);
             Db::commit();
             return $res->id;
         } catch ( Exception $e) {

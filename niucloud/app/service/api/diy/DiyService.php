@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -52,7 +52,7 @@ class DiyService extends BaseApiService
             }
         }
 
-        if (!empty($start_up_page) && !empty($page_template) && !empty($start_up_page[ 'page' ]) && $start_up_page[ 'page' ] != $page_template[ 'page' ]) {
+        if (empty($params[ 'id' ]) && !empty($start_up_page) && !empty($page_template) && !empty($start_up_page[ 'page' ]) && $start_up_page[ 'page' ] != $page_template[ 'page' ]) {
             $info = $start_up_page;
             return $info;
         } else {

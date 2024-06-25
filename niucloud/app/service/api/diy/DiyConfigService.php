@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -13,7 +13,6 @@ namespace app\service\api\diy;
 
 use app\service\core\addon\CoreAddonService;
 use app\service\core\diy\CoreDiyConfigService;
-use app\service\core\site\CoreSiteService;
 use core\base\BaseApiService;
 
 /**
@@ -25,6 +24,35 @@ class DiyConfigService extends BaseApiService
 {
 
     /**
+     * 获取底部导航列表
+     * @param array $params
+     * @return array|mixed
+     */
+    public function getBottomList($params = [])
+    {
+        $list = ( new CoreDiyConfigService() )->getBottomList($params);
+
+        $apps = ( new CoreAddonService() )->getList([ [ 'type', '=', 'app' ] ]);
+
+        // 单应用，排除 系统 底部导航设置
+        if (count($apps) == 1) {
+            foreach ($list as $k => $v) {
+                if ($v[ 'key' ] = 'app') {
+                    unset($list[ $k ]);
+                    break;
+                }
+            }
+            $list = array_values($list);
+        }
+
+        $res = [];
+        foreach ($list as $k => $v) {
+            $res[] = $this->getBottomConfig($v[ 'key' ]);
+        }
+        return $res;
+    }
+
+    /**
      * 获取底部导航配置
      * @param $key
      * @return array
@@ -33,12 +61,12 @@ class DiyConfigService extends BaseApiService
     {
         // 检测当前站点是多应用还是单应用
         if ($key == 'app') {
-            $apps = (new CoreAddonService())->getList([ ['type', '=', 'app'] ]);
+            $apps = ( new CoreAddonService() )->getList([ [ 'type', '=', 'app' ] ]);
             if (count($apps) == 1) {
                 $key = $apps[ 0 ][ 'key' ];
             }
         }
-        return (new CoreDiyConfigService())->getBottomConfig($key);
+        return ( new CoreDiyConfigService() )->getBottomConfig($key);
     }
 
     /**
@@ -47,7 +75,7 @@ class DiyConfigService extends BaseApiService
      */
     public function getStartUpPageConfig($type)
     {
-        return (new CoreDiyConfigService())->getStartUpPageConfig($type);
+        return ( new CoreDiyConfigService() )->getStartUpPageConfig($type);
     }
 
 }

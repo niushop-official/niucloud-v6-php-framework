@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -14,7 +14,6 @@ namespace app\service\admin\diy;
 use app\model\sys\SysConfig;
 use app\service\core\addon\CoreAddonService;
 use app\service\core\diy\CoreDiyConfigService;
-use app\service\core\site\CoreSiteService;
 use core\base\BaseAdminService;
 use think\Model;
 
@@ -33,19 +32,19 @@ class DiyConfigService extends BaseAdminService
      */
     public function getBottomList($params = [])
     {
-        $list = (new CoreDiyConfigService())->getBottomList($params);
+        $list = ( new CoreDiyConfigService() )->getBottomList($params);
 
         $apps = (new CoreAddonService())->getList([ ['type', '=', 'app'] ]);
 
         // 单应用，排除 系统 底部导航设置
         if (count($apps) == 1) {
-            foreach ($list as $k=>$v){
-                if($v['key'] = 'app'){
-                    unset($list[$k]);
+            foreach ($list as $k => $v) {
+                if ($v[ 'key' ] = 'app') {
+                    unset($list[ $k ]);
                     break;
                 }
             }
-            $list  = array_values($list);
+            $list = array_values($list);
         }
         return $list;
     }
@@ -57,7 +56,7 @@ class DiyConfigService extends BaseAdminService
      */
     public function getBottomConfig($key)
     {
-        return (new CoreDiyConfigService())->getBottomConfig($key);
+        return ( new CoreDiyConfigService() )->getBottomConfig($key);
     }
 
     /**
@@ -68,7 +67,7 @@ class DiyConfigService extends BaseAdminService
      */
     public function setBottomConfig($data, $key)
     {
-        return (new CoreDiyConfigService())->setBottomConfig($data, $key);
+        return ( new CoreDiyConfigService() )->setBottomConfig($data, $key);
     }
 
     /**
@@ -78,7 +77,7 @@ class DiyConfigService extends BaseAdminService
      */
     public function setStartUpPageConfig($data)
     {
-        return (new CoreDiyConfigService())->setStartUpPageConfig($data);
+        return ( new CoreDiyConfigService() )->setStartUpPageConfig($data);
     }
 
     /**
@@ -88,7 +87,7 @@ class DiyConfigService extends BaseAdminService
      */
     public function getStartUpPageConfig($name)
     {
-        return (new CoreDiyConfigService())->getStartUpPageConfig($name);
+        return ( new CoreDiyConfigService() )->getStartUpPageConfig($name);
     }
 
 }

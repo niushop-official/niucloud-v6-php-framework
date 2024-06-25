@@ -90,7 +90,7 @@ class AdminApiRouteGenerator extends BaseGenerator
         {
             $file = $dir.DIRECTORY_SEPARATOR.'niucloud'.DIRECTORY_SEPARATOR.'addon'.DIRECTORY_SEPARATOR.$this->addonName.DIRECTORY_SEPARATOR.'app'.DIRECTORY_SEPARATOR.'adminapi'.DIRECTORY_SEPARATOR.'route'.DIRECTORY_SEPARATOR.'route.php';
         }else{
-            $file = $dir.DIRECTORY_SEPARATOR.'niucloud'.DIRECTORY_SEPARATOR.'app'.DIRECTORY_SEPARATOR.'adminapi'.DIRECTORY_SEPARATOR.'route'.DIRECTORY_SEPARATOR."$this->moduleName".'php';
+            $file = $dir.DIRECTORY_SEPARATOR.'niucloud'.DIRECTORY_SEPARATOR.'app'.DIRECTORY_SEPARATOR.'adminapi'.DIRECTORY_SEPARATOR.'route'.DIRECTORY_SEPARATOR."$this->moduleName".'.php';
         }
 
         if(file_exists($file))
@@ -318,8 +318,8 @@ use app\adminapi\middleware\AdminLog;";
         foreach ($this->tableColumn as $column) {
             if (!empty($column['model'])) {
                 $str = strripos($column['model'],'\\');
-                $with = Str::camel(substr($column['model'],$str+1));
-                $content.= PHP_EOL.'    Route::get('."'".$with."'".','."'".$route_path.'get'.Str::studly($with).'All'."'".');'.PHP_EOL;
+                $with = Str::snake(substr($column['model'],$str+1)) . '_all';
+                $content.= PHP_EOL.'    Route::get('."'".$with."'".','."'".$route_path.'get'.Str::studly($with)."'".');'.PHP_EOL;
             }
         }
         return $content;

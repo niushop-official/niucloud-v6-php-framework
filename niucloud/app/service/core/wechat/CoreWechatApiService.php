@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -12,7 +12,6 @@
 namespace app\service\core\wechat;
 
 use core\base\BaseCoreService;
-use EasyWeChat\Kernel\Exceptions\InvalidArgumentException;
 use EasyWeChat\Kernel\Exceptions\InvalidConfigException;
 use GuzzleHttp\Exception\GuzzleException;
 
@@ -54,7 +53,7 @@ class CoreWechatApiService extends BaseCoreService
             ]
         );
     }
-    
+
     /**
      * 用户列表(可以再外部设计一个递归查询全部的函数)  返回的是 openid
      */

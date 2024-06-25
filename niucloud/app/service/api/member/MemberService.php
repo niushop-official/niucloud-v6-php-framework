@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -62,7 +62,7 @@ class MemberService extends BaseApiService
     public function getInfo()
     {
         $field = 'member_id, username, member_no, mobile, register_channel, nickname, headimg, member_level, member_label, login_ip, login_type, login_time, create_time, last_visit_time, last_consum_time, sex, status, birthday, point, balance, growth, is_member, member_time, is_del, province_id, city_id, district_id, address, location, money, money_get, wx_openid, weapp_openid, commission, commission_get, commission_cash_outing';
-        return $this->model->where([['member_id', '=', $this->member_id]])->field($field)->append(['sex_name'])->findOrEmpty()->toArray();
+        return $this->model->where([['member_id', '=', $this->member_id]])->with(['member_level_name_bind'])->field($field)->append(['sex_name'])->findOrEmpty()->toArray();
     }
 
     /**
@@ -95,7 +95,9 @@ class MemberService extends BaseApiService
         //微信小程序openid
         if(!empty($data['weapp_openid']))
             $where[] = ['weapp_openid', '=', $data['weapp_openid']];
-
+        // 微信unionid
+        if(!empty($data['wx_unionid']))
+            $where[] = ['wx_unionid', '=', $data['wx_unionid']];
         if(!empty($data['username|mobile']))
             $where[] = ['username|mobile', '=', $data['username|mobile']];
         if(empty($where)){

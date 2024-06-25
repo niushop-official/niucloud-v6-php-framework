@@ -114,14 +114,12 @@ class WebApiGenerator extends BaseGenerator
 
             $content = file_get_contents($file);
             $code_begin = 'USER_CODE_BEGIN -- '.$this->getTableName() . PHP_EOL;
-            $code_end = 'USER_CODE_END -- '.$this->getTableName(). PHP_EOL;
-
+            $code_end = 'USER_CODE_END -- '.$this->getTableName() . PHP_EOL;
             if(strpos($content,$code_begin) !== false && strpos($content,$code_end) !== false)
             {
                 // 清除相应对应代码块
                 $pattern = "/\/\/\s+{$code_begin}[\S\s]+{$code_end}?/";
                 $import = preg_replace($pattern, '', $content);
-
             }else{
                 $import = $content;
             }
@@ -255,20 +253,14 @@ class WebApiGenerator extends BaseGenerator
         foreach ($this->tableColumn as $column) {
             if (!empty($column['model'])) {
                 $str = strripos($column['model'],'\\');
-                $with[] = Str::camel(substr($column['model'],$str+1));
+                $with[] = Str::snake(substr($column['model'],$str+1));
             }
         }
         if(!empty($with))
         {
-//            $str = strripos($column['model'],'\\');
-//            $with = Str::camel(substr($column['model'],$str+1));
-//            $content.= ' get'.Str::studly($with).'List,';
-//            export function getCompanyList(params: Record<string, any>) {
-//            return request.get(`shop/delivery/company`, {params})
-//            } $with = Str::camel(substr($column['model'],$str+1));
             foreach ($with as $value)
             {
-                $content.= 'export function getWith'.Str::studly($value).'List(params: Record<string,any>){'.PHP_EOL."    return request.get('".$moduleName.'/'.$value."', {params})".PHP_EOL.'}';
+                $content.= 'export function getWith'.Str::studly($value).'List(params: Record<string,any>){'.PHP_EOL."    return request.get('".$moduleName.'/'.$value."_all', {params})".PHP_EOL.'}';
             }
         }
         return $content;

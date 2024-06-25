@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -35,7 +35,7 @@ class CoreUploadConfigService extends BaseCoreService
         if (empty($info)) {
             $info = [
                 'image_ext' => [
-                    'jpg', 'png', 'gif', 'jpeg', 'webp'
+                    'jpg', 'png', 'gif', 'jpeg' // todo 暂不支持webp格式
                 ],//图片上传文件后缀
                 'video_ext' => [
                     'wmv', 'avi', 'mpg', 'mpeg', '3gp', 'mov', 'mp4', 'flv', 'f4v', 'rmvb', 'mkv'

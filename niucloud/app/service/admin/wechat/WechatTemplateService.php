@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -67,7 +67,7 @@ class WechatTemplateService extends BaseAdminService
         $template_loader = new TemplateLoader('wechat');
         $template_loader->delete([ 'templateId' => $wechat_template_id ]);
         //新的消息模板
-//        $res = (new CoreWechatTemplateService())->addTemplate( $temp_key, $keyword_name_list);
+//        $res = (new CoreWechatTemplateService())->addTemplate($temp_key, $keyword_name_list);
         $res = $template_loader->addTemplate([ 'shortId' => $temp_key, 'keyword_name_list' => $keyword_name_list ]);
         $notice_service = new NoticeService();
         if (isset($res[ 'errcode' ]) && $res[ 'errcode' ] == 0) {
@@ -86,12 +86,17 @@ class WechatTemplateService extends BaseAdminService
     public function getList()
     {
         $core_notice_service = new CoreNoticeService();
-        $list = $core_notice_service->getList();
-        $template = [];
-        foreach ($list as $k => $v) {
-            if (in_array(NoticeTypeDict::WECHAT, $v[ 'support_type' ])) $template[] = $v;
+        $addon_list = $core_notice_service->getAddonList();
+
+        foreach ($addon_list as &$addon) {
+            foreach ($addon['notice'] as $k => $v) {
+                if (!in_array(NoticeTypeDict::WECHAT, $v[ 'support_type' ])) {
+                    unset($addon['notice'][$k]);
+                }
+            }
+            $addon['notice'] = array_values($addon['notice']);
         }
-        return $template;
+        return $addon_list;
     }
 
 }

@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -45,19 +45,19 @@ class PayService extends BaseApiService
      * @throws DbException
      * @throws ModelNotFoundException
      */
-    public function pay(string $type, string $trade_type, int $trade_id, string $return_url = '', string $quit_url = '', string $buyer_id = '', string $voucher = ''){
+    public function pay(string $type, string $trade_type, int $trade_id, string $return_url = '', string $quit_url = '', string $buyer_id = '', string $voucher = '', string $openid = ''){
 
         $member = (new CoreMemberService())->getInfoByMemberId($this->member_id);
         switch ($this->channel) {
             case ChannelDict::WECHAT://公众号
-                $openid = $member['wx_openid'] ?? '';
+                $openid = $openid ? $openid : $member['wx_openid'] ?? '';
                 break;
             case ChannelDict::WEAPP://微信小程序
-                $openid = $member['weapp_openid'] ?? '';
+                $openid = $openid ? $openid : $member['weapp_openid'] ?? '';
                 break;
         }
 
-        return $this->core_pay_service->pay($trade_type, $trade_id, $type, $this->channel, $openid ?? '', $return_url, $quit_url, $buyer_id, $voucher);
+        return $this->core_pay_service->pay($trade_type, $trade_id, $type, $this->channel, $openid, $return_url, $quit_url, $buyer_id, $voucher);
     }
 
     /**

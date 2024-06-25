@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -207,6 +207,19 @@ class Member extends BaseModel
         }
     }
 
+    /**
+     * 会员等级筛选
+     * @param Query $query
+     * @param $value
+     * @param $data
+     * @return void
+     */
+    public function searchMemberLevelAttr(Query $query, $value, $data)
+    {
+        if ($value) {
+            $query->where('member_level', '=',  $value);
+        }
+    }
 
     /**
      * 创建时间搜索器
@@ -246,5 +259,11 @@ class Member extends BaseModel
         }
     }
 
+    public function memberLevelData() {
+        return $this->hasOne(MemberLevel::class, 'level_id', 'member_level');
+    }
 
+    public function memberLevelNameBind() {
+        return $this->hasOne(MemberLevel::class, 'level_id', 'member_level')->bind(['member_level_name' => 'level_name']);
+    }
 }

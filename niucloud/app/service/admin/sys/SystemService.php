@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -12,7 +12,6 @@
 namespace app\service\admin\sys;
 
 use app\job\sys\CheckJob;
-use app\service\core\site\CoreSiteService;
 use app\service\core\sys\CoreConfigService;
 use core\base\BaseAdminService;
 use core\exception\CommonException;
@@ -155,7 +154,7 @@ class SystemService extends BaseAdminService
 //            $timeout++;
 //            sleep(1);
 //        }
-        sleep(3);
+        sleep(5);
         if (file_exists($file)) {
             @unlink($file);
             return true;
@@ -177,16 +176,5 @@ class SystemService extends BaseAdminService
             }
         }
         return false;
-    }
-
-    /**
-     * 设置布局
-     * @param string $key
-     */
-    public function setLayout(string $key) {
-        $layouts = array_column(event('SiteLayout'), 'key');
-        if (!in_array($key, $layouts)) throw new CommonException('LAYOUT_NOT_EXIST');
-        (new CoreConfigService())->setConfig('SITE_LAYOUT', [ 'key' => $key ]);
-        return true;
     }
 }

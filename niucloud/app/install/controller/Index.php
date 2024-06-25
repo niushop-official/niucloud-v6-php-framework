@@ -3,18 +3,14 @@
 namespace app\install\controller;
 
 
-use app\model\site\Site;
 use app\model\sys\SysUser;
 use app\service\admin\auth\LoginService;
 use app\service\admin\install\InstallSystemService;
-use app\service\admin\site\SiteGroupService;
-use app\service\admin\site\SiteService;
 use app\service\core\addon\CoreAddonInstallService;
 use app\service\core\addon\CoreAddonService;
 use app\service\core\schedule\CoreScheduleInstallService;
 use Exception;
 use think\facade\Cache;
-use think\facade\Db;
 use think\facade\View;
 use think\Response;
 
@@ -333,7 +329,7 @@ class Index extends BaseInstall
             fwrite($fp, '已安装');
             fclose($fp);
 
-            $this->setSuccessLog([ '初始化成功', 'success' ]);
+            $this->setSuccessLog([ '初始化', 'success' ]);
 
             Cache::set('install_status', 2);//成功
             return success();

@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -79,9 +79,13 @@ class UpgradeService extends BaseAdminService
         $web_dir = $this->root_path . 'web' . DIRECTORY_SEPARATOR;
         $wap_dir = $this->root_path . 'uni-app' . DIRECTORY_SEPARATOR;
 
-        if (!is_dir($admin_dir)) throw new CommonException('ADMIN_DIR_NOT_EXIST');
-        if (!is_dir($web_dir)) throw new CommonException('WEB_DIR_NOT_EXIST');
-        if (!is_dir($wap_dir)) throw new CommonException('UNIAPP_DIR_NOT_EXIST');
+        try {
+            if (!is_dir($admin_dir)) throw new CommonException('ADMIN_DIR_NOT_EXIST');
+            if (!is_dir($web_dir)) throw new CommonException('WEB_DIR_NOT_EXIST');
+            if (!is_dir($wap_dir)) throw new CommonException('UNIAPP_DIR_NOT_EXIST');
+        } catch (\Exception $e) {
+            throw new CommonException($e->getMessage());
+        }
 
         $data = [
             // 目录检测
@@ -364,6 +368,8 @@ class UpgradeService extends BaseAdminService
         dir_copy($code_dir . 'uni-app', $this->root_path . 'uni-app');
 
         $addon_list = (new CoreAddonService())->getInstallAddonList();
+        $depend_service = new CoreDependService();
+
         if (!empty($addon_list)) {
 
             foreach ($addon_list as $addon => $item) {
@@ -380,6 +386,21 @@ class UpgradeService extends BaseAdminService
 
                 // 编译 加载插件标题语言包
                 $this->compileLocale($this->root_path . 'uni-app' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR, $addon);
+
+                // 合并插件依赖
+                $addon_uniapp_package = str_replace('/', DIRECTORY_SEPARATOR, project_path() . "niucloud/addon/{$addon}/package/uni-app-package.json");
+
+                if (file_exists($addon_uniapp_package)) {
+                    $original = $depend_service->getNpmContent('uni-app');
+                    $new = $depend_service->jsonFileToArray($addon_uniapp_package);
+
+                    foreach ($new as $name => $value) {
+                        $original[$name] = isset($original[$name]) && is_array($original[$name]) ? array_merge($original[$name], $new[$name]) : $new[$name];
+                    }
+
+                    $uniapp_package = $this->root_path . 'uni-app' . DIRECTORY_SEPARATOR . 'package.json';
+                    $depend_service->writeArrayToJsonFile($original, $uniapp_package);
+                }
             }
         }
         return true;

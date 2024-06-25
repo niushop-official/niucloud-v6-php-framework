@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -12,6 +12,7 @@
 namespace app\service\admin\upgrade;
 
 use app\dict\addon\AddonDict;
+use app\service\admin\generator\GenerateService;
 use core\util\DbBackup;
 
 /**
@@ -80,18 +81,26 @@ class BackupService extends UpgradeService
             'level'    => 9 //数据库备份文件压缩级别 1普通 4 一般  9最高
         ]);
 
+        $tables = [];
         $prefix = config('database.connections.'.config('database.default'))['prefix'];
         if ($this->upgrade_task['upgrade']['app_key'] == AddonDict::FRAMEWORK_KEY) {
             // 不需要备份的表
             $noot_need_backup = ["{$prefix}sys_user_log", "{$prefix}jobs", "{$prefix}jobs_failed"];
-            $tables = array_diff(array_column($db->dataList(), 'name'), $noot_need_backup);
-        } else {
-            $tables = [];
-            $table_prefix = "{$prefix}{$this->upgrade_task['upgrade']['app_key']}";
-            foreach ($db->dataList() as $table) {
-                if (strpos($table['name'], $table_prefix) === 0) {
-                    $tables[] = $table['name'];
+            $sys_models = (new GenerateService())->getModels(['addon' => 'system']);
+            foreach ($sys_models as $model) {
+                $name = "\\$model";
+                $class = new $name();
+
+                if (!in_array($class->getTable(), $noot_need_backup)) {
+                    $tables[] = $class->getTable();
                 }
+            }
+        } else {
+            $addon_models = (new GenerateService())->getModels(['addon' => $this->upgrade_task['upgrade']['app_key']]);
+            foreach ($addon_models as $model) {
+                $name = "\\$model";
+                $class = new $name();
+                $tables[] = $class->getTable();
             }
         }
 

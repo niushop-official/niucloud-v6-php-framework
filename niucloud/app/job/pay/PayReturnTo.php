@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -26,11 +26,11 @@ class PayReturnTo extends BaseJob
      * @param $data
      * @return true
      */
-    protected function doJob($data)
+    protected function doJob($out_trade_no)
     {
 
-        Log::write('pay_log_' . json_encode($data));
-        $res = (new CorePayService())->returnTo( $data['out_trade_no']);
+        Log::write('pay_log_' . $out_trade_no);
+        $res = (new CorePayService())->returnTo($out_trade_no);
         return true;
     }
 

@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -107,7 +107,7 @@ class MemberAccountLog extends BaseModel
     public function getFromTypeNameAttr($value, $data)
     {
         if (isset($data['from_type'], $data['account_type']))
-            return MemberAccountChangeTypeDict::getType($data['account_type'])[$data['from_type']]['name'];
+            return MemberAccountChangeTypeDict::getType($data['account_type'])[$data['from_type']]['name'] ?? '';
         else
             return '';
     }
@@ -122,6 +122,32 @@ class MemberAccountLog extends BaseModel
     {
         if ($value) {
             $query->where('member_id', $value);
+        }
+    }
+
+    /**
+     * 金额大于
+     * @param $query
+     * @param $value
+     * @param $data
+     */
+    public function searchAccountDataGtAttr($query, $value, $data)
+    {
+        if ($value !== '' && $value !== null) {
+            $query->where('account_data', '>',$value);
+        }
+    }
+
+    /**
+     * 金额小于
+     * @param $query
+     * @param $value
+     * @param $data
+     */
+    public function searchAccountDataLtAttr($query, $value, $data)
+    {
+        if ($value !== '' && $value !== null) {
+            $query->where('account_data', '<',$value);
         }
     }
 

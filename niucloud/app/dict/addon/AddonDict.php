@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -33,6 +33,12 @@ class AddonDict
     const INSTALL_SUCCESS = 'success';
     // 执行失败
     const INSTALL_FAIL = 'fail';
+
+    // 插件关键字黑名单
+    const ADDON_KEY_BLACK_LIST = [
+        'addon', 'aliapp', 'app', 'applet', 'auht', 'channel', 'dict', 'diy', 'generator', 'home', 'member', 'niucloud',
+        'notice', 'pay', 'site', 'sys', 'upload', 'home', 'user', 'weapp', 'wechat'
+    ];
 
     /**
      * 插件操作方式

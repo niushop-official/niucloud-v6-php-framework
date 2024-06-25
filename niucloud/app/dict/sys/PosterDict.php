@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -19,19 +19,33 @@ class PosterDict
 
     /**
      * 获取方式
+     * @param string $type
      * @return array
      */
-    public static function getType()
+    public static function getType($type = '')
     {
         $list = [];
         $temp = array_filter(event('GetPosterType') ?? []);
-        foreach($temp as $v){
+        foreach ($temp as $v) {
             $list = array_merge($list, $v);
         }
-        return $list;
+        if (!empty($type)) {
+            $item = [];
+            foreach ($list as $v) {
+                if ($v[ 'type' ] == $type) {
+                    $item = $v;
+                    break;
+                }
+            }
+            return $item;
+        } else {
+            return $list;
+        }
     }
+
     public const ON = '1';//开启
     public const OFF = '2';//关闭
+
     /**
      * 状态
      * @return array

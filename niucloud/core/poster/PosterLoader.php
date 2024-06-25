@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -18,11 +18,10 @@ use core\sms\BaseSms;
  * @see PosterLoader
  * @package think\facade
  * @mixin BasePoster
- * @method  string|null createPoster(array $poster, string $dir, string $file_path) 创建海报
+ * @method  string|null createPoster( array $poster, string $dir, string $file_path ) 创建海报
  */
 class PosterLoader extends Loader
 {
-
 
     /**
      * 空间名
@@ -40,6 +39,5 @@ class PosterLoader extends Loader
     {
         return config('poster.default');
     }
-
 
 }

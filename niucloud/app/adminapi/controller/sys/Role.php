@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -93,4 +93,17 @@ class Role extends BaseAdminController
         return success('DELETE_SUCCESS');
     }
 
+    /**
+     * 设置角色状态
+     * @param $role_id
+     * @return Response
+     */
+    public function setStatus($role_id)
+    {
+        $data = $this->request->params([
+            ['status', RoleStatusDict::ON],
+        ]);
+        (new RoleService())->setStatus($role_id, $data['status']);
+        return success('DELETE_SUCCESS');
+    }
 }

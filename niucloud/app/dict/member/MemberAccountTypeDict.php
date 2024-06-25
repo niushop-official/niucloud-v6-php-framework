@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -30,6 +30,7 @@ class MemberAccountTypeDict
     //会员佣金
     public const COMMISSION = 'commission';
 
+    public const GROWTH = 'growth';
 
     public static function getType($type = '')
     {
@@ -38,6 +39,7 @@ class MemberAccountTypeDict
             self::BALANCE => get_lang('dict_member.account_balance'),
             self::MONEY => get_lang('dict_member.account_money'),
             self::COMMISSION => get_lang('dict_member.account_commission'),
+            self::GROWTH => get_lang('dict_member.account_growth'),
         ];
         if (empty($type)) {
             return $data;

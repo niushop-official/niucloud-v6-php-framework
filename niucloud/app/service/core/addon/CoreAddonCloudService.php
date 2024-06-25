@@ -14,6 +14,7 @@ namespace app\service\core\addon;
 use app\service\core\niucloud\CoreCloudBaseService;
 use app\service\core\niucloud\CoreModuleService;
 use core\exception\CommonException;
+use core\util\niucloud\BaseNiucloudClient;
 use core\util\niucloud\CloudService;
 use think\facade\Cache;
 
@@ -77,7 +78,7 @@ class CoreAddonCloudService extends CoreCloudBaseService
                         'filename' => 'build.zip'
                     ]
                 ],
-                'timeout' => 50.0
+                'timeout' => 300.0
             ]);
             if (isset($response['code']) && $response['code'] == 0) throw new CommonException($response['msg']);
 
@@ -222,9 +223,9 @@ class CoreAddonCloudService extends CoreCloudBaseService
      * @return void
      */
     public function downloadAddon(string $addon, string $version) {
-        $action_token = (new CoreModuleService())->getActionToken('download', ['data' => ['app_key' => $addon, 'version' => $version]]);
+        $action_token = (new CoreModuleService())->getActionToken('download', ['data' => ['app_key' => $addon, 'version' => $version, 'product_key' => BaseNiucloudClient::PRODUCT ]]);
         if (isset($action_token['code']) && $action_token['code'] != 1) {
-            if ($action_token['code'] == 401) $action_token = (new CoreModuleService())->getActionToken('download', ['data' => ['app_key' => $addon, 'version' => $version]]);
+            if ($action_token['code'] == 401) $action_token = (new CoreModuleService())->getActionToken('download', ['data' => ['app_key' => $addon, 'version' => $version, 'product_key' => BaseNiucloudClient::PRODUCT]]);
             if ($action_token['code'] != 1) throw new CommonException($action_token['msg']);
         }
 

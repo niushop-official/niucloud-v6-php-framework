@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -69,7 +69,7 @@ class CoreAttachmentService extends BaseCoreService
      * @throws ModelNotFoundException
      */
     public function getList(?array $data = []){
-        $where = [];
+        $where = array();
         $att_ids = $data['att_ids'] ?? [];
         if(!empty($att_ids)){
             $where[] = ['att_id', 'in', $att_ids];

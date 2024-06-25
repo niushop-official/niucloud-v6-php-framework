@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -43,6 +43,7 @@ class CoreAddonDownloadService extends CoreAddonBaseService
      */
     public function download($app_key, $version)
     {
+        if (!extension_loaded('zip')) throw new AddonException('ZIP_ARCHIVE_NOT_INSTALL');
         $app_path = $this->addon_path . $app_key . DIRECTORY_SEPARATOR;
         //先判断当前的应用在本地是否存在
 //        if(is_dir($app_path)) throw new NiucloudException();

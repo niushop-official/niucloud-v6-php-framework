@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -23,8 +23,6 @@ class Wechat extends Validate
     protected $rule = [
         'app_id' => 'require',
         'app_secret' => 'require',//防止key值重复
-
-
     ];
 
     protected $message = [
@@ -34,7 +32,7 @@ class Wechat extends Validate
     ];
 
     protected $scene = [
-        'set' => ['app_id', 'app_secret'],
+        'set' => ['app_id'],
     ];
 
 
