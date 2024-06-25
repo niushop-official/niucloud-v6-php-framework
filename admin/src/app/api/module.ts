@@ -33,7 +33,6 @@ export function getModule() {
 
 /**
  * 获取插件版本
- * @param params
  * @returns
  */
 export function getModuleVersion() {
@@ -51,7 +50,6 @@ export function downloadVersion(params: Record<string, any>) {
 
 /**
  * 获取框架最新版本
- * @param params
  * @returns
  */
 export function getFrameworkNewVersion() {

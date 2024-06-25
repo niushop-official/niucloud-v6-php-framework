@@ -1,24 +1,23 @@
 <template>
     <div class="main-container">
-        <el-form :model="formData" label-width="150px" ref="ruleFormRef" :rules="formRules" class="page-form" v-loading="loading">
-            <el-card class="box-card !border-none" shadow="never">
-                <h3 class="panel-title">{{ t('memberNoRule') }}</h3>
+        <el-card class="box-card !border-none" shadow="never">
+
+            <el-form class="page-form" :model="formData" label-width="150px" ref="ruleFormRef" :rules="formRules" v-loading="loading">
+                <h3 class="panel-title !text-sm">{{ t('memberNoRule') }}</h3>
 
                 <el-form-item :label="t('prefix')" prop="prefix">
                     <el-input v-model="formData.prefix" :placeholder="t('prefixPlaceholder')" class="input-width" clearable maxlength="20" @change="getMemberNo(ruleFormRef)"/>
-
                 </el-form-item>
-
                 <el-form-item :label="t('length')" prop="length">
-                    <el-input v-model="formData.length" :placeholder="t('lengthPlaceholder')" class="input-width" clearable @keyup="filterNumber($event)" @change="getMemberNo(ruleFormRef)"/>
+                    <el-input v-model.trim="formData.length" :placeholder="t('lengthPlaceholder')" class="input-width" clearable @keyup="filterNumber($event)" @change="getMemberNo(ruleFormRef)" @blur="formData.length = $event.target.value"/>
                     <div class="form-tip">{{ t('lengthTips') }}</div>
                 </el-form-item>
-
                 <el-form-item >
                     <div class="text-lg">{{ memberNo }}</div>
                 </el-form-item>
-            </el-card>
-        </el-form>
+            </el-form>
+        </el-card>
+
         <div class="fixed-footer-wrap">
             <div class="fixed-footer">
                 <el-button type="primary" @click="onSave(ruleFormRef)">{{ t('save') }}</el-button>
@@ -53,7 +52,7 @@ const formRules = reactive<FormRules>({
         { validator: prefixVerify, trigger: 'blur' }
     ],
     length: [
-        { required: true, message: t('lengthPlaceholder'), trigger: 'blur' },
+        { required: true, message: t('lengthPlaceholder'), trigger: ['blur', 'change'] },
         {
             validator: (rule: any, value: any, callback: any) => {
                 if (parseInt(value) > 30 || parseInt(value) - formData.prefix.length < 4) {
@@ -99,7 +98,7 @@ const onSave = async (formEl: FormInstance | undefined) => {
         if (valid) {
             setMemberConfig(formData).then(() => {
                 loading.value = false
-                getMemberNo()
+                getMemberNo(ruleFormRef.value)
             }).catch(() => {
                 loading.value = false
             })
@@ -108,9 +107,4 @@ const onSave = async (formEl: FormInstance | undefined) => {
 }
 </script>
 
-<style lang="scss" scoped>
-.el-form .form-tip {
-    line-height: 1.5;
-    margin-top: 5px;
-}
-</style>
+<style lang="scss" scoped></style>

@@ -11,14 +11,14 @@
             </el-form-item>
 
             <el-form-item :label="t('nickname')">
-                <el-input v-model="formData.nickname" clearable :placeholder="t('nickNamePlaceholder')" class="input-width" />
+                <el-input v-model="formData.nickname" clearable :placeholder="t('nickNamePlaceholder')" class="input-width" maxlength="10" show-word-limit  :readonly="nickname_name_input" @click="nickname_name_input = false" @blur="nickname_name_input = true" />
             </el-form-item>
 
             <el-form-item :label="t('password')" prop="password">
-                <el-input v-model="formData.password" type="password" :placeholder="t('passwordPlaceholder')" clearable class="input-width" />
+                <el-input v-model="formData.password" type="password" :placeholder="t('passwordPlaceholder')" clearable class="input-width" :show-password="true"  :readonly="password_input" @click="password_input = false" @blur="password_input = true" />
             </el-form-item>
             <el-form-item :label="t('passwordCopy')" prop="password_copy">
-                <el-input v-model="formData.password_copy" type="password" :placeholder="t('passwordPlaceholder')" clearable class="input-width" />
+                <el-input v-model="formData.password_copy" type="password" :placeholder="t('passwordPlaceholder')" clearable class="input-width" :show-password="true"  :readonly="password_copy_input" @click="password_copy_input = false" @blur="password_copy_input = true" />
             </el-form-item>
 
         </el-form>
@@ -41,8 +41,13 @@ import { filterNumber } from '@/utils/common'
 
 const showDialog = ref(false)
 const loading = ref(false)
+const repeat = ref(false)
 let popTitle: string = ''
 let memberNo: string = ''
+
+const nickname_name_input = ref(true)
+const password_input = ref(true)
+const password_copy_input = ref(true)
 
 /**
  * 表单数据
@@ -67,7 +72,6 @@ const formRules = computed(() => {
             { required: true, message: t('memberNoPlaceholder'), trigger: 'blur' },
             { validator: memberNoVerify, trigger: 'blur' }
         ],
-
         mobile: [
             { required: true, message: t('mobilePlaceholder'), trigger: 'blur' },
             { validator: mobileVerify, trigger: 'blur' }
@@ -129,14 +133,19 @@ const confirm = async (formEl: FormInstance | undefined) => {
         if (valid) {
             loading.value = true
 
+            if (repeat.value) return
+            repeat.value = true
+
             const data = formData
 
             save(data).then(res => {
                 loading.value = false
+                repeat.value = false
                 showDialog.value = false
                 emit('complete')
             }).catch(() => {
                 loading.value = false
+                repeat.value = false
             })
         }
     })

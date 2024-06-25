@@ -1,40 +1,34 @@
 <template>
+    <!--支付宝配置-->
     <div class="main-container">
-        <div class="detail-head">
-            <div class="left" @click="router.push({ path: '/channel/aliapp' })">
-                <span class="iconfont iconxiangzuojiantou !text-xs"></span>
-                <span class="ml-[1px]">{{ t('returnToPreviousPage') }}</span>
-            </div>
-            <span class="adorn">|</span>
-            <span class="right">{{ pageName }}</span>
-        </div>
-        <el-form :model="formData" label-width="150px" ref="formRef" class="page-form" v-loading="loading">
+
+        <el-card class="card !border-none" shadow="never">
+            <el-page-header :content="pageName" :icon="ArrowLeft" @back="$router.back()" />
+        </el-card>
+
+        <el-form class="page-form mt-[15px]" :model="formData" label-width="150px" ref="formRef" v-loading="loading">
             <el-card class="box-card !border-none" shadow="never">
                 <h3 class="panel-title !text-sm">{{ t('aliappSet') }}</h3>
 
                 <el-form-item :label="t('aliappName')">
-                    <el-input v-model="formData.name" :placeholder="t('aliappNamePlaceholder')" class="input-width"
-                        clearable />
+                    <el-input v-model="formData.name" :placeholder="t('aliappNamePlaceholder')" class="input-width" clearable />
                 </el-form-item>
 
                 <el-form-item :label="t('aliappQrcode')">
                     <upload-image v-model="formData.qrcode" />
                     <div class="form-tip">{{ t('aliappQrcodeTips') }}</div>
                 </el-form-item>
-
             </el-card>
 
-            <el-card class="box-card !border-none mt-[16px]" shadow="never">
+            <el-card class="box-card !border-none mt-[15px]" shadow="never">
                 <h3 class="panel-title !text-sm">{{ t('aliappDevelopInfo') }}</h3>
 
                 <el-form-item :label="t('aliappOriginal')">
-                    <el-input v-model="formData.private_key" :placeholder="t('aliappOriginalPlaceholder')"
-                        class="input-width" clearable />
+                    <el-input v-model="formData.private_key" :placeholder="t('aliappOriginalPlaceholder')" class="input-width" clearable />
                 </el-form-item>
 
                 <el-form-item :label="t('aliappAppid')">
-                    <el-input v-model="formData.app_id" :placeholder="t('appidPlaceholder')" class="input-width"
-                        clearable />
+                    <el-input v-model="formData.app_id" :placeholder="t('appidPlaceholder')" class="input-width" clearable />
                 </el-form-item>
 
                 <el-form-item :label="t('countersignType')">
@@ -63,19 +57,16 @@
                 </el-form-item>
             </el-card>
 
-            <el-card class="box-card !border-none mt-[16px]" shadow="never">
+            <el-card class="box-card !border-none mt-[15px]" shadow="never">
                 <h3 class="panel-title !text-sm">{{ t('theServerSetting') }}</h3>
 
                 <el-form-item label="AESKey">
-                    <el-input v-model="formData.aes_key" :placeholder="t('AESKeyPlaceholder')" class="input-width"
-                        show-word-limit clearable />
+                    <el-input v-model="formData.aes_key" :placeholder="t('AESKeyPlaceholder')" class="input-width" show-word-limit clearable />
                 </el-form-item>
             </el-card>
 
-            <el-card class="box-card !border-none mt-[16px]" shadow="never">
-                <div class="flex">
-                    <h3 class="panel-title !text-sm">{{ t('functionSetting') }}</h3>
-                </div>
+            <el-card class="box-card !border-none mt-[15px]" shadow="never">
+                <h3 class="panel-title !text-sm">{{ t('functionSetting') }}</h3>
 
                 <el-form-item :label="t('serveWhiteList')">
                     <el-input :model-value="formData.request_url" class="input-width" :readonly="true">
@@ -84,7 +75,6 @@
                         </template>
                     </el-input>
                 </el-form-item>
-
             </el-card>
         </el-form>
 
@@ -102,6 +92,7 @@ import { t } from '@/lang'
 import { setAliappConfig, getAliappConfig, getAliappStatic } from '@/app/api/aliapp'
 import { useClipboard } from '@vueuse/core'
 import { ElMessage, FormInstance } from 'element-plus'
+import { ArrowLeft } from '@element-plus/icons-vue'
 import { useRoute, useRouter } from 'vue-router'
 
 const route = useRoute()

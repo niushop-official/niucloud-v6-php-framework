@@ -1,53 +1,44 @@
 <template>
+    <!--小程序配置-->
     <div class="main-container">
-        <div class="detail-head">
-            <div class="left" @click="router.push({ path: '/channel/weapp' })">
-                <span class="iconfont iconxiangzuojiantou !text-xs"></span>
-                <span class="ml-[1px]">{{ t('returnToPreviousPage') }}</span>
-            </div>
-            <span class="adorn">|</span>
-            <span class="right">{{ pageName }}</span>
-        </div>
-        <el-form :model="formData" label-width="170px" ref="formRef" :rules="formRules" class="page-form"
-            v-loading="loading">
+
+        <el-card class="card !border-none" shadow="never">
+            <el-page-header :content="pageName" :icon="ArrowLeft" @back="$router.back()" />
+        </el-card>
+
+        <el-form class="page-form mt-[15px]" :model="formData" label-width="170px" ref="formRef" :rules="formRules" v-loading="loading">
             <el-card class="box-card !border-none" shadow="never">
                 <h3 class="panel-title !text-sm">{{ t('weappInfo') }}</h3>
 
                 <el-form-item :label="t('weappName')" prop="weapp_name">
-                    <el-input v-model.trim="formData.weapp_name" :placeholder="t('weappNamePlaceholder')" class="input-width"
-                        clearable />
+                    <el-input v-model.trim="formData.weapp_name" :placeholder="t('weappNamePlaceholder')" class="input-width" clearable :readonly="formData.is_authorization"/>
                 </el-form-item>
 
                 <el-form-item :label="t('weappOriginal')" prop="weapp_original">
-                    <el-input v-model.trim="formData.weapp_original" :placeholder="t('weappOriginalPlaceholder')"
-                        class="input-width" clearable />
+                    <el-input v-model.trim="formData.weapp_original" :placeholder="t('weappOriginalPlaceholder')" class="input-width" clearable :readonly="formData.is_authorization"/>
                 </el-form-item>
 
                 <el-form-item :label="t('weappQrcode')" prop="qr_code">
                     <upload-image v-model="formData.qr_code" />
                     <div class="form-tip">{{ t('weappQrcodeTips') }}</div>
                 </el-form-item>
-
             </el-card>
 
-            <el-card class="box-card !border-none mt-[16px]" shadow="never">
+            <el-card class="box-card !border-none mt-[15px]" shadow="never">
                 <h3 class="panel-title !text-sm">{{ t('weappDevelopInfo') }}</h3>
 
                 <el-form-item :label="t('weappAppid')" prop="app_id">
-                    <el-input v-model.trim="formData.app_id" :placeholder="t('appidPlaceholder')" class="input-width"
-                        clearable />
+                    <el-input v-model.trim="formData.app_id" :placeholder="t('appidPlaceholder')" class="input-width" clearable :readonly="formData.is_authorization"/>
                     <div class="form-tip">{{ t('weappAppidTips') }}</div>
                 </el-form-item>
 
-                <el-form-item :label="t('weappAppsecret')" prop="app_secret">
-                    <el-input v-model.trim="formData.app_secret" :placeholder="t('appSecretPlaceholder')" class="input-width"
-                        clearable />
+                <el-form-item :label="t('weappAppsecret')" prop="app_secret" v-if="!formData.is_authorization">
+                    <el-input v-model.trim="formData.app_secret" :placeholder="t('appSecretPlaceholder')" class="input-width" clearable />
                     <div class="form-tip">{{ t('weappAppsecretTips') }}</div>
                 </el-form-item>
-
             </el-card>
 
-            <el-card class="box-card !border-none mt-[16px]" shadow="never">
+            <el-card class="box-card !border-none mt-[15px]" shadow="never" v-if="!formData.is_authorization">
                 <h3 class="panel-title !text-sm">{{ t('weappUpload') }}</h3>
 
                 <el-form-item :label="t('uploadKey')" prop="upload_private_key">
@@ -59,12 +50,11 @@
                 </el-form-item>
             </el-card>
 
-            <el-card class="box-card !border-none mt-[16px]" shadow="never">
+            <el-card class="box-card !border-none mt-[15px]" shadow="never">
                 <h3 class="panel-title !text-sm">{{ t('theServerSetting') }}</h3>
 
                 <el-form-item label="URL">
-                    <el-input :model-value="formData.serve_url" placeholder="Please input" class="input-width"
-                        :readonly="true">
+                    <el-input :model-value="formData.serve_url" placeholder="Please input" class="input-width" :readonly="true">
                         <template #append>
                             <div class="cursor-pointer" @click="copyEvent(formData.serve_url)">{{ t('copy') }}</div>
                         </template>
@@ -72,14 +62,12 @@
                 </el-form-item>
 
                 <el-form-item label="Token" prop="token">
-                    <el-input v-model.trim="formData.token" :placeholder="t('tokenPlaceholder')" class="input-width"
-                        maxlength="32" show-word-limit clearable />
+                    <el-input v-model.trim="formData.token" :placeholder="t('tokenPlaceholder')" class="input-width" maxlength="32" show-word-limit clearable />
                     <div class="form-tip">{{ t('tokenTips') }}</div>
                 </el-form-item>
 
                 <el-form-item label="EncodingAESKey" prop="encoding_aes_key">
-                    <el-input v-model.trim="formData.encoding_aes_key" :placeholder="t('encodingAesKeyPlaceholder')"
-                        class="input-width" maxlength="43" show-word-limit clearable />
+                    <el-input v-model.trim="formData.encoding_aes_key" :placeholder="t('encodingAesKeyPlaceholder')" class="input-width" maxlength="43" show-word-limit clearable />
                     <div class="form-tip">{{ t('encodingAESKeyTips') }}</div>
                 </el-form-item>
 
@@ -95,44 +83,39 @@
                 </el-form-item>
             </el-card>
 
-            <el-card class="box-card !border-none mt-[16px]" shadow="never">
+            <el-card class="box-card !border-none mt-[15px]" shadow="never">
                 <div class="flex">
                     <h3 class="panel-title !text-sm">{{ t('functionSetting') }}</h3>
                 </div>
 
                 <el-form-item :label="t('requestUrl')">
-                    <el-input :model-value="formData.request_url" placeholder="Please input" class="input-width"
-                        :readonly="true">
+                    <el-input :model-value="formData.request_url" placeholder="Please input" class="input-width" :readonly="true">
                         <template #append>
                             <div class="cursor-pointer" @click="copyEvent(formData.request_url)">{{ t('copy') }}</div>
                         </template>
                     </el-input>
                 </el-form-item>
                 <el-form-item :label="t('socketUrl')">
-                    <el-input :model-value="formData.socket_url" placeholder="Please input" class="input-width"
-                        :readonly="true">
+                    <el-input :model-value="formData.socket_url" placeholder="Please input" class="input-width" :readonly="true">
                         <template #append>
                             <div class="cursor-pointer" @click="copyEvent(formData.socket_url)">{{ t('copy') }}</div>
                         </template>
                     </el-input>
                 </el-form-item>
                 <el-form-item :label="t('uploadUrl')">
-                    <el-input :model-value="formData.upload_url" placeholder="Please input" class="input-width"
-                        :readonly="true">
+                    <el-input :model-value="formData.upload_url" placeholder="Please input" class="input-width" :readonly="true">
                         <template #append>
                             <div class="cursor-pointer" @click="copyEvent(formData.upload_url)">{{ t('copy') }}</div>
                         </template>
                     </el-input>
                 </el-form-item>
                 <el-form-item :label="t('downloadUrl')">
-                    <el-input :model-value="formData.download_url" placeholder="Please input" class="input-width"
-                        :readonly="true">
+                    <el-input :model-value="formData.download_url" placeholder="Please input" class="input-width" :readonly="true">
                         <template #append>
                             <div class="cursor-pointer" @click="copyEvent(formData.download_url)">{{ t('copy') }}</div>
                         </template>
                     </el-input>
                 </el-form-item>
-
             </el-card>
         </el-form>
 
@@ -145,11 +128,12 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref, watch } from 'vue'
+import { reactive, ref, watch, computed } from 'vue'
 import { t } from '@/lang'
 import { getWeappConfig, setWeappConfig } from '@/app/api/weapp'
 import { useClipboard } from '@vueuse/core'
 import { ElMessage, FormInstance, FormRules } from 'element-plus'
+import { ArrowLeft } from '@element-plus/icons-vue'
 import { useRoute, useRouter } from 'vue-router'
 
 const route = useRoute()
@@ -158,7 +142,7 @@ const pageName = route.meta.title
 
 const loading = ref(true)
 
-const formData = reactive<Record<string, string>>({
+const formData = reactive<Record<string, any>>({
     weapp_name: '',
     weapp_original: '',
     app_id: '',
@@ -172,31 +156,34 @@ const formData = reactive<Record<string, string>>({
     socket_url: '',
     upload_url: '',
     download_url: '',
-    upload_private_key: ''
+    upload_private_key: '',
+    is_authorization: 0
 })
 
 const formRef = ref<FormInstance>()
 
 // 表单验证规则
-const formRules = reactive<FormRules>({
-    weapp_name: [
-        { required: true, message: t('weappNamePlaceholder'), trigger: 'blur' }
-    ],
-    weapp_original: [
-        { required: true, message: t('weappOriginalPlaceholder'), trigger: 'blur' }
-    ],
-    app_id: [
-        { required: true, message: t('appidPlaceholder'), trigger: 'blur' }
-    ],
-    app_secret: [
-        { required: true, message: t('appSecretPlaceholder'), trigger: 'blur' }
-    ],
-    token: [
-        { required: true, message: t('tokenPlaceholder'), trigger: 'blur' }
-    ],
-    encoding_aes_key: [
-        { required: true, message: t('encodingAesKeyPlaceholder'), trigger: 'blur' }
-    ]
+const formRules = computed(() => {
+    return {
+        weapp_name: [
+            { required: true, message: t('weappNamePlaceholder'), trigger: 'blur' }
+        ],
+        weapp_original: [
+            { required: true, message: t('weappOriginalPlaceholder'), trigger: 'blur' }
+        ],
+        app_id: [
+            { required: true, message: t('appidPlaceholder'), trigger: 'blur' }
+        ],
+        app_secret: [
+            { required: !formData.is_authorization, message: t('appSecretPlaceholder'), trigger: 'blur' }
+        ],
+        token: [
+            { required: true, message: t('tokenPlaceholder'), trigger: 'blur' }
+        ],
+        encoding_aes_key: [
+            { required: true, message: t('encodingAesKeyPlaceholder'), trigger: 'blur' }
+        ]
+    }
 })
 
 /**

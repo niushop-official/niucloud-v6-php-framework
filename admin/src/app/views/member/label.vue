@@ -1,6 +1,8 @@
 <template>
+    <!--会员标签-->
     <div class="main-container">
         <el-card class="box-card !border-none" shadow="never">
+
             <div class="flex justify-between items-center">
                 <span class="text-page-title">{{pageName}}</span>
                 <el-button type="primary" @click="addEvent">{{ t('addMemberLabel') }}</el-button>
@@ -9,7 +11,7 @@
             <el-card class="box-card !border-none my-[10px] table-search-wrap" shadow="never">
                 <el-form :inline="true" :model="memberLabelTableData.searchParam" ref="searchFormRef">
                     <el-form-item :label="t('labelName')" prop="label_name">
-                        <el-input v-model="memberLabelTableData.searchParam.label_name" :placeholder="t('labelNamePlaceholder')" />
+                        <el-input v-model.trim="memberLabelTableData.searchParam.label_name" :placeholder="t('labelNamePlaceholder')" />
                     </el-form-item>
                     <el-form-item>
                         <el-button type="primary" @click="loadMemberLabelList()">{{ t('search') }}</el-button>

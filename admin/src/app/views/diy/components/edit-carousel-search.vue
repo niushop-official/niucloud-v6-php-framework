@@ -58,7 +58,7 @@
 						</el-form-item>
 
 						<div class="del absolute cursor-pointer z-[2] top-[-8px] right-[-8px]" @click="diyStore.editComponent.search.hotWord.list.splice(index,1)">
-							<icon name="element-CircleCloseFilled" color="#bbb" size="20px"/>
+							<icon name="element CircleCloseFilled" color="#bbb" size="20px"/>
 						</div>
 
 					</div>
@@ -101,7 +101,7 @@
 									</el-form-item>
 
 									<div class="del absolute cursor-pointer z-[2] top-[-8px] right-[-8px]" v-show="diyStore.editComponent.tab.list.length > 1" @click="diyStore.editComponent.tab.list.splice(index,1)">
-										<icon name="element-CircleCloseFilled" color="#bbb" size="20px"/>
+										<icon name="element CircleCloseFilled" color="#bbb" size="20px"/>
 									</div>
 
 								</div>
@@ -114,7 +114,7 @@
 									<template #empty>
 										<span>{{ !diyPageTable.loading ? t('emptyData') : '' }}</span>
 									</template>
-									<el-table-column prop="title" :label="t('diyPageTitle')" min-width="120" />
+									<el-table-column prop="page_title" :label="t('diyPageTitle')" min-width="120" />
 									<el-table-column prop="addon_name" :label="t('diyPageTypeName')" min-width="80" />
 									<el-table-column prop="type_name" :label="t('diyPageForAddon')" min-width="80" />
 								</el-table>
@@ -151,7 +151,7 @@
 								</el-form-item>
 
 								<div class="del absolute cursor-pointer z-[2] top-[-8px] right-[-8px]" v-show="diyStore.editComponent.swiper.list.length > 1" @click="diyStore.editComponent.swiper.list.splice(index,1)">
-									<icon name="element-CircleCloseFilled" color="#bbb" size="20px"/>
+									<icon name="element CircleCloseFilled" color="#bbb" size="20px"/>
 								</div>
 
 								<el-form-item :label="t('link')">
@@ -247,7 +247,7 @@ import { ElTable } from 'element-plus'
 import Sortable from 'sortablejs'
 import { range } from 'lodash-es'
 
-import { getDiyPageList } from '@/app/api/diy'
+import { getDiyPageListByCarouselSearch } from '@/app/api/diy'
 
 const diyStore = useDiyStore()
 diyStore.editComponent.ignore = ['componentBgColor','componentBgUrl','marginTop','marginBottom','topRounded','bottomRounded','pageBgColor','marginBoth'] // 忽略公共属性
@@ -394,7 +394,6 @@ const diyPageTable = reactive({
     loading: true,
     data: [],
     searchParam: {
-        type: 'DIY_PAGE' // todo 数据筛选，要考虑只能查询 微页面类型的数据
     }
 })
 const diyPageTableRef = ref<InstanceType<typeof ElTable>>()
@@ -406,7 +405,7 @@ const loadDiyPageList = (page: number = 1) => {
     diyPageTable.loading = true
     diyPageTable.page = page
 
-    getDiyPageList({
+    getDiyPageListByCarouselSearch({
         page: diyPageTable.page,
         limit: diyPageTable.limit,
         ...diyPageTable.searchParam
@@ -419,7 +418,7 @@ const loadDiyPageList = (page: number = 1) => {
         // 排除当前编辑的微页面以及存在 置顶组件的数据
         if (diyStore.id) {
             for (let i = 0; i < data.length; i++) {
-                if (data[i].id == diyStore.id || data[i].value.indexOf('top_fixed') != -1) {
+                if (data[i].id == diyStore.id) {
                     isExistCount++;
                 } else {
                     newData.push(data[i]);

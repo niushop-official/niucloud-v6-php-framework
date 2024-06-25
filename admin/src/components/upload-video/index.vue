@@ -6,14 +6,16 @@
 					<div class="w-full h-full relative flex items-center overflow-hidden rounded">
 						<video :src="img(videos.data[0])" class="w-full"/>
 						<div class="absolute z-[1] flex items-center justify-center w-full h-full inset-0 bg-black bg-opacity-60 operation">
-							<icon name="iconfont-icon24gf-playCircle" color="#fff" size="25px" @click="previewVideo()"/>
+							<icon name="iconfont icon24gf-playCircle" color="#fff" size="25px" @click="previewVideo()"/>
 						</div>
 					</div>
-					<icon name="element-CircleCloseFilled" color="#bbb" size="18px" @click="removeVideo" class="absolute z-[2] top-[-9px] right-[-9px]"/>
+					<icon name="element CircleCloseFilled" color="#bbb" size="18px" @click="removeVideo" class="absolute z-[2] top-[-9px] right-[-9px]"/>
 				</template>
 				<upload-attachment :limit="limit" type="video" @confirm="confirmSelect" v-else>
 					<div class="w-full h-full flex items-center justify-center flex-col">
-						<icon name="iconfont-icon24gf-playCircle" size="25px" color="var(--el-text-color-secondary)"/>
+                        <slot name="icon">
+                            <icon name="iconfont icon24gf-playCircle" size="25px" color="var(--el-text-color-secondary)"/>
+                        </slot>
 					</div>
 				</upload-attachment>
 			</div>
@@ -23,15 +25,17 @@
 				<div class="w-full h-full relative flex items-center overflow-hidden rounded">
 					<video :src="img(item)" class="w-full"/>
 					<div class="absolute z-[1] flex items-center justify-center w-full h-full inset-0 bg-black bg-opacity-60 operation">
-						<icon name="iconfont-icon24gf-playCircle" color="#fff" size="25px" @click="previewVideo(index)"/>
+						<icon name="iconfont icon24gf-playCircle" color="#fff" size="25px" @click="previewVideo(index)"/>
 					</div>
 				</div>
-				<icon name="element-CircleCloseFilled" color="#bbb" size="18px" @click="removeVideo(index)" class="absolute z-[2] top-[-9px] right-[-9px]"/>
+				<icon name="element CircleCloseFilled" color="#bbb" size="18px" @click="removeVideo(index)" class="absolute z-[2] top-[-9px] right-[-9px]"/>
 			</div>
 			<div class="rounded cursor-pointer relative bg-page video-wrap mr-[10px]" :style="style" v-if="videos.data.length < limit">
 				<upload-attachment :limit="limit" type="video" @confirm="confirmSelect">
 					<div class="w-full h-full flex items-center justify-center flex-col">
-						<icon name="iconfont-icon24gf-playCircle" size="25px" color="var(--el-text-color-secondary)"/>
+                        <slot name="icon">
+                            <icon name="iconfont icon24gf-playCircle" size="25px" color="var(--el-text-color-secondary)"/>
+                        </slot>
 					</div>
 				</upload-attachment>
 			</div>
@@ -115,9 +119,9 @@ const confirmSelect = (data: Record<string, any>) => {
 }
 
 /**
-     * 删除视频
-     * @param index
-     */
+ * 删除视频
+ * @param index
+ */
 const removeVideo = (index: number = 0) => {
     videos.data.splice(index, 1)
     setValue()
@@ -128,8 +132,8 @@ const setValue = () => {
 }
 
 /**
-     * 查看视频
-     */
+ * 查看视频
+ */
 const videoViewer = reactive({
     visible: false,
     src: ''

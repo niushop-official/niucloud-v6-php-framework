@@ -1,39 +1,21 @@
 <template>
     <div class="main-container">
-        <div class="flex ml-[18px] justify-between items-center mt-[20px]">
-			<span class="text-page-title">{{pageName}}</span>
-		</div>
 
-        <el-form :model="formData" label-width="150px" ref="ruleFormRef" class="page-form" v-loading="loading">
+        <el-form class="page-form" :model="formData" label-width="150px" ref="ruleFormRef" v-loading="loading">
             <el-card class="box-card !border-none" shadow="never">
-
                 <h3 class="panel-title !text-sm">{{ t('admin') }}</h3>
 
                 <el-form-item :label="t('isCaptcha')" prop="formData.is_auth_register">
                     <el-switch v-model="formData.is_captcha"/>
                 </el-form-item>
-
                 <el-form-item :label="t('bgImg')">
                     <upload-image v-model="formData.bg" />
                     <div class="form-tip">{{t('adminBgImgTip')}}</div>
                 </el-form-item>
-
             </el-card>
 
-            <el-card class="box-card !border-none mt-4" shadow="never">
-                <h3 class="panel-title !text-sm">{{ t('site') }}</h3>
-
-                <el-form-item :label="t('isCaptcha')" prop="formData.is_auth_register">
-                    <el-switch v-model="formData.is_site_captcha"/>
-                </el-form-item>
-
-                <el-form-item :label="t('bgImg')">
-                    <upload-image v-model="formData.site_bg" />
-                    <div class="form-tip">{{t('siteBgImgTip')}}</div>
-                </el-form-item>
-
-            </el-card>
         </el-form>
+
         <div class="fixed-footer-wrap">
             <div class="fixed-footer">
                 <el-button type="primary" @click="onSave(ruleFormRef)">{{ t('save') }}</el-button>
@@ -90,9 +72,4 @@ const onSave = async (formEl: FormInstance | undefined) => {
 }
 </script>
 
-<style lang="scss" scoped>
-.el-form .form-tip{
-    line-height: 1.5;
-    margin-top: 5px;
-}
-</style>
+<style lang="scss" scoped></style>
