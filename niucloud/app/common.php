@@ -955,3 +955,16 @@ function str_sub($str, $length = 10, $is_need_apostrophe = true)
 {
     return mb_substr($str, 0, $length, 'UTF-8') . ( $is_need_apostrophe ? '...' : '' );
 }
+
+/**
+ * 删除插件安装后的相关文件
+ * @param string $addon_name
+ */
+function delete_addon_files(string $addon_name): void
+{
+    del_target_dir(root_path() . 'public' . DIRECTORY_SEPARATOR . 'addon' . DIRECTORY_SEPARATOR . $addon_name, true);
+    del_target_dir(root_path() . '..' . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'addon' . DIRECTORY_SEPARATOR . $addon_name, true);
+    del_target_dir(root_path() . '..' . DIRECTORY_SEPARATOR . 'uni-app' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'addon' . DIRECTORY_SEPARATOR . $addon_name, true);
+    del_target_dir(root_path() . '..' . DIRECTORY_SEPARATOR . 'web' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'addon' . DIRECTORY_SEPARATOR . $addon_name, true);
+}
+
