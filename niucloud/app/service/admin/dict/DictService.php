@@ -53,10 +53,7 @@ class DictService extends BaseAdminService
         $field = 'id,name,key,dictionary,memo,create_time,update_time';
 
         $info = $this->model->field($field)->where([['id', '=', $id]])->findOrEmpty()->toArray();
-        if($info['dictionary'] == null)
-        {
-            $info['dictionary'] = [];
-        }
+        $this->sortDictionary($info['dictionary']);
         return $info;
     }
 
@@ -67,6 +64,10 @@ class DictService extends BaseAdminService
      */
     public function add(array $data)
     {
+        $check = $this->model->where([['key', '=', $data['key']]])->findOrEmpty();
+        if (!$check->isEmpty()) {
+            throw new \core\exception\CommonException('DICT_KEY_EXIST');
+        }
 
         $res = $this->model->create($data);
         return $res->id;
@@ -106,7 +107,20 @@ class DictService extends BaseAdminService
     {
         $field = 'id,name,key,dictionary,memo,create_time,update_time';
         $list = $this->model->field($field)->select()->toArray();
+        foreach ($list as $v) {
+            $this->sortDictionary($v['dictionary']);
+        }
         return $list;
+    }
+
+    /**
+     * 删除数据字典
+     * @param string $key
+     * @return bool
+     */
+    public function delKey(string $key)
+    {
+        return $this->model->where([['key', '=', $key]])->delete();
     }
 
     public function getKeyInfo($key)
@@ -119,6 +133,21 @@ class DictService extends BaseAdminService
             $info['dictionary'] = [];
         }
         return $info;
+    }
+
+    /**
+     * 按字典数据中指定的顺序排序
+     * @param array|null $dictionary
+     */
+    private function sortDictionary(?array &$dictionary)
+    {
+        if ($dictionary == null) {
+            $dictionary = [];
+        }
+        usort($dictionary, function ($a, $b) {
+            // 太空船操作符“$c = $a <=> $b”相当于“$c = $a > $b ? 1 : ( $a==$b ? 0 : -1 )”
+            return $b['sort'] <=> $a['sort'];
+        });
     }
 
 
