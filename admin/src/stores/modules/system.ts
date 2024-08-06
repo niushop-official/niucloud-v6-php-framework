@@ -1,11 +1,11 @@
 import { defineStore } from 'pinia'
 import storage from '@/utils/storage'
 import { useCssVar } from '@vueuse/core'
-import { useCssVar } from '@vueuse/core'
 import { getInstalledAddonList } from '@/app/api/addon'
 
 
 interface System {
+    menuDrawer: boolean,
     menuIsCollapse: boolean,
     dark: boolean,
     theme: string,
@@ -19,6 +19,7 @@ const theme = storage.get('theme') ?? {}
 const useSystemStore = defineStore('system', {
     state: (): System => {
         return {
+            menuDrawer: false,
             menuIsCollapse: false,
             dark: theme.dark ?? false,
             theme: theme.theme ?? '#273de3',
