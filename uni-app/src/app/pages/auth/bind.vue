@@ -10,11 +10,11 @@
             <view class="px-[60rpx]">
                 <u-form labelPosition="left" :model="formData" errorType='toast' :rules="rules" ref="formRef">
                     <u-form-item label="" prop="mobile" :border-bottom="true">
-                        <u-input v-model="formData.mobile" border="none" clearable :placeholder="t('mobilePlaceholder')" class="!bg-transparent" :disabled="real_name_input"/>
+                        <u-input v-model="formData.mobile" border="none" clearable :placeholder="t('mobilePlaceholder')" class="!bg-transparent" :disabled="real_name_input" fontSize="26rpx" placeholderClass="!text-[#8288A2]"/>
                     </u-form-item>
                     <view class="mt-[40rpx]">
                         <u-form-item label="" prop="mobile_code" :border-bottom="true">
-                            <u-input v-model="formData.mobile_code" border="none" clearable :placeholder="t('codePlaceholder')" class="!bg-transparent" :disabled="real_name_input">
+                            <u-input v-model="formData.mobile_code" border="none" clearable :placeholder="t('codePlaceholder')" class="!bg-transparent" :disabled="real_name_input" fontSize="26rpx" placeholderClass="!text-[#8288A2]">
                                 <template #suffix>
                                     <sms-code :mobile="formData.mobile" type="bind_mobile" v-model="formData.mobile_key"></sms-code>
                                 </template>
@@ -36,12 +36,12 @@
                         </view>
                     </view>
                     <view class="mt-[60rpx]">
-                        <u-button type="primary" :text="t('bind')" :loading="loading" :loadingText="t('binding')" @click="handleBind"></u-button>
+                        <button hover-class="none" class="bg-[var(--primary-color)] text-[#fff] h-[80rpx] leading-[80rpx] rounded-[100rpx] text-[28rpx]" :loading="loading" :loadingText="t('binding')" @click="handleBind">{{t('bind')}}</button>
                     </view>
                     <!-- #ifdef MP-WEIXIN -->
                     <view class="mt-[30rpx]">
                         <u-button type="primary" :plain="true" :text="t('weixinUserAuth')"  @click="agreeTips" v-if="!info && config.agreement_show && !isAgree"></u-button>
-                        <u-button type="primary" :plain="true" :text="t('weixinUserAuth')" open-type="getPhoneNumber" @getphonenumber="mobileAuth" v-else></u-button>
+                        <u-button type="primary" :plain="true" :text="t('mobileQuickLogin')" open-type="getPhoneNumber" @getphonenumber="mobileAuth" @click="checkWxPrivacy" v-else></u-button>
                     </view>
                     <!-- #endif -->
                 </u-form>
@@ -50,7 +50,7 @@
 
         <!-- #ifdef MP-WEIXIN -->
         <!-- 小程序隐私协议 -->
-        <wx-privacy-popup ref="wxPrivacyPopup"></wx-privacy-popup>
+        <wx-privacy-popup ref="wxPrivacyPopupRef"></wx-privacy-popup>
         <!-- #endif -->
     </view>
 </template>
@@ -81,7 +81,7 @@
         mobile_key: ''
     })
 
-	let real_name_input = ref(true);
+	const real_name_input = ref(true);
 	onMounted(() => {
 		// 防止浏览器自动填充
 		setTimeout(()=>{
@@ -151,6 +151,13 @@
                 loading.value = false
             })
         })
+    }
+
+    const wxPrivacyPopupRef:any = ref(null)
+
+    // 检测是否同意隐私协议
+    const checkWxPrivacy = ()=>{
+        wxPrivacyPopupRef.value.proactive();
     }
 
     const mobileAuth = (e) => {
