@@ -12,6 +12,7 @@
 namespace app\service\api\member;
 
 use app\model\member\MemberAddress;
+use app\service\core\member\CoreMemberAddressService;
 use core\base\BaseApiService;
 
 
@@ -35,11 +36,8 @@ class AddressService extends BaseApiService
      */
     public function getList(array $where = [])
     {
-        $field = 'id, member_id, name, mobile, province_id, city_id, district_id, address, address_name, full_address, lng, lat, is_default';
-        $order = 'is_default desc, id desc';
-
-        $list = $this->model->where([ ['member_id', '=', $this->member_id ] ])->field($field)->order($order)->select()->toArray();
-        return $list;
+        $where['member_id'] = $this->member_id;
+        return ( new CoreMemberAddressService() )->getList($where);
     }
 
     /**
@@ -49,10 +47,8 @@ class AddressService extends BaseApiService
      */
     public function getInfo(int $id)
     {
-        $field = 'id,member_id,name,mobile,province_id,city_id,district_id,address,address_name,full_address,lng,lat,is_default';
-
-        $info = $this->model->field($field)->where([ ['id', '=', $id], ['member_id', '=', $this->member_id ] ])->findOrEmpty()->toArray();
-        return $info;
+        $data['member_id'] = $this->member_id;
+        return ( new CoreMemberAddressService() )->getInfo($id, $data);
     }
 
     /**
@@ -62,12 +58,8 @@ class AddressService extends BaseApiService
      */
     public function add(array $data)
     {
-        if ($data['is_default']) {
-            $this->model->where([ ['member_id', '=', $this->member_id ]  ])->update(['is_default' => 0]);
-        }
         $data['member_id'] = $this->member_id;
-        $res = $this->model->create($data);
-        return $res->id;
+        return ( new CoreMemberAddressService() )->add($data);
     }
 
     /**
@@ -78,11 +70,8 @@ class AddressService extends BaseApiService
      */
     public function edit(int $id, array $data)
     {
-        if ($data['is_default']) {
-            $this->model->where([ ['member_id', '=', $this->member_id ] ])->update(['is_default' => 0]);
-        }
-        $this->model->where([ ['id', '=', $id], ['member_id', '=', $this->member_id ] ])->update($data);
-        return true;
+        $data['member_id'] = $this->member_id;
+        return ( new CoreMemberAddressService() )->edit($id, $data);
     }
 
     /**
