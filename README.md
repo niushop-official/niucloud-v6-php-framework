@@ -1,11 +1,11 @@
-![输入图片说明](https://www.niucloud.com/img/readme/%E5%B9%BF%E5%91%8A.png)
+![输入图片说明](https://www.niucloud.com/img/readme/%E9%A1%B6%E9%83%A8%E5%B9%BF%E5%91%8A1.jpg)
 
 ### niucloud-admin是什么？
 niucloud-admin是一款快速开发通用管理后台框架，前端采用最新的技术栈Vite+TypeScript+Vue3+ElementPlus最流行技术架构，后台结合PHP8、Java SDK、Python等主流后端语言搭建，内置集成用户权限、代码生成器、表单设计、云存储、短信发送、素材中心、微信及公众号、Api模块一系列开箱即用功能，是一款快速可以开发企业级应用的软件系统。
 
 ### niucloud-admin采用的技术亮点
 
-- 后台php采用THINKPHP8+PHP8+MYSQL8,支持composer快速安装扩展，支持redis缓存以及消息队列，支持多语言设计开发，同时开发采用严格的restful的api设计开发。
+- 后台php采用thinkphp8+php8+mysql,支持composer快速安装扩展，支持redis缓存以及消息队列，支持多语言设计开发，同时开发采用严格的restful的api设计开发。
 
 - 后台前后端分离采用element-plus、vue3.0、typescript、vite、pina等前端技术,同时使用i18n支持国际化多语言开发。
 
@@ -38,8 +38,10 @@ niucloud-admin是一款快速开发通用管理后台框架，前端采用最新
  | [论坛地址](https://www.niucloud.com/bbs)
 
 ### 演示地址
-- 后台演示网址：[<a href='https://v6.site.niucloud.com/admin' target="_blank"> 查看 </a>]       
-<a href='http://v6.site.niucloud.com/admin/' target="_blank">http://v6.site.niucloud.com/admin/  账号：admin  密码：123456
+- 管理后台演示网址：[<a href='http://v6.site.niucloud.com' target="_blank"> 查看 </a>]       
+<a href='http://v6.site.niucloud.com' target="_blank">http://v6.site.niucloud.com  账号：admin  密码：123456
+- H5前端演示网址：[<a href='https://v6.site.niucloud.com/wap/' target="_blank"> 查看 </a>]       
+<a href='https://v6.site.niucloud.com/wap/' target="_blank">https://v6.site.niucloud.com/wap/  账号：admin  密码：123456
 
 ### 开源使用须知
 
