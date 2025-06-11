@@ -12,6 +12,7 @@
 namespace app\service\admin\upgrade;
 
 /**
+ * todo 废弃，后续删除
  * 框架及插件升级恢复备份
  * @package app\service\core\upgrade
  */
