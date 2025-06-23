@@ -39,8 +39,12 @@ niucloud-admin是一款快速开发通用管理后台框架，前端采用最新
  | [论坛地址](https://niucloud.com/bbs)
 
 ### 演示地址
-- 管理后台演示网址：[<a href='https://v6.site.niucloud.com' target="_blank"> 查看 </a>]       
+- 管理后台演示网址：[<a href='https://v6.site.niucloud.com/admin' target="_blank"> 查看 </a>]       
+<a href='https://v6.site.niucloud.com/admin' target="_blank">https://v6.site.niucloud.com/admin  账号：admin  密码：123456
+
+- web端演示网址：[<a href='https://v6.site.niucloud.com' target="_blank"> 查看 </a>]       
 <a href='https://v6.site.niucloud.com' target="_blank">https://v6.site.niucloud.com  账号：admin  密码：123456
+
 - H5前端演示网址：[<a href='https://v6.site.niucloud.com/wap/' target="_blank"> 查看 </a>]       
 <a href='https://v6.site.niucloud.com/wap/' target="_blank">https://v6.site.niucloud.com/wap/  账号：admin  密码：123456
 
@@ -57,7 +61,6 @@ niucloud-admin是一款快速开发通用管理后台框架，前端采用最新
 5.商用请仔细审查代码和漏洞，不得用于任一国家许可范围之外的商业应用，产生的一切任何后果责任自负;
 
 6.一切事物有个人喜好的标准，本开源代码意在分享，不喜勿喷。
-
 
 ### 版权信息
 版权所有Copyright © 2015-2030 niucloud-admin 版权所有
