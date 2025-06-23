@@ -32,14 +32,15 @@ niucloud-admin是一款快速开发通用管理后台框架，前端采用最新
 ### 操作指南
  [官网地址](https://www.niucloud.com)
  | [服务市场](https://www.niucloud.com)
- | [使用手册](https://www.kancloud.cn/niucloud/niucloud-admin-develop/3153336)
- | [二开手册](https://www.kancloud.cn/niucloud/niucloud-admin-develop/3153336)
- | [API接口手册](https://www.niucloud.com/apidoc.html)
- | [论坛地址](https://www.niucloud.com/bbs)
+ | [使用手册](https://www.niucloud.com/doc)
+ | [二开手册](https://www.niucloud.com/doc)
+ | [开发视频](https://www.niucloud.com/doc)
+ | [API接口手册](https://api.niucloud.com/apidoc.html?target_id=001)
+ | [论坛地址](https://niucloud.com/bbs)
 
 ### 演示地址
-- 管理后台演示网址：[<a href='http://v6.site.niucloud.com' target="_blank"> 查看 </a>]       
-<a href='http://v6.site.niucloud.com' target="_blank">http://v6.site.niucloud.com  账号：admin  密码：123456
+- 管理后台演示网址：[<a href='https://v6.site.niucloud.com' target="_blank"> 查看 </a>]       
+<a href='https://v6.site.niucloud.com' target="_blank">https://v6.site.niucloud.com  账号：admin  密码：123456
 - H5前端演示网址：[<a href='https://v6.site.niucloud.com/wap/' target="_blank"> 查看 </a>]       
 <a href='https://v6.site.niucloud.com/wap/' target="_blank">https://v6.site.niucloud.com/wap/  账号：admin  密码：123456
 
