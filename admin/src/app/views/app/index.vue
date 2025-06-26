@@ -6,35 +6,33 @@
             <template v-if="Object.keys(appList).length">
 
                 <template v-for="(item, index) in appList" :key="index + 'b'">
-                    <template v-if="item.list.length">
-                        <div class="flex justify-between items-center">
-                            <span class="text-page-title">{{ item.title }}</span>
-                        </div>
+                    <div class="flex justify-between items-center" v-if="item.list.length">
+                        <span class="text-page-title">{{ item.title }}</span>
+                    </div>
 
-                        <div class="flex flex-wrap plug-list pb-10 plug-large">
-                            <div class="cursor-pointer mt-[20px] mr-4 bg-[#f7f7f7]" v-for="(childItem,childIndex) in item.list" :key="childIndex" @click="toLink(childItem)">
-                                <div class="w-[264px] flex py-[20px] px-[17px] app-item relative">
-                                    <el-image class="w-[40px] h-[40px] mr-[10px]" :src="img(childItem.icon)" fit="contain">
-                                        <template #error>
-                                            <div class="image-slot">
-                                                <img class="w-[40px] h-[40px]" src="@/app/assets/images/index/app_default.png" />
-                                            </div>
-                                        </template>
-                                    </el-image>
-                                    <div class="flex flex-col justify-between w-[180px]">
-                                        <div class="text-[14px] flex items-center">
-                                            <span class="app-text max-w-[170px]">{{ childItem.title }}</span>
-                                            <span class="iconfont iconxiaochengxu2 text-[#00b240] ml-[4px] !text-[14px]"></span>
+                    <div class="flex flex-wrap plug-list pb-10 plug-large" v-if="item.list.length">
+                        <div class="cursor-pointer mt-[20px] mr-4 bg-[#f7f7f7]" v-for="(childItem,childIndex) in item.list" :key="childIndex" @click="toLink(childItem)">
+                            <div class="w-[264px] flex py-[20px] px-[17px] app-item relative">
+                                <el-image class="w-[40px] h-[40px] mr-[10px]" :src="img(childItem.icon)" fit="contain">
+                                    <template #error>
+                                        <div class="image-slot">
+                                            <img class="w-[40px] h-[40px]" src="@/app/assets/images/index/app_default.png" />
                                         </div>
-                                            <!-- <el-icon color="#666">
-                                                <QuestionFilled />
-                                            </el-icon> -->
-                                        <p class="app-text text-[12px] text-[#999]">{{childItem.desc}}</p>
+                                    </template>
+                                </el-image>
+                                <div class="flex flex-col justify-between w-[180px]">
+                                    <div class="text-[14px] flex items-center">
+                                        <span class="app-text max-w-[170px]">{{ childItem.title }}</span>
+<!--                                        <span class="iconfont iconxiaochengxu2 text-[#00b240] ml-[4px] !text-[14px]"></span>-->
                                     </div>
+                                        <!-- <el-icon color="#666">
+                                            <QuestionFilled />
+                                        </el-icon> -->
+                                    <p class="app-text text-[12px] text-[#999]">{{childItem.desc}}</p>
                                 </div>
                             </div>
                         </div>
-                    </template>
+                    </div>
                 </template>
             </template>
 
