@@ -48,7 +48,7 @@ niucloud-admin是一款快速开发通用管理后台框架，前端采用最新
 - H5前端演示网址：[<a href='https://v6.site.niucloud.com/wap/' target="_blank"> 查看 </a>]       
 <a href='https://v6.site.niucloud.com/wap/' target="_blank">https://v6.site.niucloud.com/wap/  账号：admin  密码：123456
 
-### 开源使用须知
+### 开源使用须知  
 
 1.允许用于个人学习、毕业设计、教学案例、公益事业、商业使用;
 
