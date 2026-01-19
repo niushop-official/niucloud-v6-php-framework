@@ -3,7 +3,7 @@
 ### niucloud-admin是什么？ 
 niucloud-admin是一款快速开发通用管理后台框架，前端采用最新的技术栈Vite+TypeScript+Vue3+ElementPlus最流行技术架构，后台结合PHP8、Java SDK、Python等主流后端语言搭建，内置集成用户权限、代码生成器、表单设计、云存储、短信发送、素材中心、微信及公众号、Api模块一系列开箱即用功能，是一款快速可以开发企业级应用的软件系统。
 
-### niucloud-admin采用的技术亮点 
+### niucloud-admin采用的技术亮点  
 
 - 后台php采用thinkphp8+php8+mysql,支持composer快速安装扩展，支持redis缓存以及消息队列，支持多语言设计开发，同时开发采用严格的restful的api设计开发。 
 
