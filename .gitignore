@@ -18,5 +18,5 @@ bin-release/
 # information for Eclipse / Flash Builder.
 
 /.idea
+/upgrade
 niucloud/public/.htaccess
-admin/.env.development

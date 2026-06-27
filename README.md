@@ -1,11 +1,11 @@
-![输入图片说明](https://media.niucloud.com/1712133019020249f332e83457a01a6799472e0495_aliyun.png)
+![输入图片说明](https://www.niucloud.com/img/readme/%E9%A1%B6%E9%83%A8%E5%B9%BF%E5%91%8A1.jpg)
 
-### niucloud-admin是什么？ 
+### niucloud-admin是什么？
 niucloud-admin是一款快速开发通用管理后台框架，前端采用最新的技术栈Vite+TypeScript+Vue3+ElementPlus最流行技术架构，后台结合PHP8、Java SDK、Python等主流后端语言搭建，内置集成用户权限、代码生成器、表单设计、云存储、短信发送、素材中心、微信及公众号、Api模块一系列开箱即用功能，是一款快速可以开发企业级应用的软件系统。
 
-### niucloud-admin采用的技术亮点  
+### niucloud-admin采用的技术亮点
 
-- 后台php采用thinkphp8+php8+mysql,支持composer快速安装扩展，支持redis缓存以及消息队列，支持多语言设计开发，同时开发采用严格的restful的api设计开发。  
+- 后台php采用thinkphp8+php8+mysql,支持composer快速安装扩展，支持redis缓存以及消息队列，支持多语言设计开发，同时开发采用严格的restful的api设计开发。
 
 - 后台前后端分离采用element-plus、vue3.0、typescript、vite、pina等前端技术,同时使用i18n支持国际化多语言开发。
 
@@ -32,25 +32,20 @@ niucloud-admin是一款快速开发通用管理后台框架，前端采用最新
 ### 操作指南
  [官网地址](https://www.niucloud.com)
  | [服务市场](https://www.niucloud.com)
- | [使用手册](https://www.niucloud.com/doc)
- | [二开手册](https://www.niucloud.com/doc)
- | [开发视频](https://www.niucloud.com/doc)
- | [API接口手册](https://api.niucloud.com/apidoc.html?target_id=001)
- | [论坛地址](https://niucloud.com/bbs)
+ | [使用手册](https://www.kancloud.cn/niucloud/niucloud-admin-develop/3153336)
+ | [二开手册](https://www.kancloud.cn/niucloud/niucloud-admin-develop/3153336)
+ | [API接口手册](https://www.niucloud.com/apidoc.html)
+ | [论坛地址](https://www.niucloud.com/bbs)
 
 ### 演示地址
-- 管理后台演示网址：[<a href='https://v6.site.niucloud.com/admin' target="_blank"> 查看 </a>]       
-<a href='https://v6.site.niucloud.com/admin' target="_blank">https://v6.site.niucloud.com/admin  账号：admin  密码：123456
-
-- web端演示网址：[<a href='https://v6.site.niucloud.com' target="_blank"> 查看 </a>]       
-<a href='https://v6.site.niucloud.com' target="_blank">https://v6.site.niucloud.com  账号：admin  密码：123456
-
+- 管理后台演示网址：[<a href='http://v6.site.niucloud.com' target="_blank"> 查看 </a>]       
+<a href='http://v6.site.niucloud.com' target="_blank">http://v6.site.niucloud.com  账号：admin  密码：123456
 - H5前端演示网址：[<a href='https://v6.site.niucloud.com/wap/' target="_blank"> 查看 </a>]       
 <a href='https://v6.site.niucloud.com/wap/' target="_blank">https://v6.site.niucloud.com/wap/  账号：admin  密码：123456
 
-### 开源使用须知  
+### 开源使用须知
 
-1.允许用于个人学习、毕业设计、教学案例、公益事业、商业使用; 
+1.允许用于个人学习、毕业设计、教学案例、公益事业、商业使用;
 
 2.本框架应用源代码所有权和著作权归niucloud官方所有，基于niucloud-admin框架开发的应用，所有权和著作权归应用开发商所有。但必须明确声明是基于niucloud-admin框架开发，请自觉遵守，否则产生的一切任何后果责任由侵权者自负;
 
@@ -62,12 +57,14 @@ niucloud-admin是一款快速开发通用管理后台框架，前端采用最新
 
 6.一切事物有个人喜好的标准，本开源代码意在分享，不喜勿喷。
 
+
+
 ### 版权信息
 版权所有Copyright © 2015-2030 niucloud-admin 版权所有
 
 All rights reserved。
 
-
 杭州数字云动科技有限公司 
 杭州牛之云科技有限公司 
-提供技术支持                
+
+提供技术支持
