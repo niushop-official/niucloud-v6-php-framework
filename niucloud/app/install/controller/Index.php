@@ -113,14 +113,6 @@ class Index extends BaseInstall
         }
     }
 
-    public function build()
-    {
-        $install_user = Cache::get('install_user');
-        $token = ( new LoginService() )->login($install_user[ 'username' ], $install_user[ 'password' ]);
-        $this->assign('token', $token[ 'token' ]);
-        return $this->fetch('index/step-4');
-    }
-
     /**
      * 安装成功
      * @return string
@@ -130,7 +122,7 @@ class Index extends BaseInstall
         Cache::delete('install_data');
         Cache::delete('install_status');
         $this->assign('is_build', request()->get('is_build', 1));
-        return $this->fetch('index/step-5');
+        return $this->fetch('index/step-4');
     }
 
     /**
@@ -381,9 +373,6 @@ class Index extends BaseInstall
                 ]);
             }
 
-            // 安装插件
-            $this->installAddon();
-
             $fp = fopen($this->lock_file, 'wb');
             if (!$fp) {
                 $this->setSuccessLog([ "写入失败，请检查目录" . dirname(__FILE__, 2) . "是否可写入！'", 'error' ]);
@@ -402,42 +391,6 @@ class Index extends BaseInstall
             $this->setSuccessLog([ '安装失败' . $e->getMessage(), 'error' ]);
             return fail('安装失败' . $e->getMessage());
         }
-    }
-
-    /**
-     * 安装插件
-     * @return true
-     */
-    public function installAddon()
-    {
-        $root_path = str_replace("\\", DIRECTORY_SEPARATOR, dirname(__FILE__, 4));
-        $root_path = str_replace("../", DIRECTORY_SEPARATOR, $root_path);
-        $addon_path = $root_path . DIRECTORY_SEPARATOR . 'addon';
-
-        $files = get_files_by_dir($addon_path);
-        if (!empty($files)) {
-            $addon = [];
-            foreach ($files as $path) {
-                $data = ( new CoreAddonService() )->getAddonConfig($path);
-                if (isset($data[ 'key' ])) {
-                    if ($data[ 'type' ] == 'app') {
-                        $install_service = ( new CoreAddonInstallService($data[ 'key' ]) );
-                        $install_service->installCheck();
-                        $install_service->install();
-                    } else {
-                        $addon[] = $data;
-                    }
-                }
-            }
-            if (!empty($addon)) {
-                foreach ($addon as $k => $v) {
-                    $install_service = ( new CoreAddonInstallService($v[ 'key' ]) );
-                    $install_service->installCheck();
-                    $install_service->install();
-                }
-            }
-        }
-        return true;
     }
 
     /**
