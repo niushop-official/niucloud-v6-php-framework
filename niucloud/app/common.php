@@ -489,6 +489,8 @@ function check_event_result($result)
  */
 function array_merge2(array $array1, array $array2)
 {
+    if (empty($array2))
+        return $array1;
     foreach ($array2 as $array2_k => $array2_v) {
         if (array_key_exists($array2_k, $array1)) {
             if (is_array($array2_v)) {
