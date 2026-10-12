@@ -32,9 +32,8 @@ niucloud-admin是一款快速开发通用管理后台框架，前端采用最新
 ### 操作指南
  [官网地址](https://www.niucloud.com)
  | [服务市场](https://www.niucloud.com)
- | [使用手册](https://www.kancloud.cn/niucloud/niucloud-admin-develop/3153336)
- | [二开手册](https://www.kancloud.cn/niucloud/niucloud-admin-develop/3153336)
- | [API接口手册](https://www.niucloud.com/apidoc.html)
+ | [使用手册](https://doc.press.niucloud.com)
+ | [二开手册](https://doc.press.niucloud.com)
  | [论坛地址](https://www.niucloud.com/bbs)
 
 ### 演示地址
